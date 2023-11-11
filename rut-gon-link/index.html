@@ -51,23 +51,30 @@
 <span class="site-title">Rút gọn link</span>
 <span class="site-description">Tiện tích rút gọn link miễn phí</span>
 </h1>
-<!-- DOWNLOAD -->
+<!-- RÚT GỌN LINK -->
 <div class="download" style="font-size:15px;">
 <a href="https://github.com/buildertv/s/issues/new/choose" title="Rút gọn link" rel="nofollow">
 <i class="fa fa-link"></i>&nbsp;&nbsp;<span>Rút gọn link</span></a>
 <a href="./huong-dan/index.html#-hướng-dẫn-sử-dụng" title="Hướng dẫn" rel="nofollow">
 <i class="fa fa-question"></i>&nbsp;&nbsp;<span>Hướng dẫn</span></a>
 </div>
+<!-- COPY LINK -->
+<div class="download" style="font-size:15px;">
+	<input type="text" value="Nhập số thứ tự cần copy vào đây" id="myInput" onclick="this.value=''" onblur="if (this.value == '') {this.value = 'Nhập số thứ tự cần copy vào đây';}" style="width: 230px;height: 25px;">
+<button onclick="myFunction()" style="height: 30px;"><i class="fa fa-clone" ></i> Copy </button>
 
-<div style="display: flex; justify-content: center;">
-  <input type="text" value="Nhập số thứ tự cần copy vào đây" id="myInput" onclick="this.value=''" onblur="if (this.value == '') {this.value = 'Nhập số thứ tự cần copy vào đây';}" style="width: 300px;">
-  <button onclick="myFunction()">Copy</button>
 </div>
 
 <script>
 function myFunction() {
   /* Lấy phần tử input */
   var copyText = document.getElementById("myInput");
+  
+    /* Kiểm tra xem giá trị nhập vào có phải là số hay không */
+  if(isNaN(copyText.value)) {
+    alert('Hãy nhập số thứ tự vào trước khi copy');
+    return;
+  }
 
   /* Thêm giá trị của phần tử input vào sau "https://hoangtuan.net/s/" */
   var fullText = "https://hoangtuan.net/s/" + copyText.value;

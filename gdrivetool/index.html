@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Link Handler</title>
+</head>
+<body>
+    <h1>Google Drive Link Handler</h1>
+    <input type="text" id="linkInput" placeholder="Dán đường link vào đây">
+    <button onclick="handleCopy()">Tạo bản sao</button>
+    <button onclick="handleDownload()">Tải về</button>
+
+    <script>
+        function extractID(url) {
+            const regex = /\/d\/([a-zA-Z0-9-_]+)/;
+            const match = url.match(regex);
+            return match ? match[1] : null;
+        }
+
+        function handleCopy() {
+            const url = document.getElementById('linkInput').value;
+            const id = extractID(url);
+            if (id) {
+                if (url.includes("https://docs.google.com/spreadsheets/d/")) {
+                    const copyLink = `https://docs.google.com/spreadsheets/d/${id}/copy`;
+                    window.open(copyLink, '_blank');
+                } else {
+                    alert("URL không hợp lệ!");
+                }
+            } else {
+                alert("Không thể tách ID từ URL!");
+            }
+        }
+
+        function handleDownload() {
+            const url = document.getElementById('linkInput').value;
+            const id = extractID(url);
+            if (id) {
+                const downloadLink = `https://drive.google.com/uc?id=${id}&export=download`;
+                window.open(downloadLink, '_blank');
+            } else {
+                alert("Không thể tách ID từ URL!");
+            }
+        }
+    </script>
+</body>
+</html>

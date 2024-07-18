@@ -43,6 +43,26 @@
         button:hover {
             background-color: #45a049;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
         .footer {
             margin-top: 20px;
         }
@@ -63,8 +83,6 @@
         <br>
         <button onclick="handleCopy()">Tạo bản sao</button>
         <button onclick="handleDownload()">Tải về</button>
-        <button onclick="copyCopyLink()">Copy Link Tạo bản sao</button>
-        <button onclick="copyDownloadLink()">Copy Link Tải về</button>
         <div class="footer">
             <a href="https://hoangtuan.net">Trang chủ</a>
             <a href="https://blog.hoangtuan.net">Blog</a>
@@ -72,9 +90,16 @@
         </div>
     </div>
 
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <p id="modalText"></p>
+            <button onclick="copyLink()">Copy Link</button>
+            <button id="openLinkButton" onclick="openLink()">Open Link</button>
+        </div>
+    </div>
+
     <script>
-        let copyLink = '';
-        let downloadLink = '';
+        let currentLink = '';
 
         function extractID(url) {
             const regex = /\/d\/([a-zA-Z0-9-_]+)/;
@@ -86,9 +111,9 @@
             const url = document.getElementById('linkInput').value;
             const id = extractID(url);
             if (id) {
-                if (url.includes("https://docs.google.com/spreadsheets/d/")) {
-                    copyLink = `https://docs.google.com/spreadsheets/d/${id}/copy`;
-                    window.open(copyLink, '_blank');
+                if (url.includes("https://docs.google.com/")) {
+                    currentLink = `https://docs.google.com/document/d/${id}/copy`;
+                    showModal('Tạo bản sao link đã sẵn sàng.');
                 } else {
                     alert("URL không hợp lệ!");
                 }
@@ -101,16 +126,21 @@
             const url = document.getElementById('linkInput').value;
             const id = extractID(url);
             if (id) {
-                downloadLink = `https://drive.google.com/uc?id=${id}&export=download`;
-                window.open(downloadLink, '_blank');
+                currentLink = `https://drive.google.com/uc?id=${id}&export=download`;
+                showModal('Link tải về đã sẵn sàng.');
             } else {
                 alert("Không thể tách ID từ URL!");
             }
         }
 
-        function copyToClipboard(text) {
+        function showModal(message) {
+            document.getElementById('modalText').textContent = message;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function copyLink() {
             const tempInput = document.createElement('input');
-            tempInput.value = text;
+            tempInput.value = currentLink;
             document.body.appendChild(tempInput);
             tempInput.select();
             document.execCommand('copy');
@@ -118,19 +148,14 @@
             alert('Link đã được sao chép vào clipboard');
         }
 
-        function copyCopyLink() {
-            if (copyLink) {
-                copyToClipboard(copyLink);
-            } else {
-                alert('Vui lòng nhấn nút "Tạo bản sao" trước');
-            }
+        function openLink() {
+            window.open(currentLink, '_blank');
         }
 
-        function copyDownloadLink() {
-            if (downloadLink) {
-                copyToClipboard(downloadLink);
-            } else {
-                alert('Vui lòng nhấn nút "Tải về" trước');
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target === modal) {
+                modal.style.display = 'none';
             }
         }
     </script>

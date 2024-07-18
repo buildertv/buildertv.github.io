@@ -186,9 +186,19 @@
             tempInput.select();
             document.execCommand('copy');
             document.body.removeChild(tempInput);
-            alert('Link đã được sao chép vào clipboard');
+            showAlert("Link đã được sao chép vào clipboard");
         }
-
+        function showAlert(message) {
+          var alertBox = document.getElementById('alertBox');
+          var alertText = document.getElementById('alertText');
+        
+          alertText.innerText = message;
+          alertBox.style.display = 'block';
+        
+          setTimeout(function() {
+            alertBox.style.display = 'none';
+          }, 3000);
+        }
         function openLink() {
             window.open(currentLink, '_blank');
         }

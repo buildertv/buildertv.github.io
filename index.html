@@ -16,6 +16,7 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
+            transition: background-color 0.3s, color 0.3s;
         }
         .container {
             text-align: center;
@@ -57,7 +58,7 @@
             border-bottom: 1px solid #ffffff;
         }
         .dropdown-content a:last-child {
-            border-bottom: none;
+            border-bottom: 1px solid #ffffff;
         }
         .dropdown-content a:hover {
             background-color: #3a3e45;
@@ -65,10 +66,50 @@
         .dropdown:hover .dropdown-content {
             display: block;
         }
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 24px;
+            transition: color 0.3s;
+        }
+        .theme-toggle:hover {
+            color: #ffeb3b;
+        }
+        .light-theme {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .light-theme .buttons a, .light-theme .dropdown .dropbtn {
+            background-color: #f1f1f1;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        .light-theme .buttons a:hover, .light-theme .dropdown .dropbtn:hover {
+            background-color: #dddddd;
+        }
+        .light-theme .dropdown-content {
+            background-color: #f1f1f1;
+        }
+        .light-theme .dropdown-content a {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+        .light-theme .dropdown-content a:hover {
+            background-color: #dddddd;
+        }
+        .light-theme .theme-toggle {
+            color: #000000;
+        }
     </style>
 </head>
 <body>
     <div class="container">
+        <div class="theme-toggle" onclick="toggleTheme()">
+            <i class="fas fa-sun"></i>
+        </div>
         <h1>XIN CHÀO CÁC ANH CHỊ VÀ CÁC BẠN</h1>
         <p>Tại website này các anh chị có thể tìm thấy tất cả những thông tin liên hệ và những nội dung mà tôi đang chia sẻ.</p>
         <div class="buttons">
@@ -86,5 +127,19 @@
             <a href="https://zalo.me/buildertv"><i class="fas fa-phone"></i> Zalo</a>
         </div>
     </div>
+    <script>
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            if (body.classList.contains('light-theme')) {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+    </script>
 </body>
 </html>

@@ -3,13 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Drive Link Handler</title>
+    <title>Công cụ xử lý Google Drive Link</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px 60px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .footer {
+            margin-top: 20px;
+        }
+        .footer a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Google Drive Link Handler</h1>
-    <input type="text" id="linkInput" placeholder="Dán đường link vào đây">
-    <button onclick="handleCopy()">Tạo bản sao</button>
-    <button onclick="handleDownload()">Tải về</button>
+    <div class="container">
+        <h1>Công cụ xử lý Google Drive Link</h1>
+        <input type="text" id="linkInput" placeholder="Dán đường link vào đây">
+        <br>
+        <button onclick="handleCopy()">Tạo bản sao</button>
+        <button onclick="handleDownload()">Tải về</button>
+        <div class="footer">
+            <a href="https://hoangtuan.net">Trang chủ</a>
+            <a href="https://blog.hoangtuan.net">Blog</a>
+            <a href="https://www.youtube.com/@BuilderTV?sub_confirmation=1">Youtube</a>
+        </div>
+    </div>
 
     <script>
         function extractID(url) {

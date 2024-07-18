@@ -63,6 +63,8 @@
         <br>
         <button onclick="handleCopy()">Tạo bản sao</button>
         <button onclick="handleDownload()">Tải về</button>
+        <button onclick="copyCopyLink()">Copy Link Tạo bản sao</button>
+        <button onclick="copyDownloadLink()">Copy Link Tải về</button>
         <div class="footer">
             <a href="https://hoangtuan.net">Trang chủ</a>
             <a href="https://blog.hoangtuan.net">Blog</a>
@@ -71,6 +73,9 @@
     </div>
 
     <script>
+        let copyLink = '';
+        let downloadLink = '';
+
         function extractID(url) {
             const regex = /\/d\/([a-zA-Z0-9-_]+)/;
             const match = url.match(regex);
@@ -82,7 +87,7 @@
             const id = extractID(url);
             if (id) {
                 if (url.includes("https://docs.google.com/spreadsheets/d/")) {
-                    const copyLink = `https://docs.google.com/spreadsheets/d/${id}/copy`;
+                    copyLink = `https://docs.google.com/spreadsheets/d/${id}/copy`;
                     window.open(copyLink, '_blank');
                 } else {
                     alert("URL không hợp lệ!");
@@ -96,10 +101,36 @@
             const url = document.getElementById('linkInput').value;
             const id = extractID(url);
             if (id) {
-                const downloadLink = `https://drive.google.com/uc?id=${id}&export=download`;
+                downloadLink = `https://drive.google.com/uc?id=${id}&export=download`;
                 window.open(downloadLink, '_blank');
             } else {
                 alert("Không thể tách ID từ URL!");
+            }
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Link đã được sao chép vào clipboard');
+        }
+
+        function copyCopyLink() {
+            if (copyLink) {
+                copyToClipboard(copyLink);
+            } else {
+                alert('Vui lòng nhấn nút "Tạo bản sao" trước');
+            }
+        }
+
+        function copyDownloadLink() {
+            if (downloadLink) {
+                copyToClipboard(downloadLink);
+            } else {
+                alert('Vui lòng nhấn nút "Tải về" trước');
             }
         }
     </script>

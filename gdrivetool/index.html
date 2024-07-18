@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ xử lý Google Drive Link</title>
+    <title>Công cụ xử lý Google Drive Link - hoangtuan.net</title>
+    
     <style>
         body {
             display: flex;
@@ -74,9 +75,49 @@
         .footer a:hover {
             text-decoration: underline;
         }
+                .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            color: #ffffff;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+        .theme-toggle:hover {
+            color: #ffeb3b;
+        }
+        .light-theme {
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .light-theme .buttons a, .light-theme .dropdown .dropbtn {
+            background-color: #f1f1f1;
+            color: #000000;
+            border: 1px solid #000000;
+        }
+        .light-theme .buttons a:hover, .light-theme .dropdown .dropbtn:hover {
+            background-color: #dddddd;
+        }
+        .light-theme .dropdown-content {
+            background-color: #f1f1f1;
+        }
+        .light-theme .dropdown-content a {
+            color: #000000;
+            border-bottom: 1px solid #000000;
+        }
+        .light-theme .dropdown-content a:hover {
+            background-color: #dddddd;
+        }
+        .light-theme .theme-toggle {
+            color: #000000;
+        }
     </style>
 </head>
 <body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fa-solid fa-sun"></i>
+    </div>
     <div class="container">
         <h1>Công cụ xử lý Google Drive Link</h1>
         <input type="text" id="linkInput" placeholder="Dán đường link vào đây">
@@ -112,13 +153,13 @@
             const id = extractID(url);
             if (id) {
                 if (url.includes("https://docs.google.com/")) {
-                    currentLink = `https://docs.google.com/document/d/${id}/copy`;
+                    currentLink = url.replace('/edit?usp=sharing', '/copy');
                     showModal('Tạo bản sao link đã sẵn sàng.');
                 } else {
                     alert("URL không hợp lệ!");
                 }
             } else {
-                alert("Không thể tách ID từ URL!");
+                alert("URL không hợp lệ!");
             }
         }
 
@@ -129,7 +170,7 @@
                 currentLink = `https://drive.google.com/uc?id=${id}&export=download`;
                 showModal('Link tải về đã sẵn sàng.');
             } else {
-                alert("Không thể tách ID từ URL!");
+                alert("URL không hợp lệ!");
             }
         }
 
@@ -156,6 +197,18 @@
             const modal = document.getElementById('modal');
             if (event.target === modal) {
                 modal.style.display = 'none';
+            }
+        }
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            if (body.classList.contains('light-theme')) {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
             }
         }
     </script>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Công cụ xử lý Google Drive Link - hoangtuan.net</title>
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" >
     <style>
         body {
             display: flex;
@@ -153,7 +153,7 @@
             const id = extractID(url);
             if (id) {
                 if (url.includes("https://docs.google.com/")) {
-                    currentLink = url.replace('/edit?usp=sharing', '/copy');
+                    currentLink = url.split('/edit')[0] + '/copy';
                     showModal('Tạo bản sao link đã sẵn sàng.');
                 } else {
                     alert("URL không hợp lệ!");

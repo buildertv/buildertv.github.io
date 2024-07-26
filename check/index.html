@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra mã sản phẩm chính hãng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            margin: 0;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333333;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: 1px solid #cccccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #ff0000;
+        }
+        .message img {
+            width: 100px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Kiểm tra mã sản phẩm chính hãng</h1>
+        <input type="text" id="productCode" placeholder="Nhập mã sản phẩm">
+        <button onclick="checkCode()">Kiểm tra</button>
+        <div class="message" id="message"></div>
+    </div>
+
+    <script>
+        function checkCode() {
+            const correctCode = "456789";
+            const userCode = document.getElementById("productCode").value;
+            const messageDiv = document.getElementById("message");
+
+            if (userCode === correctCode) {
+                messageDiv.innerHTML = '<p>Hàng chính hãng</p><img src="https://i.ibb.co/QYT26TR/linh.jpg" alt="Chính hãng">';
+                messageDiv.style.color = "#4CAF50";
+            } else {
+                messageDiv.innerText = "Mã sản phẩm không chính xác";
+                messageDiv.style.color = "#ff0000";
+            }
+        }
+    </script>
+</body>
+</html>

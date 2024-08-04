@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải Tài Liệu</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #000000;
+            color: #FFFFFF;
+            padding: 20px;
+            margin: 0;
+        }
+        .content {
+            background-color: #000000;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+        .download-button {
+            background-color: #000000;
+            color: #FFD700;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 20px 0;
+            cursor: pointer;
+            border: 2px solid #FFD700;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .download-button:hover {
+            background-color: #FFD700;
+            color: #000000;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #FFD700;
+        }
+        .account-info {
+            margin: 15px 0;
+        }
+        .qr-code {
+            margin: 20px 0;
+        }
+        .video-container {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 ratio */
+            margin-top: 30px;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        h2 {
+            color: #FFD700;
+        }
+        @media (max-width: 600px) {
+            .download-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            .content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <p>Hãy ấn vào nút tải về bên dưới để tải tài liệu về:</p>
+        <button class="download-button" onclick="download()">Tải về</button>
+        <p>Tài liệu trên có giá là <span class="highlight">100.000 đồng</span>.</p>
+        <p>Để ủng hộ tác giả bạn vui lòng chuyển khoản theo số tài khoản sau:</p>
+        <p class="account-info"><span class="highlight">3355 3618 888</span></p>
+        <p class="account-info"><span class="highlight">Ngân hàng TP Bank</span></p>
+        <p>Hoặc quét mã QR code sau:</p>
+        <img class="qr-code" src="https://img.vietqr.io/image/TPB-33553618888-compact.png" alt="QR Code" width="150" height="150">
+        <p>Cảm ơn các bạn!</p>
+        
+        <h2>Video hướng dẫn sử dụng:</h2>
+        <div class="video-container">
+            <iframe src="https://www.youtube.com/embed/thS6Id0eXF0" title="Hướng dẫn sử dụng" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+    </div>
+
+    <script>
+        function download() {
+            // Mở trang web trong tab hiện tại và tab mới
+            var link1 = 'https://hoangtuan.net';
+            var link2 = 'https://hoangtuan.net/s/105';
+
+            // Tạo các liên kết ẩn
+            var a1 = document.createElement('a');
+            a1.href = link1;
+            a1.target = '_self';
+            document.body.appendChild(a1);
+
+            var a2 = document.createElement('a');
+            a2.href = link2;
+            a2.target = '_blank';
+            document.body.appendChild(a2);
+
+            // Kích hoạt liên kết
+            a1.click();
+            a2.click();
+
+            // Loại bỏ các liên kết ẩn
+            document.body.removeChild(a1);
+            document.body.removeChild(a2);
+        }
+    </script>
+</body>
+</html>

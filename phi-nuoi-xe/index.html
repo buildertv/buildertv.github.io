@@ -65,7 +65,7 @@
 <body>
 
 <div class="container">
-    <h2>Tính Chi Phí Nuôi Xe Ô Tô</h2>
+    <h2>Tính Chi Phí Nuôi Xe Ô Tô • hoangtuan.net</h2>
     <div class="input-group">
         <label for="giaXang">Giá xăng (đ/l):</label>
         <input type="number" id="giaXang" value="20000">
@@ -123,8 +123,12 @@
     <div class="result" id="result">
         Kết quả sẽ hiển thị ở đây.
     </div>
+
+    <!-- Nút tải về hình ảnh -->
+    <button onclick="taiVeHinhAnh()">Tải về dưới dạng hình ảnh</button>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
 <script>
     function tinhChiPhi() {
         // Lấy dữ liệu từ các input
@@ -165,6 +169,15 @@
             <p>Chi phí xăng hàng tháng: ${chiPhiXang.toLocaleString()} đ</p>
             <p>Tổng chi phí nuôi xe hàng tháng: ${tongChiPhi.toLocaleString()} đ</p>
         `;
+    }
+        function taiVeHinhAnh() {
+        html2canvas(document.querySelector(".container")).then(canvas => {
+            // Chuyển canvas thành ảnh và tải xuống
+            let link = document.createElement('a');
+            link.download = 'chi_phi_nuoi_xe.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        });
     }
 </script>
 

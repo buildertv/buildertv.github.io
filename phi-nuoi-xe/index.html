@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tính Chi Phí Nuôi Xe Ô Tô • hoangtuan.net</title>
+    <title>Bảng Tính Chi Phí Nuôi Xe Ô Tô | hoangtuan.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,11 +33,12 @@
             margin-bottom: 5px;
         }
         input {
-            width: 100%;
+            width: calc(100% - 20px); /* Điều chỉnh chiều rộng để tạo lề */
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
+            margin-right: 0; /* Loại bỏ margin mặc định bên phải */
         }
         .result {
             margin-top: 20px;
@@ -56,16 +58,24 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
+            margin-top: 10px;
         }
         button:hover {
             background-color: #45a049;
+        }
+        .download-button {
+            margin-top: 20px;
+            background-color: #007bff;
+        }
+        .download-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2>Tính Chi Phí Nuôi Xe Ô Tô • hoangtuan.net</h2>
+    <h2><i class="fas fa-car car-icon"></i> Chi Phí Nuôi Xe | hoangtuan.net</h2>
     <div class="input-group">
         <label for="giaXang">Giá xăng (đ/l):</label>
         <input type="number" id="giaXang" value="20000">
@@ -125,12 +135,12 @@
     </div>
 
     <!-- Nút tải về hình ảnh -->
-    <button onclick="taiVeHinhAnh()">Tải về dưới dạng hình ảnh</button>
+<button class="download-button" onclick="taiVeHinhAnh()">Tải về dưới dạng hình ảnh</button>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-    function tinhChiPhi() {
+     function tinhChiPhi() {
         // Lấy dữ liệu từ các input
         const giaXang = parseFloat(document.getElementById('giaXang').value);
         const soKm = parseFloat(document.getElementById('soKm').value);
@@ -146,7 +156,7 @@
         const phiTraGop = parseFloat(document.getElementById('phiTraGop').value);
         const phiKhac = parseFloat(document.getElementById('phiKhac').value);
 
-        // Tính toán chi phí xăng hàng tháng
+       // Tính toán chi phí xăng hàng tháng
         const chiPhiXang = Math.round((giaXang * dinhMuc / 100) * soKm / 1000) * 1000;
 
         // Tính tổng chi phí nuôi xe hàng tháng
@@ -170,12 +180,21 @@
             <p>Tổng chi phí nuôi xe hàng tháng: ${tongChiPhi.toLocaleString()} đ</p>
         `;
     }
-        function taiVeHinhAnh() {
-        html2canvas(document.querySelector(".container")).then(canvas => {
+
+    function taiVeHinhAnh() {
+        // Đảm bảo rằng kết quả đã được tính toán trước khi tải về
+        tinhChiPhi();
+        
+        // Sử dụng html2canvas để chụp container
+        html2canvas(document.querySelector(".container"), {
+            scale: 2, // Tăng độ phân giải
+            logging: false, // Tắt logging để cải thiện hiệu suất
+            useCORS: true // Cho phép tải nội dung từ các domain khác nếu cần
+        }).then(canvas => {
             // Chuyển canvas thành ảnh và tải xuống
             let link = document.createElement('a');
-            link.download = 'chi_phi_nuoi_xe.png';
-            link.href = canvas.toDataURL();
+            link.download = 'chi_phi_nuoi_xe_' + new Date().toISOString().slice(0,10) + '.png';
+            link.href = canvas.toDataURL('image/png');
             link.click();
         });
     }

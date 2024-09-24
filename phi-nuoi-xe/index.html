@@ -89,7 +89,7 @@
         <input type="number" id="soKm"  value="1000">
     </div>
     <div class="input-group">
-        <label for="dinhMuc">Định mức xăng (l/100km):</label>
+        <label for="dinhMuc">Định mức xăng (l/100Km):</label>
         <input type="number" id="dinhMuc"  value="8">
     </div>
     <div class="input-group">
@@ -188,10 +188,15 @@ function parseFormattedNumber(str) {
             + phiTraGop
             + phiKhac
         ) / 1000) * 1000;
+    // Tính chi phí /km
+        const ChiPhikm = Math.round((
+            tongChiPhi / soKm
+        ) / 1) * 1;
 
         document.getElementById('result').innerHTML = `
             <p>Chi phí xăng hàng tháng: ${formatNumber(chiPhiXang)} đ</p>
             <p>Tổng chi phí nuôi xe hàng tháng: ${formatNumber(tongChiPhi)} đ</p>
+            <p>Chi phí/km: ${formatNumber(ChiPhikm)} đ/Km</p
         `;
     }
 

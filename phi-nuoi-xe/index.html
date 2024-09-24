@@ -87,6 +87,10 @@
         <input type="number" id="baoHiem" value="437000">
     </div>
     <div class="input-group">
+        <label for="baoHiemtv">Bảo hiểm thân vỏ (01 năm):</label>
+        <input type="number" id="baoHiemtv" value="0">
+    </div>
+    <div class="input-group">
         <label for="phiDangKiem">Phí đăng kiểm (01 năm):</label>
         <input type="number" id="phiDangKiem" value="340000">
     </div>
@@ -103,8 +107,12 @@
         <input type="number" id="phiGuiXe" value="0">
     </div>
     <div class="input-group">
-        <label for="phiCaoToc">Phí đi cao tốc (hàng tháng):</label>
+        <label for="phiCaoToc">Phí cao tốc/ cầu đường (hàng tháng):</label>
         <input type="number" id="phiCaoToc" value="0">
+    </div>
+        <div class="input-group">
+        <label for="phiTraGop">Phí trả góp (hàng tháng):</label>
+        <input type="number" id="phiTraGop" value="0">
     </div>
     <div class="input-group">
         <label for="phiKhac">Phí khác (hàng tháng):</label>
@@ -125,11 +133,13 @@
         const dinhMuc = parseFloat(document.getElementById('dinhMuc').value);
         const phiDuongBo = parseFloat(document.getElementById('phiDuongBo').value);
         const baoHiem = parseFloat(document.getElementById('baoHiem').value);
+        const baoHiemtv = parseFloat(document.getElementById('baoHiemtv').value);
         const phiDangKiem = parseFloat(document.getElementById('phiDangKiem').value);
         const phiBaoDuong = parseFloat(document.getElementById('phiBaoDuong').value);
         const phiRuaXe = parseFloat(document.getElementById('phiRuaXe').value);
         const phiGuiXe = parseFloat(document.getElementById('phiGuiXe').value);
         const phiCaoToc = parseFloat(document.getElementById('phiCaoToc').value);
+        const phiTraGop = parseFloat(document.getElementById('phiTraGop').value);
         const phiKhac = parseFloat(document.getElementById('phiKhac').value);
 
         // Tính toán chi phí xăng hàng tháng
@@ -140,11 +150,13 @@
             chiPhiXang
             + phiDuongBo / 12
             + baoHiem / 12
+            + baoHiemtv / 12
             + phiDangKiem / 12
             + (phiBaoDuong / 5000) * soKm
             + phiRuaXe
             + phiGuiXe
             + phiCaoToc
+            + phiTraGop
             + phiKhac
         ) / 1000) * 1000;
 

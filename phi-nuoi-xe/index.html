@@ -133,10 +133,11 @@
         const phiKhac = parseFloat(document.getElementById('phiKhac').value);
 
         // Tính toán chi phí xăng hàng tháng
-        const chiPhiXang = (giaXang * dinhMuc / 100) * soKm;
+        const chiPhiXang = Math.round((giaXang * dinhMuc / 100) * soKm / 1000) * 1000;
 
         // Tính tổng chi phí nuôi xe hàng tháng
-        const tongChiPhi = chiPhiXang
+        const tongChiPhi = Math.round((
+            chiPhiXang
             + phiDuongBo / 12
             + baoHiem / 12
             + phiDangKiem / 12
@@ -144,7 +145,8 @@
             + phiRuaXe
             + phiGuiXe
             + phiCaoToc
-            + phiKhac;
+            + phiKhac
+        ) / 1000) * 1000;
 
         // Hiển thị kết quả
         document.getElementById('result').innerHTML = `

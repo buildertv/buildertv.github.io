@@ -13,7 +13,7 @@
             background-color: #f2f2f2;
         }
         .container {
-            max-width: 480px;
+            max-width: 600px;  /* Tăng độ rộng container để có thêm không gian */
             margin: auto;
             background-color: #fff;
             padding: 20px;
@@ -26,19 +26,22 @@
         }
         .input-group {
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        label {
-            display: block;
+       label {
+            flex: 0 0 50%;  /* Label chiếm 50% chiều rộng */
             font-size: 16px;
-            margin-bottom: 5px;
+            margin-right: 10px;
         }
         input {
-            width: calc(100% - 20px); /* Điều chỉnh chiều rộng để tạo lề */
-            padding: 10px;
+            flex: 0 0 30%;
+            padding: 8px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            margin-right: 0; /* Loại bỏ margin mặc định bên phải */
+            text-align: right;
         }
         .result {
             margin-top: 20px;
@@ -78,55 +81,55 @@
     <h2><i class="fas fa-car car-icon"></i> Chi Phí Nuôi Xe | hoangtuan.net</h2>
     <div class="input-group">
         <label for="giaXang">Giá xăng (đ/l):</label>
-        <input type="number" id="giaXang" value="20000">
+        <input type="number" id="giaXang"  value="20000">
     </div>
     <div class="input-group">
         <label for="soKm">Số KM hàng tháng:</label>
-        <input type="number" id="soKm" value="1000">
+        <input type="number" id="soKm"  value="1000">
     </div>
     <div class="input-group">
         <label for="dinhMuc">Định mức xăng (l/100km):</label>
-        <input type="number" id="dinhMuc" value="8">
+        <input type="number" id="dinhMuc"  value="8">
     </div>
     <div class="input-group">
         <label for="phiDuongBo">Phí sử dụng đường bộ (01 năm):</label>
-        <input type="number" id="phiDuongBo" value="1560000">
+        <input type="number" id="phiDuongBo"  value="1560000">
     </div>
     <div class="input-group">
         <label for="baoHiem">Bảo hiểm trách nhiệm dân sự (01 năm):</label>
-        <input type="number" id="baoHiem" value="437000">
+        <input type="number" id="baoHiem"  value="437000">
     </div>
     <div class="input-group">
         <label for="baoHiemtv">Bảo hiểm thân vỏ (01 năm):</label>
-        <input type="number" id="baoHiemtv" value="0">
+        <input type="number" id="baoHiemtv"  value="0">
     </div>
     <div class="input-group">
         <label for="phiDangKiem">Phí đăng kiểm (01 năm):</label>
-        <input type="number" id="phiDangKiem" value="340000">
+        <input type="number" id="phiDangKiem"  value="340000">
     </div>
     <div class="input-group">
         <label for="phiBaoDuong">Phí bảo dưỡng, thay dầu (mỗi 5000Km):</label>
-        <input type="number" id="phiBaoDuong" value="500000">
+        <input type="number" id="phiBaoDuong"  value="500000">
     </div>
     <div class="input-group">
         <label for="phiRuaXe">Phí rửa xe (hàng tháng):</label>
-        <input type="number" id="phiRuaXe" value="200000">
+        <input type="number" id="phiRuaXe"  value="200000">
     </div>
     <div class="input-group">
         <label for="phiGuiXe">Phí gửi xe (hàng tháng):</label>
-        <input type="number" id="phiGuiXe" value="0">
+        <input type="number" id="phiGuiXe"  value="0">
     </div>
     <div class="input-group">
         <label for="phiCaoToc">Phí cao tốc/ cầu đường (hàng tháng):</label>
-        <input type="number" id="phiCaoToc" value="0">
+        <input type="number" id="phiCaoToc"  value="0">
     </div>
         <div class="input-group">
         <label for="phiTraGop">Phí trả góp (hàng tháng):</label>
-        <input type="number" id="phiTraGop" value="0">
+        <input type="number" id="phiTraGop"  value="0">
     </div>
     <div class="input-group">
         <label for="phiKhac">Phí khác (hàng tháng):</label>
-        <input type="number" id="phiKhac" value="0">
+        <input type="number" id="phiKhac"  value="0">
     </div>
     <button onclick="tinhChiPhi()">Tính toán chi phí</button>
 
@@ -140,21 +143,32 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
+        // Hàm định dạng số với dấu chấm phân cách hàng nghìn
+function formatNumber(num) {
+    return new Intl.NumberFormat('vi-VN').format(num);
+}
+    // Hàm chuyển đổi chuỗi số có dấu chấm phân cách thành số
+function parseFormattedNumber(str) {
+    // Loại bỏ dấu chấm và trả về số
+    return parseInt(str.replace(/\./g, ""), 10) || 0;
+}
+
+    
      function tinhChiPhi() {
         // Lấy dữ liệu từ các input
-        const giaXang = parseFloat(document.getElementById('giaXang').value);
-        const soKm = parseFloat(document.getElementById('soKm').value);
-        const dinhMuc = parseFloat(document.getElementById('dinhMuc').value);
-        const phiDuongBo = parseFloat(document.getElementById('phiDuongBo').value);
-        const baoHiem = parseFloat(document.getElementById('baoHiem').value);
-        const baoHiemtv = parseFloat(document.getElementById('baoHiemtv').value);
-        const phiDangKiem = parseFloat(document.getElementById('phiDangKiem').value);
-        const phiBaoDuong = parseFloat(document.getElementById('phiBaoDuong').value);
-        const phiRuaXe = parseFloat(document.getElementById('phiRuaXe').value);
-        const phiGuiXe = parseFloat(document.getElementById('phiGuiXe').value);
-        const phiCaoToc = parseFloat(document.getElementById('phiCaoToc').value);
-        const phiTraGop = parseFloat(document.getElementById('phiTraGop').value);
-        const phiKhac = parseFloat(document.getElementById('phiKhac').value);
+        const giaXang = parseFormattedNumber(document.getElementById('giaXang').value);
+        const soKm = parseFormattedNumber(document.getElementById('soKm').value);
+        const dinhMuc = parseFormattedNumber(document.getElementById('dinhMuc').value);
+        const phiDuongBo = parseFormattedNumber(document.getElementById('phiDuongBo').value);
+        const baoHiem = parseFormattedNumber(document.getElementById('baoHiem').value);
+        const baoHiemtv = parseFormattedNumber(document.getElementById('baoHiemtv').value);
+        const phiDangKiem = parseFormattedNumber(document.getElementById('phiDangKiem').value);
+        const phiBaoDuong = parseFormattedNumber(document.getElementById('phiBaoDuong').value);
+        const phiRuaXe = parseFormattedNumber(document.getElementById('phiRuaXe').value);
+        const phiGuiXe = parseFormattedNumber(document.getElementById('phiGuiXe').value);
+        const phiCaoToc = parseFormattedNumber(document.getElementById('phiCaoToc').value);
+        const phiTraGop = parseFormattedNumber(document.getElementById('phiTraGop').value);
+        const phiKhac = parseFormattedNumber(document.getElementById('phiKhac').value);
 
        // Tính toán chi phí xăng hàng tháng
         const chiPhiXang = Math.round((giaXang * dinhMuc / 100) * soKm / 1000) * 1000;
@@ -174,10 +188,9 @@
             + phiKhac
         ) / 1000) * 1000;
 
-        // Hiển thị kết quả
         document.getElementById('result').innerHTML = `
-            <p>Chi phí xăng hàng tháng: ${chiPhiXang.toLocaleString()} đ</p>
-            <p>Tổng chi phí nuôi xe hàng tháng: ${tongChiPhi.toLocaleString()} đ</p>
+            <p>Chi phí xăng hàng tháng: ${formatNumber(chiPhiXang)} đ</p>
+            <p>Tổng chi phí nuôi xe hàng tháng: ${formatNumber(tongChiPhi)} đ</p>
         `;
     }
 
@@ -198,6 +211,10 @@
             link.click();
         });
     }
+        // Định dạng ban đầu cho tất cả các ô input số
+    document.querySelectorAll('.number-input').forEach(input => {
+        input.value = formatNumber(input.value);
+    });
 </script>
 
 </body>

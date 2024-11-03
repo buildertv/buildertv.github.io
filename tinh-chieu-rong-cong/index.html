@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Chiều Rộng Cổng/ Ngõ | hoangtuan.net</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="number"] {
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+    <script>
+        function calculateWidth() {
+            // Lấy giá trị từ các hộp input
+            const d = parseFloat(document.getElementById('d').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const R = parseFloat(document.getElementById('R').value);
+            const a = parseFloat(document.getElementById('a').value);
+
+            // Kiểm tra nếu các giá trị hợp lệ
+            if (isNaN(d) || isNaN(b) || isNaN(R) || isNaN(a)) {
+                alert("Vui lòng nhập đầy đủ và chính xác các giá trị.");
+                return;
+            }
+
+            // Kiểm tra nếu chiều rộng đường nhỏ hơn chiều rộng thân xe
+            if (a < b) {
+                alert("Ơ chiều rộng đường nhỏ hơn xe thì bạn bay vào à? Kk.");
+                return;
+            }
+
+            // Tính toán giá trị x theo công thức
+            const x = Math.round(
+                R - Math.sqrt(
+                    Math.pow((Math.sqrt(Math.pow(R, 2) - Math.pow(d / 2, 2)) - b), 2) - Math.pow((R - a), 2)
+                )
+            );
+
+            // Hiển thị kết quả
+            document.getElementById('result').innerHTML = `Chiều rộng cổng/ngõ tối thiểu là: ${x} mm (${(x / 1000).toFixed(2)} m)`;
+        }
+    </script>
+</head>
+<body>
+    <h1>Tính Chiều Rộng Cổng/ Ngõ | hoangtuan.net</h1>
+
+    <label for="d">d - Chiều dài xe (mm):</label>
+    <input type="number" id="d" placeholder="Nhập chiều dài xe">
+
+    <label for="b">b - Chiều rộng xe (mm):</label>
+    <input type="number" id="b" placeholder="Nhập chiều rộng xe">
+
+    <label for="R">R - Bán kính quay đầu thân xe (mm):</label>
+    <input type="number" id="R" placeholder="Nhập bán kính quay đầu">
+
+    <label for="a">a - Bề rộng đường (mm):</label>
+    <input type="number" id="a" placeholder="Nhập bề rộng đường">
+
+    <button onclick="calculateWidth()">Tính toán</button>
+
+    <div id="result" class="result"></div>
+
+    <p><a href="https://www.youtube.com/watch?v=bLBcGqeo2t8" target="_blank">Video cách xây dựng công thức (link Youtube)</a></p>
+
+    <!-- Video YouTube nhúng -->
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/bLBcGqeo2t8" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</body>
+</html>

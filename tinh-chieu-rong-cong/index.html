@@ -37,6 +37,14 @@
             margin-top: 20px;
             font-weight: bold;
         }
+        .illustration {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .illustration img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
     <script>
         function calculateWidth() {
@@ -66,7 +74,7 @@
             );
 
             // Hiển thị kết quả
-            document.getElementById('result').innerHTML = `Chiều rộng cổng/ngõ tối thiểu là: ${x} mm (${(x / 1000).toFixed(2)} m)`;
+            document.getElementById('result').innerHTML = `Chiều rộng cổng/ngõ tối thiểu là: ${x} mm (${(x / 1000).toFixed(2)} m - nếu có điều kiện hãy mở rộng thêm 20-30cm)`;
         }
     </script>
 </head>
@@ -89,9 +97,13 @@
 
     <div id="result" class="result"></div>
 
+    <div class="illustration">
+        <img src="BuilderTV 71-100_20241103_184351_0000.jpg" alt="Illustration of vehicle turning clearance">
+    </div>
+
     <p><a href="https://www.youtube.com/watch?v=g5gLkA9AKvc" target="_blank">Video cách xây dựng công thức (link Youtube)</a></p>
 
-    <!-- Video YouTube nhúng -->
-      <iframe width="560" height="315" src="https://www.youtube.com/embed/g5gLkA9AKvc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    <!-- Video YouTube nhúng tự động phát -->
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/g5gLkA9AKvc?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 </body>
 </html>

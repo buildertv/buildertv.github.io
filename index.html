@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>hoangtuan.net - Trang chủ</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" >
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <style>
         body {
             background-color: #1a222c;
@@ -34,7 +34,7 @@
             border: 1px solid #ffffff;
             border-radius: 5px;
             transition: background-color 0.3s;
-            font-size: 16px; /* Điều chỉnh cỡ chữ ở đây */
+            font-size: 16px;
         }
         .buttons a:hover, .dropdown .dropbtn:hover {
             background-color: #3a3e45;
@@ -56,9 +56,6 @@
             padding: 12px 16px;
             text-decoration: none;
             display: block;
-            border-bottom: 1px solid #ffffff;
-        }
-        .dropdown-content a:last-child {
             border-bottom: 1px solid #ffffff;
         }
         .dropdown-content a:hover {
@@ -88,21 +85,27 @@
             color: #000000;
             border: 1px solid #000000;
         }
-        .light-theme .buttons a:hover, .light-theme .dropdown .dropbtn:hover {
-            background-color: #dddddd;
-        }
         .light-theme .dropdown-content {
             background-color: #f1f1f1;
         }
-        .light-theme .dropdown-content a {
-            color: #000000;
-            border-bottom: 1px solid #000000;
+        .countdown {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
         }
-        .light-theme .dropdown-content a:hover {
-            background-color: #dddddd;
+        .countdown span {
+            display: block;
         }
-        .light-theme .theme-toggle {
-            color: #000000;
+        #days, #hours, #minutes, #seconds {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        .label {
+            font-size: 1em;
+            color: gray;
         }
     </style>
 </head>
@@ -121,17 +124,28 @@
                     <a href="https://t.me/xemtuoi_bot"><i class="fa-brands fa-telegram"></i> Tiện ích Xem tuổi kết hôn</a>
                     <a href="https://hoangtuan.net/rut-gon-link/"><i class="fas fa-link"></i> Tiện ích rút gọn link</a>
                     <a href="https://hoangtuan.net/gdrivetool/"><i class="fas fa-cloud"></i> Tiện ích Xử lý link Google Drive</a>
-                   <a href="https://hoangtuan.net/phi-nuoi-xe/"><i class="fas fa-car"></i> Tính chi phí nuôi xe</a>
-
- <a href="https://hoangtuan.net/tinh-chieu-rong-cong/"><i class="fas fa-car"></i> Tính chiều rộng cổng Ôtô</a>
-    </div>
+                    <a href="https://hoangtuan.net/phi-nuoi-xe/"><i class="fas fa-car"></i> Tính chi phí nuôi xe</a>
+                    <a href="https://hoangtuan.net/tinh-chieu-rong-cong/"><i class="fas fa-car"></i> Tính chiều rộng cổng Ôtô</a>
                 </div>
+            </div>
             <a href="https://blog.hoangtuan.net"><i class="fas fa-blog"></i> Blog</a>
             <a href="https://www.youtube.com/@BuilderTV?sub_confirmation=1"><i class="fab fa-youtube"></i> Youtube</a>
             <a href="mailto:ad@hoangtuan.net"><i class="fas fa-envelope"></i> Email</a>
             <a href="https://zalo.me/buildertv"><i class="fas fa-phone"></i> Zalo</a>
         </div>
+
+        <div class="countdown">
+            <span id="days">00</span>
+            <span id="hours">00</span>
+            <span id="minutes">00</span>
+            <span id="seconds">00</span>
+            <span class="label">Ngày</span>
+            <span class="label">Giờ</span>
+            <span class="label">Phút</span>
+            <span class="label">Giây</span>
+        </div>
     </div>
+
     <script>
         function toggleTheme() {
             const body = document.body;
@@ -145,6 +159,29 @@
                 icon.classList.add('fa-sun');
             }
         }
+
+        function countdown() {
+            const targetDate = new Date("January 29, 2025 00:00:00").getTime();
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            if (distance > 0) {
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("days").textContent = String(days).padStart(2, '0');
+                document.getElementById("hours").textContent = String(hours).padStart(2, '0');
+                document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
+                document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
+            } else {
+                document.querySelector(".countdown").innerHTML = "Đã đến thời điểm 0h ngày 29/1/2025!";
+                clearInterval(interval);
+            }
+        }
+
+        const interval = setInterval(countdown, 1000);
     </script>
 </body>
 </html>

@@ -176,7 +176,7 @@
                 document.getElementById("minutes").textContent = String(minutes).padStart(2, '0');
                 document.getElementById("seconds").textContent = String(seconds).padStart(2, '0');
             } else {
-                document.querySelector(".countdown").innerHTML = "Đã đến thời điểm 0h ngày 29/1/2025!";
+                document.querySelector(".countdown").innerHTML = "";
                 clearInterval(interval);
             }
         }

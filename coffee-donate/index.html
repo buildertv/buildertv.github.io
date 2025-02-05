@@ -90,12 +90,32 @@
         </footer>
 
         <div class="stats">
-            <h2>Thống kê các lượt ủng hộ:</h2>
-            <ul>
-                <li>Ngày 20/11/2024: 50 000 VNĐ - Cảm ơn bạn LE NGUYEN KHANG</li>
-                <li>Ngày 05/02/2025: 100 000 VNĐ - Cảm ơn bạn TRAN HIEU ANH</li>
-                <!-- Thêm các lượt ủng hộ khác tại đây -->
-            </ul>
+<h2>Thống kê các lượt ủng hộ:</h2>
+<ul id="donation-list">
+    <li>Ngày 20/11/2024: 50 000 VNĐ - Cảm ơn bạn LE NGUYEN KHANG</li>
+    <li>Ngày 05/02/2025: 100 000 VNĐ - Cảm ơn bạn TRAN HIEU ANH</li>
+    <!-- Thêm các lượt ủng hộ khác tại đây -->
+</ul>
+<p id="total-donation"></p>
+
+<script>
+    // Lấy danh sách các thẻ <li> trong <ul>
+    const donationList = document.querySelectorAll('#donation-list li');
+    let totalDonation = 0;
+
+    // Duyệt qua từng thẻ <li> để lấy số tiền
+    donationList.forEach(item => {
+        const match = item.textContent.match(/: (\d+(?:\s\d{3})*) VNĐ/); // Lấy số tiền sau dấu ":" và trước "VNĐ"
+        if (match) {
+            const amount = parseInt(match[1].replace(/\s/g, '')); // Loại bỏ khoảng trắng và chuyển sang số
+            totalDonation += amount;
+        }
+    });
+
+    // Hiển thị tổng số tiền
+    document.getElementById('total-donation').textContent = `Tổng số tiền đã ủng hộ: ${totalDonation.toLocaleString('vi-VN')} VNĐ`;
+</script>
+
         </div>
     </div>
 </body>

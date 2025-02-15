@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra cứu ngày hết hạn key Autodesk</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 50px;
+      text-align: center;
+    }
+    form {
+      max-width: 400px;
+      margin: auto;
+    }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      margin-top: 20px;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: blue; /* Màu xanh cho email */
+    }
+    .date {
+      font-weight: bold;
+      color: red; /* Màu đỏ cho ngày hết hạn */
+    }
+  </style>
+</head>
+<body>
+  <h2>Tra cứu ngày hết hạn key Autodesk</h2>
+  <form id="emailForm">
+    <label for="email">Nhập email đã đăng ký:</label>
+    <input type="email" id="email" placeholder="example@example.com" required>
+    <button type="submit">Tra cứu</button>
+  </form>
+  <div class="result" id="result"></div>
+
+  <script>
+    const encodedApi = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6TExrLUV5RkN4QVBYYzM4a3Z3UDhKa3ZTQnJrN2FKeFNRM3RId0NYVi0tdk5VSHZCS0VvbXlIbldBeUU5YnZnX2gvZXhlYw=="; 
+    const API_URL = atob(encodedApi); // 
+
+
+    document.getElementById('emailForm').addEventListener('submit', async (event) => {
+      event.preventDefault(); // Ngăn form gửi lại trang
+      const email = document.getElementById('email').value;
+      const resultDiv = document.getElementById('result');
+      resultDiv.textContent = 'Đang kiểm tra...';
+
+      try {
+        const response = await fetch(`${API_URL}?email=${encodeURIComponent(email)}`);
+        const result = await response.text();
+
+        if (result.includes("Không tìm thấy email")) {
+          resultDiv.textContent = result;
+        } else {
+          const parts = result.match(/Ngày hết hạn của email (.+) là: (\d{2}\/\d{2}\/\d{4})/);
+          if (parts) {
+            resultDiv.innerHTML = `
+              Ngày hết hạn của email 
+              <span class="highlight">${parts[1]}</span> là: 
+              <span class="date">${parts[2]}</span>`;
+          } else {
+            resultDiv.textContent = result;
+          }
+        }
+      } catch (error) {
+        resultDiv.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>

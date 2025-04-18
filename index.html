@@ -131,18 +131,19 @@
     right: 20px;
     width: 320px;
     height: 450px;
-    background: #2a2e35; /* Màu nền tối mặc định */
+    background: #2a2e35; /* Màu nền tối */
     border: 1px solid #ffffff33;
-    border-radius: 10px;
+    border-radius: 16px; /* Bo tròn cả bốn góc */
     display: none;
     flex-direction: column;
     z-index: 999;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s, color 0.3s;
+    overflow: hidden; /* Ngăn phần tử con làm hỏng bo góc */
 }
 
 .light-theme #chat-box {
-    background: #ffffff; /* Nền sáng khi ở chủ đề sáng */
+    background: #ffffff;
     border: 1px solid #ccc;
 }
 
@@ -152,11 +153,11 @@
     overflow-y: auto;
     font-family: Arial, sans-serif;
     font-size: 15px;
-    color: #ffffff; /* Văn bản trắng cho chủ đề tối */
+    color: #ffffff;
 }
 
 .light-theme #chat-messages {
-    color: #333333; /* Văn bản đen cho chủ đề sáng */
+    color: #333333;
 }
 
 .bot, .user {
@@ -169,30 +170,33 @@
 }
 
 .bot {
-    background: #3a3e45; /* Màu xám đậm hơn cho bot */
+    background: #3a3e45;
     color: #ffffff;
     align-self: flex-start;
 }
 
 .light-theme .bot {
-    background: #e0e0e0; /* Xám nhạt hơn cho chủ đề sáng */
+    background: #e0e0e0;
     color: #333333;
 }
 
 .user {
-    background: #007bff; /* Xanh đậm cho người dùng */
+    background: #007bff;
     color: #ffffff;
     align-self: flex-end;
 }
 
 .light-theme .user {
-    background: #0056b3; /* Xanh đậm hơn cho chủ đề sáng */
+    background: #0056b3;
 }
 
 #chat-input {
     display: flex;
     border-top: 1px solid #ffffff33;
     background: #2a2e35;
+    border-bottom-left-radius: 16px; /* Đồng bộ bo góc với #chat-box */
+    border-bottom-right-radius: 16px;
+    overflow: hidden; /* Ngăn input/button làm hỏng bo góc */
 }
 
 .light-theme #chat-input {
@@ -324,40 +328,31 @@ chatToggle.onclick = () => {
 async function sendMessage() {
     const message = chatInput.value.trim();
     if (!message) return;
-    if (message.length > 500) {
-        appendMessage('Tin nhắn quá dài! Vui lòng gửi dưới 500 ký tự.', 'bot');
-        return;
-    }
 
     appendMessage(message, 'user');
     chatInput.value = '';
     appendMessage('Đang xử lý...', 'bot');
 
     try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzniLTPgYDlFSG_A278LiTPqoUGUttb76UAmg4e05-KitpuWr_t27BGHIEha3y1woO2OQ/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxKd2WlFvGMWr0hIhiwFMfF87TE-SFCOJQaFWZI0T6sWqf3Z59DJBxGJeLGlhgU_oLy7Q/exec', {
             method: 'POST',
             body: JSON.stringify({ message }),
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            mode: 'cors'
         });
 
-        // Xóa thông báo "Đang xử lý..."
         chatMessages.removeChild(chatMessages.lastChild);
 
         if (!response.ok) {
-            throw new Error(`Lỗi HTTP: ${response.status} - ${response.statusText}`);
+            throw new Error(`Lỗi ${response.status}`);
         }
 
         const data = await response.json();
-        if (data.reply) {
-            appendMessage(data.reply, 'bot');
-        } else {
-            appendMessage('Không nhận được phản hồi từ bot.', 'bot');
-        }
-
+        appendMessage(data.reply || 'Không có phản hồi từ bot', 'bot');
     } catch (error) {
-        console.error("Lỗi khi gửi tin nhắn:", error);
-        chatMessages.removeChild(chatMessages.lastChild); // Xóa "Đang xử lý..."
-        appendMessage(`Lỗi: ${error.message}. Vui lòng thử lại sau.`, 'bot');
+        console.error("Lỗi:", error);
+        chatMessages.removeChild(chatMessages.lastChild);
+        appendMessage('Chatbot đang bảo trì. Vui lòng liên hệ qua Zalo: https://zalo.me/buildertv', 'bot');
     } finally {
         setTimeout(() => {
             chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -382,7 +377,7 @@ chatInput.addEventListener('keypress', function (event) {
 // Kiểm tra API khi mở chatbot (tùy chọn)
 async function checkApiStatus() {
     try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzniLTPgYDlFSG_A278LiTPqoUGUttb76UAmg4e05-KitpuWr_t27BGHIEha3y1woO2OQ/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxKd2WlFvGMWr0hIhiwFMfF87TE-SFCOJQaFWZI0T6sWqf3Z59DJBxGJeLGlhgU_oLy7Q/exec', {
             method: 'GET'
         });
         if (!response.ok) {

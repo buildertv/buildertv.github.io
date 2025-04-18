@@ -257,7 +257,7 @@
     font-style: italic;
     font-size: 14px;
     align-self: flex-start;
-    animation: blink 1s steps(5, start) infinite;
+    animation: blink 3s steps(5, start) infinite;
     max-width: 60%;
 }
 
@@ -353,7 +353,7 @@
         //appendMessage('Đang soạn tin...', 'bot');
 		// Thêm độ trễ 1 giây trước khi hiển thị "Đang soạn tin..."
 		setTimeout(() => {
-			appendMessage('Đang soạn tin...', 'bot typing-indicator');
+			appendMessage('...', 'bot typing-indicator');
 		}, 500);
 
         try {

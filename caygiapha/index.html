@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Family Tree</title>
+    <!-- Nhúng thư viện FamilyTree.js từ CDN -->
+    <script src="FamilyTree0.js"></script>
+    <style>
+        /* Loại bỏ margin và padding mặc định của body */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Ngăn thanh cuộn xuất hiện */
+        }
+
+        /* Đảm bảo #tree chiếm toàn bộ màn hình */
+        #tree {
+            width: 100vw; /* 100% chiều rộng viewport */
+            height: 100vh; /* 100% chiều cao viewport */
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Vùng hiển thị cây gia phả -->
+    <div id="tree"></div>
+
+    <!-- Nhúng mã JavaScript của bạn -->
+    <script src="familytree.js"></script>
+</body>
+</html>

@@ -134,17 +134,17 @@ var family = new FamilyTree('#tree', {
         },
         generateElementsFromFields: false,
         elements: [
-            { type: 'textbox', label: 'Full Name', binding: 'name' },
+            { type: 'textbox', label: 'Họ tên', binding: 'name' },
             [
-                { type: 'date', label: 'Birth Date', binding: 'birthDate' },
-                { type: 'date', label: 'Death Date', binding: 'deathDate' }
+                { type: 'date', label: 'Ngày sinh', binding: 'birthDate' },
+                { type: 'date', label: 'Ngày mất', binding: 'deathDate' }
             ],
             { type: 'textbox', label: 'Phone', binding: 'phone' },
             [
-                { type: 'select', options: countries, label: 'Country', binding: 'country' },
-                { type: 'textbox', label: 'City', binding: 'city' },
+                { type: 'select', options: countries, label: 'Quốc gia', binding: 'country' },
+                { type: 'textbox', label: 'Tỉnh/ TP', binding: 'city' },
             ],
-            { type: 'textbox', label: 'Address', binding: 'address' },
+            { type: 'textbox', label: 'Địa chỉ', binding: 'address' },
             { type: 'textbox', label: 'Photo Url', binding: 'photo', btn: 'Upload' },
         ]
     },

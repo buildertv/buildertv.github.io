@@ -88,26 +88,7 @@ var family = new FamilyTree('#tree', {
         "country": 10
     },
     searchDisplayField: "name",
-    menu: {
-        saveAsPdfText: {
-            icon: FamilyTree.icon.pdf(24, 24, '#aeaeae'),
-            text: "Save As PDF (Text)",
-            onClick: prevewText
-        },
-        saveAsPdfPhotos: {
-            icon: FamilyTree.icon.pdf(24, 24, '#aeaeae'),
-            text: "Save As PDF (Photos)",
-            onClick: prevewPhotos
-        },
-        png: { text: "Export PNG" },
-        svg: { text: "Export SVG" },
-        xml: { text: "Export XML" },
-        csv: { text: "Export CSV" },
-        json: { text: "Export JSON" },
-        importJSON: {text: "Import JSON", icon: FamilyTree.icon.json(24,24,'red'), onClick: importJSONHandler},
-        importXML: {text: "Import XML", icon: FamilyTree.icon.xml(24,24,'red'), onClick: importXMLHandler},
-        importCSV: {text: "Import CSV", icon: FamilyTree.icon.csv(24,24,'red'), onClick: importCSVHandler},
-    },
+    // đã bỏ menu
     editForm: {
         readOnly: true,
         titleBinding: "name",

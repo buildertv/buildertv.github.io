@@ -126,7 +126,8 @@
             // Check API
             try {
                 const response = await fetch(`https://script.google.com/macros/s/AKfycbyTJFoG62YgVfvfIRUerNdXvtbvGsXf84re6eXWwksbxeAJYblp6ikmwF8jcbmgqUsu/exec?id=${sheetId}`);
-                if (response.ok) {
+                const result = await response.json();
+                if (result.status === 'success' && Array.isArray(result.data) && result.data.length > 0) {
                     const baseUrl = theme === 'dark' 
                         ? `https://hoangtuan.net/caygiapha/dark.html?id=${sheetId}`
                         : `https://hoangtuan.net/caygiapha/light.html?id=${sheetId}`;

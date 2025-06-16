@@ -136,7 +136,7 @@
                         ? `https://hoangtuan.net/caygiapha/dark.html?id=${sheetId}`
                         : `https://hoangtuan.net/caygiapha/light.html?id=${sheetId}`;
                     console.log('Opening URL:', baseUrl); // Kiểm tra URL
-                    window.open(baseUrl, '_blank');
+                    window.location.href = baseUrl;
                 } else {
                     errorMessage.style.display = 'block';
                 }

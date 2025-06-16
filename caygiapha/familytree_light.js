@@ -88,26 +88,7 @@ var family = new FamilyTree('#tree', {
         "country": 10
     },
     searchDisplayField: "name",
-    menu: {
-        saveAsPdfText: {
-            icon: FamilyTree.icon.pdf(24, 24, '#aeaeae'),
-            text: "Save As PDF (Text)",
-            onClick: prevewText
-        },
-        saveAsPdfPhotos: {
-            icon: FamilyTree.icon.pdf(24, 24, '#aeaeae'),
-            text: "Save As PDF (Photos)",
-            onClick: prevewPhotos
-        },
-        png: { text: "Export PNG" },
-        svg: { text: "Export SVG" },
-        xml: { text: "Export XML" },
-        csv: { text: "Export CSV" },
-        json: { text: "Export JSON" },
-        importJSON: {text: "Import JSON", icon: FamilyTree.icon.json(24,24,'red'), onClick: importJSONHandler},
-        importXML: {text: "Import XML", icon: FamilyTree.icon.xml(24,24,'red'), onClick: importXMLHandler},
-        importCSV: {text: "Import CSV", icon: FamilyTree.icon.csv(24,24,'red'), onClick: importCSVHandler},
-    },
+    // đã bỏ menu
     editForm: {
         readOnly: true,
         titleBinding: "name",
@@ -200,15 +181,20 @@ family.on('redraw', function () {
 
 family.on('field', function (sender, args) {
     if (args.name == 'photo') {
-        var top = `${FamilyTree.templates[args.node.templateName].start}px`;
-        if (photoState && photoState[args.node.id]) {
-            top = photoState[args.node.id];
+        // Kiểm tra nếu là thiết bị mobile (dựa trên width)
+        if (window.innerWidth < 768) {
+            args.value = ''; // Không hiển thị ảnh trên mobile
+        } else {
+            var top = `${FamilyTree.templates[args.node.templateName].start}px`;
+            if (photoState && photoState[args.node.id]) {
+                top = photoState[args.node.id];
+            }
+            args.value = `<foreignobject class="photo-foreignobject" x="0" y="0" width="${args.node.w}" height="${args.node.h}">
+                            <div style="width: 100%; height: 100%; overflow: hidden; position: relative;">
+                                <img data-img-node-id="${args.node.id}" style="position: absolute; top: ${top}; width: 100%; height: auto; object-fit: contain;" class="photo" src="${args.data.photo || 'path/to/placeholder.jpg'}" />
+                            </div>
+                        </foreignobject>`;
         }
-        args.value = `<foreignobject class="photo-foreignobject" x="0" y="0" width="${args.node.w}" height="${args.node.h}">
-                        <div style="width: 100%; height: 100%; overflow: hidden;">
-                            <img data-img-node-id="${args.node.id}" style="position: absolute; top: ${top}; width: 100%; height: auto; object-fit: cover;" class="photo" src="${args.data.photo}" />
-                        </div>
-                    </foreignobject>`;
     }
     else if (args.name == 'birthDate') {
         args.value = `${args.data.birthDate}`;

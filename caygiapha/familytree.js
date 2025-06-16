@@ -181,20 +181,20 @@ family.on('redraw', function () {
 
 family.on('field', function (sender, args) {
     if (args.name == 'photo') {
-        var top = `${FamilyTree.templates[args.node.templateName].start}px`;
-        if (photoState && photoState[args.node.id]) {
-            top = photoState[args.node.id];
+        // Kiểm tra nếu là thiết bị mobile (dựa trên width)
+        if (window.innerWidth < 768) {
+            args.value = ''; // Không hiển thị ảnh trên mobile
+        } else {
+            var top = `${FamilyTree.templates[args.node.templateName].start}px`;
+            if (photoState && photoState[args.node.id]) {
+                top = photoState[args.node.id];
+            }
+            args.value = `<foreignobject class="photo-foreignobject" x="0" y="0" width="${args.node.w}" height="${args.node.h}">
+                            <div style="width: 100%; height: 100%; overflow: hidden; position: relative;">
+                                <img data-img-node-id="${args.node.id}" style="position: absolute; top: ${top}; width: 100%; height: auto; object-fit: contain;" class="photo" src="${args.data.photo || 'path/to/placeholder.jpg'}" />
+                            </div>
+                        </foreignobject>`;
         }
-        // Điều chỉnh kích thước dựa trên màn hình
-        var scale = window.innerWidth < 768 ? 0.7 : 1; // Giảm kích thước trên mobile
-        var width = args.node.w * scale;
-        var height = args.node.h * scale;
-
-        args.value = `<foreignobject class="photo-foreignobject" x="0" y="0" width="${width}" height="${height}">
-                        <div style="width: 100%; height: 100%; overflow: hidden; position: relative;">
-                            <img data-img-node-id="${args.node.id}" style="position: absolute; top: ${top}; width: 100%; height: auto; object-fit: contain; max-width: 100%; max-height: 100%;" class="photo" src="${args.data.photo || 'path/to/placeholder.jpg'}" />
-                        </div>
-                    </foreignobject>`;
     }
     else if (args.name == 'birthDate') {
         args.value = `${args.data.birthDate}`;

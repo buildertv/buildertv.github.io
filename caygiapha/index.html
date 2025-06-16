@@ -1,33 +1,143 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Family Tree</title>
-    <!-- Nhúng thư viện FamilyTree.js từ CDN -->
-    <script src="./FamilyTree0.js"></script>
+    <title>Vẽ Phả Đồ</title>
     <style>
-        /* Loại bỏ margin và padding mặc định của body */
         body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            padding: 0;
-            overflow: hidden; /* Ngăn thanh cuộn xuất hiện */
         }
-
-        /* Đảm bảo #tree chiếm toàn bộ màn hình */
-        #tree {
-            width: 100vw; /* 100% chiều rộng viewport */
-            height: 100vh; /* 100% chiều cao viewport */
-            margin: 0;
-            padding: 0;
+        .container {
+            background-color: #2c2c2c;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #00d4ff;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background-color: #3a3a3a;
+            color: #ffffff;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box;
+        }
+        input[type="text"]::placeholder {
+            color: #888;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .btn-dark {
+            background-color: #6200ea;
+            color: #ffffff;
+        }
+        .btn-dark:hover {
+            background-color: #7c4dff;
+            transform: translateY(-2px);
+        }
+        .btn-light {
+            background-color: #00d4ff;
+            color: #1a1a1a;
+        }
+        .btn-light:hover {
+            background-color: #00b0cc;
+            transform: translateY(-2px);
+        }
+        .btn-guide {
+            background-color: #ff4444;
+            color: #ffffff;
+        }
+        .btn-guide:hover {
+            background-color: #cc0000;
+            transform: translateY(-2px);
+        }
+        #error-message {
+            color: #ff4444;
+            margin-top: 20px;
+            font-size: 14px;
+            display: none;
+        }
+        a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <!-- Vùng hiển thị cây gia phả -->
-    <div id="tree"></div>
+    <div class="container">
+        <h1>Vẽ Phả Đồ Gia Tộc</h1>
+        <input type="text" id="sheetLink" placeholder="Dán link Google Sheet tại đây">
+        <div class="button-group">
+            <button class="btn-dark" onclick="generateLink('dark')">Vẽ Phả Đồ (Chủ đề Tối)</button>
+            <button class="btn-light" onclick="generateLink('light')">Vẽ Phả Đồ (Chủ đề Sáng)</button>
+            <button class="btn-guide" onclick="window.open('https://www.youtube.com/watch?v=your_video_id', '_blank')">Video Hướng Dẫn</button>
+        </div>
+        <p id="error-message">Bạn chưa đăng ký hoặc file Google Sheet chưa mở quyền truy cập (share). Vui lòng liên hệ <a href="https://zalo.me/0886982166" target="_blank">Zalo 0886982166</a> để được hỗ trợ.</p>
+    </div>
 
-    <!-- Nhúng mã JavaScript của bạn -->
-    <script src="./familytree.js"></script>
+    <script>
+        async function generateLink(theme) {
+            const sheetLink = document.getElementById('sheetLink').value;
+            const errorMessage = document.getElementById('error-message');
+            errorMessage.style.display = 'none';
+
+            // Extract Sheet ID from Google Sheet URL
+            const sheetIdMatch = sheetLink.match(/\/d\/([a-zA-Z0-9-_]+)/);
+            if (!sheetIdMatch) {
+                errorMessage.textContent = 'Link Google Sheet không hợp lệ!';
+                errorMessage.style.display = 'block';
+                return;
+            }
+            const sheetId = sheetIdMatch[1];
+
+            // Check API
+            try {
+                const response = await fetch(`http://abc.aaa?id=${sheetId}`);
+                if (response.ok) {
+                    const baseUrl = theme === 'dark' 
+                        ? `https://hoangtuan.net/caygiapha/dark.html?id=${sheetId}`
+                        : `https://hoangtuan.net/caygiapha/light.html?id=${sheetId}`;
+                    window.open(baseUrl, '_blank');
+                } else {
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.style.display = 'block';
+            }
+        }
+    </script>
 </body>
 </html>

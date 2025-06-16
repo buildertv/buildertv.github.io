@@ -205,8 +205,10 @@ family.on('field', function (sender, args) {
             top = photoState[args.node.id];
         }
         args.value = `<foreignobject class="photo-foreignobject" x="0" y="0" width="${args.node.w}" height="${args.node.h}">
-                            <img data-img-node-id="${args.node.id}" style="top: ${top}" class="photo" src="${args.data.photo}" />
-                        </foreignobject>`;
+                        <div style="width: 100%; height: 100%; overflow: hidden;">
+                            <img data-img-node-id="${args.node.id}" style="position: absolute; top: ${top}; width: 100%; height: auto; object-fit: cover;" class="photo" src="${args.data.photo}" />
+                        </div>
+                    </foreignobject>`;
     }
     else if (args.name == 'birthDate') {
         args.value = `${args.data.birthDate}`;

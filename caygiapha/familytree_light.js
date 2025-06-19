@@ -66,7 +66,7 @@ for (var i = 0; i < countries.length; i++) {
 }
 var photoState;
 var family = new FamilyTree('#tree', {
-    mouseScrool: FamilyTree.action.none,
+    mouseScrool: FamilyTree.action.ctrlZoom,
     nodeCircleMenu: true,
     enableSearch: true,
 	mode: 'light',

@@ -1,0 +1,310 @@
+<!-- Index.html -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiện ích nén ảnh - hoangtuan.net</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <?!= include('CSS'); ?>
+</head>
+<body>
+    <!-- Enhanced Animated Background -->
+    <div class="animated-bg">
+        <div class="bg-gradient"></div>
+        <div class="floating-orbs">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+            <div class="orb orb-4"></div>
+            <div class="orb orb-5"></div>
+            <div class="orb orb-6"></div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-compress-arrows-alt"></i>
+                    <span>Squeezo Pro</span>
+                </div>
+                <div class="brand-tag">
+                    <span>Được phát triển bởi <a href="https://hoangtuan.net" target="_blank" rel="noopener noreferrer">hoangtuan.net</a></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar Controls - Left -->
+        <aside class="sidebar-left" id="sidebar">
+            <div class="sidebar-content">
+                <!-- Upload Section -->
+                <div class="upload-section">
+                  <div class="upload-area" id="uploadArea">
+                      <div class="upload-icon">
+                          <i class="fas fa-images"></i>
+                      </div>
+                      <div class="upload-text">
+                          <span>Chọn ảnh</span>
+                          <small>có thể chọn nhiều ảnh</small>
+                      </div>
+                      <input type="file" id="fileInput" accept="image/*" multiple hidden>
+                      
+                      <!-- Thêm nút tải ảnh từ URL -->
+                      <div class="url-upload-button">
+                          <button id="urlUploadBtn" class="url-btn">
+                              <i class="fas fa-link"></i> Thêm ảnh từ URL
+                          </button>
+                      </div>
+                  </div>
+                </div>
+
+                <!-- Settings Panel -->
+                <div class="settings-panel" id="settingsPanel" style="display: none;">
+                    <div class="settings-group">
+                        <label class="setting-label">
+                            <span>Chất lượng</span>
+                            <span class="setting-value" id="qualityDisplay">75%</span>
+                        </label>
+                        <div class="slider-container">
+                            <input type="range" id="qualitySlider" min="1" max="100" value="75" class="slider">
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <label class="setting-label">Định dạng</label>
+                        <select id="formatSelect" class="format-select">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="webp">WebP</option>
+                        </select>
+                    </div>
+
+                    <!-- Batch Info -->
+                    <div class="batch-info" id="batchInfo" style="display: none;">
+                        <div class="info-header">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Thông tin batch</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Số ảnh:</span>
+                            <span class="info-value" id="imageCount">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Dung lượng gốc:</span>
+                            <span class="info-value" id="totalOriginalSize">0 KB</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Sau nén:</span>
+                            <span class="info-value" id="totalCompressedSize">0 KB</span>
+                        </div>
+                        <div class="info-item highlight">
+                            <span class="info-label">Tiết kiệm:</span>
+                            <span class="info-value" id="totalSaved">0 KB (0%)</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button id="downloadAllBtn" class="btn btn-primary" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            <span>Tải tất cả</span>
+                        </button>
+                        <button id="clearAllBtn" class="btn btn-secondary" style="display: none;">
+                            <i class="fas fa-trash"></i>
+                            <span>Xóa tất cả</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Viewer -->
+        <main class="main-viewer">
+            <!-- Welcome Screen -->
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-content">
+                    <div class="welcome-icon">
+                        <i class="fas fa-images"></i>
+                    </div>
+                    <h2>Chào mừng đến với Squeezo Pro</h2>
+                    <p>Nén nhiều hình ảnh cùng lúc với chất lượng cao</p>
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-layer-group"></i>
+                            <span>Nén batch</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-eye"></i>
+                            <span>Xem trước realtime</span>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Xử lý nhanh</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comparison View - Two Images Side by Side -->
+            <div class="comparison-view" id="comparisonView">
+                <div class="comparison-header">
+                    <h3><i class="fas fa-balance-scale"></i> So sánh ảnh</h3>
+                </div>
+                
+                <!-- Image Compare Container - 2 ảnh cạnh nhau -->
+                <div class="comparison-container">
+                    <!-- Original Image -->
+                    <div class="image-box">
+                        <div class="image-box-title original-title">
+                            <i class="fas fa-image"></i> Ảnh gốc
+                        </div>
+                        <img id="originalImage" class="image-display" alt="Ảnh gốc">
+                    </div>
+                    
+                    <!-- Compressed Image -->
+                    <div class="image-box">
+                        <div class="image-box-title compressed-title">
+                            <i class="fas fa-compress"></i> Sau nén
+                        </div>
+                        <img id="compressedImage" class="image-display" alt="Ảnh sau nén">
+                    </div>
+                </div>
+
+                <!-- Processing Progress -->
+                <div class="processing-progress" id="processingProgress" style="display: none;">
+                    <div class="progress-header">
+                        <i class="fas fa-cog fa-spin"></i>
+                        <span>Đang xử lý...</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">0 / 0</div>
+                </div>
+                
+                <!-- Thumbnails Section -->
+                <div class="thumbnails-section" id="thumbnailsSection" style="display: none;">
+                    <div class="thumbnails-header">
+                        <h4><i class="fas fa-th"></i> Danh sách hình ảnh (<span id="thumbnailCount">0</span>)</h4>
+                        <div class="thumbnails-controls">
+                            <button id="selectAllBtn" class="control-btn">
+                                <i class="fas fa-check-square"></i>
+                                <span>Chọn tất cả</span>
+                            </button>
+                            <button id="deselectAllBtn" class="control-btn">
+                                <i class="far fa-square"></i>
+                                <span>Bỏ chọn</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="thumbnails-grid" id="thumbnailsGrid">
+                        <!-- Thumbnails will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Sidebar Right - Image Stats -->
+        <aside class="sidebar-right" id="sidebarRight" style="display: none;">
+            <div class="image-stats-sidebar">
+                <!-- Original Image Stats -->
+                <div class="stats-section">
+                    <div class="stats-section-title original-title">
+                        <i class="fas fa-image"></i> Ảnh gốc
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-label">Dung lượng:</span>
+                        <span class="stats-value" id="originalSize">0 KB</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-label">Kích thước:</span>
+                        <span class="stats-value" id="originalDimensions">0 x 0</span>
+                    </div>
+                </div>
+                
+                <!-- Compressed Image Stats -->
+                <div class="stats-section">
+                    <div class="stats-section-title compressed-title">
+                        <i class="fas fa-compress"></i> Sau nén
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-label">Dung lượng:</span>
+                        <span class="stats-value" id="compressedSize">0 KB</span>
+                    </div>
+                    <div class="stats-item">
+                        <span class="stats-label">Tiết kiệm:</span>
+                        <span class="stats-value highlight" id="savedPercent">0%</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Thêm modal URL -->
+    <div class="modal-overlay" id="urlModalOverlay" style="display:none;">
+        <div class="modal url-modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-link"></i> Thêm ảnh từ URL</h3>
+                <button class="modal-close" onclick="closeUrlModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="url-input-container">
+                    <label for="imageUrl">Nhập URL hình ảnh:</label>
+                    <input type="url" id="imageUrl" placeholder="https://example.com/image.jpg" class="url-input">
+                    <div class="url-preview" id="urlPreview">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-image"></i>
+                            <span>Xem trước ảnh</span>
+                        </div>
+                        <img id="previewImage" style="display: none; max-width: 100%; max-height: 200px;">
+                    </div>
+                    <div class="url-error" id="urlError" style="display: none;">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="urlErrorMessage">URL không hợp lệ hoặc ảnh không tồn tại</span>
+                    </div>
+                    <div class="url-buttons">
+                        <button id="previewUrlBtn" class="btn btn-secondary">
+                            <i class="fas fa-eye"></i> Xem trước
+                        </button>
+                        <button id="addUrlImageBtn" class="btn btn-primary" disabled>
+                            <i class="fas fa-plus"></i> Thêm ảnh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-check-circle"></i> Hoàn thành!</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Toast -->
+    <div class="toast" id="loadingToast">
+        <div class="toast-content">
+            <div class="toast-spinner"></div>
+            <span>Đang xử lý...</span>
+        </div>
+    </div>
+
+    <!-- Hidden Canvas for Processing -->
+    <canvas id="processingCanvas" style="display: none;"></canvas>
+
+    <?!= include('JavaScript'); ?>
+</body>
+</html>

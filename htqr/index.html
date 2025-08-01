@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tạo Mã QR Thanh Toán</title>
+    <title>Tạo Mã QR Thanh Toán - hoangtuan.net</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         body {
@@ -42,9 +42,14 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 10px;
         }
         button:hover {
             background-color: #45a049;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
         #qrcode {
             margin-top: 20px;
@@ -120,6 +125,7 @@
             <input type="text" id="content" placeholder="Nhập nội dung chuyển khoản">
         </div>
         <button onclick="generateQRCode()">Tạo Mã QR</button>
+        <button id="download-btn" onclick="downloadQRCode()" disabled>Tải QR Code</button>
         <div id="qrcode"></div>
         <div id="qr-error"></div>
     </div>
@@ -200,16 +206,28 @@
                 .replace(/Đ/g, 'D'); // Replace Đ with D
         }
 
+        function downloadQRCode() {
+            const qrCanvas = document.querySelector('#qrcode canvas');
+            if (qrCanvas) {
+                const link = document.createElement('a');
+                link.href = qrCanvas.toDataURL('image/png');
+                link.download = 'qrcode.png';
+                link.click();
+            }
+        }
+
         function generateQRCode() {
             const bankBin = document.getElementById('bank-bin').value;
             const accountNumber = document.getElementById('account-number').value;
             const amount = document.getElementById('amount').value;
             const content = document.getElementById('content').value;
             const qrError = document.getElementById('qr-error');
+            const downloadBtn = document.getElementById('download-btn');
 
             if (!bankBin || !accountNumber) {
                 qrError.textContent = "Vui lòng nhập mã BIN ngân hàng và số tài khoản.";
                 qrError.style.display = 'block';
+                downloadBtn.disabled = true;
                 return;
             }
 
@@ -244,6 +262,9 @@
                 colorLight: "#ffffff",
                 correctLevel: QRCode.CorrectLevel.H
             });
+
+            // Kích hoạt nút tải về
+            downloadBtn.disabled = false;
         }
     </script>
 </body>

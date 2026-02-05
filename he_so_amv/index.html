@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Am/V Thép chữ H – hoangtuan.net</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: linear-gradient(135deg, #f4f7fb, #e9eef5);
+      color: #333;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      margin-bottom: 8px;
+      color: #1f3c88;
+    }
+
+    header p {
+      color: #555;
+      font-size: 16px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #1f3c88;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    td {
+      padding: 8px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      background: #1f3c88;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #162f6a;
+    }
+
+    .result {
+      font-size: 18px;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    .note {
+      margin-top: 15px;
+      font-style: italic;
+      color: #666;
+      font-size: 14px;
+    }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+    }
+
+    footer a {
+      color: #1f3c88;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <header>
+    <h1>TÍNH HỆ SỐ AM/V – THÉP CHỮ H</h1>
+    <p>Công cụ tính nhanh hệ số tiết diện Am/V phục vụ kiểm tra chịu lửa kết cấu thép (R15)</p>
+  </header>
+
+  <div class="card">
+    <h3>1. Nhập thông số hình học tiết diện</h3>
+
+    <table>
+      <tr>
+        <td>Chiều cao bụng 1 h₁ (mm)</td>
+        <td><input id="h1" type="number" step="any"></td>
+      </tr>
+      <tr>
+        <td>Chiều cao bụng 2 h₂ (mm)</td>
+        <td><input id="h2" type="number" step="any"></td>
+      </tr>
+      <tr>
+        <td>Chiều dày bụng t<sub>w</sub> (mm)</td>
+        <td><input id="tw" type="number" step="any"></td>
+      </tr>
+      <tr>
+        <td>Chiều rộng cánh b<sub>f</sub> (mm)</td>
+        <td><input id="bf" type="number" step="any"></td>
+      </tr>
+      <tr>
+        <td>Chiều dày cánh t<sub>f</sub> (mm)</td>
+        <td><input id="tf" type="number" step="any"></td>
+      </tr>
+    </table>
+
+    <button onclick="tinhAmV()">Tính Am/V</button>
+  </div>
+
+  <div class="card">
+    <h3>2. Kết quả tính toán</h3>
+    <div class="result" id="ketqua">—</div>
+    <div class="note" id="ghichu"></div>
+  </div>
+
+  <footer>
+    © 2026 <strong>hoangtuan.net</strong> · Phát triển bởi BuilderTV<br>
+    📺 YouTube:
+    <a href="https://www.youtube.com/@BuilderTV?sub_confirmation=1" target="_blank">
+      Hoàng Tuấn | Builder TV
+    </a>
+  </footer>
+
+</div>
+
+<script>
+function tinhAmV() {
+  const h1 = parseFloat(h1El.value);
+  const h2 = parseFloat(h2El.value);
+  const tw = parseFloat(twEl.value);
+  const bf = parseFloat(bfEl.value);
+  const tf = parseFloat(tfEl.value);
+
+  if ([h1, h2, tw, bf, tf].some(isNaN)) {
+    alert("Vui lòng nhập đầy đủ số liệu!");
+    return;
+  }
+
+  const H = (h1 + h2) / 2;
+  const V = tw * H + 2 * (bf - tw) * tf;
+  const Am = 2 * (H + bf) + 2 * (bf - tw);
+
+  const AmV = Math.round(Am / V * 1000);
+
+  const dat = AmV <= 250;
+  const color = dat ? "green" : "red";
+  const status = dat ? "ĐẠT yêu cầu" : "KHÔNG đạt yêu cầu";
+
+  ketqua.innerHTML = `
+    Diện tích V = ${V.toFixed(2)} mm²<br>
+    Chu vi Am = ${Am.toFixed(2)} mm<br>
+    <span style="color:${color}; font-size:22px">
+      Am/V = ${AmV} m⁻¹ → ${status}
+    </span>
+  `;
+
+  ghichu.innerHTML =
+    `Khi giới hạn chịu lửa tối thiểu của các cấu kiện được yêu cầu là R 15 (RE 15, REI 15) thì cho phép sử dụng các kết cấu thép không bọc bảo vệ nếu giới hạn chịu lửa của chúng theo kết quả thử nghiệm hoặc theo tính toán từ R 8 trở lên, hoặc hệ số tiết diện Am/V ≤ 250 m⁻¹.`;
+}
+
+// shortcut
+const h1El = document.getElementById("h1");
+const h2El = document.getElementById("h2");
+const twEl = document.getElementById("tw");
+const bfEl = document.getElementById("bf");
+const tfEl = document.getElementById("tf");
+const ketqua = document.getElementById("ketqua");
+const ghichu = document.getElementById("ghichu");
+</script>
+
+</body>
+</html>

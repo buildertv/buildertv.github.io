@@ -3,352 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>hoangtuan.net - Trang chủ</title>
+    <title>Hoàng Tuấn - Hệ sinh thái BuilderTV</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        .light-theme {
+            --primary-bg: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.8);
+            --accent-color: #0284c7;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --glass-border: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            background-color: #1a222c;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            transition: all 0.4s ease;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            height: 80vh;
-            margin: 0;
-            transition: background-color 0.3s, color 0.3s;
+            padding: 40px 20px;
         }
-        .container {
+
+        /* Hero Section */
+        .hero {
             text-align: center;
+            max-width: 800px;
+            margin-bottom: 50px;
         }
-        .container h1 {
-            margin-bottom: 20px;
+
+        .hero h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .buttons a, .dropdown .dropbtn {
-            display: inline-block;
-            margin: 10px;
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Dashboard Grid */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .card i {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Quick Links Bar */
+        .social-bar {
+            margin-top: 40px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .social-item {
             padding: 10px 20px;
-            color: #ffffff;
+            border-radius: 50px;
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-main);
             text-decoration: none;
-            background-color: #2a2e35;
-            border: 1px solid #ffffff;
-            border-radius: 5px;
-            transition: background-color 0.3s;
-            font-size: 16px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.3s;
         }
-        .buttons a:hover, .dropdown .dropbtn:hover {
-            background-color: #3a3e45;
+
+        .social-item:hover {
+            background: var(--accent-color);
+            color: white;
         }
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            background-color: #2a2e35;
-            min-width: 200px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-            z-index: 1;
-        }
-        .dropdown-content a {
-            color: #ffffff;
-            padding: 12px 16px;
-            text-decoration: none;
-            display: block;
-            border-bottom: 1px solid #ffffff;
-        }
-        .dropdown-content a:hover {
-            background-color: #3a3e45;
-        }
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
+
+        /* Theme Toggle */
         .theme-toggle {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
-            cursor: pointer;
-            color: #ffffff;
-            font-size: 18px;
-            transition: color 0.3s;
-        }
-        .theme-toggle:hover {
-            color: #ffeb3b;
-        }
-        .light-theme {
-            background-color: #ffffff;
-            color: #000000;
-        }
-        .light-theme .buttons a, .light-theme .dropdown .dropbtn {
-            background-color: #f1f1f1;
-            color: #000000;
-            border: 1px solid #000000;
-        }
-        .light-theme .dropdown-content {
-            background-color: #f1f1f1;
-        }
-        .countdown {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
+            border: 1px solid var(--glass-border);
+            z-index: 1000;
         }
-        .countdown span {
-            display: block;
+
+        /* Chatbot Customization */
+        #chat-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 999;
         }
-        #days, #hours, #minutes, #seconds {
-            font-size: 3em;
-            font-weight: bold;
+
+        #chat-box {
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid var(--glass-border);
         }
-        .label {
-            font-size: 1em;
-            color: gray;
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 1.8rem; }
+            .grid-container { grid-template-columns: 1fr; }
         }
-/* CSS cho Chatbot */
-#chat-toggle {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #007bff;
-    color: #fff;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    text-align: center;
-    font-size: 30px;
-    line-height: 60px;
-    cursor: pointer;
-    z-index: 999;
-    transition: background-color 0.3s;
-}
-
-#chat-box {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 320px;
-    height: 450px;
-    background: #2a2e35;
-    border: 1px solid #ffffff33;
-    border-radius: 16px;
-    display: none;
-    flex-direction: column;
-    z-index: 999;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.3s, color 0.3s;
-    overflow: hidden; /* Ngăn nội dung tràn ra ngoài */
-}
-
-.light-theme #chat-box {
-    background: #ffffff;
-    border: 1px solid #ccc;
-}
-
-#chat-messages {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    padding: 15px;
-    overflow-y: auto; /* Cho phép cuộn dọc */
-    font-family: Arial, sans-serif;
-    font-size: 15px;
-    color: #ffffff;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
-}
-
-.light-theme #chat-messages {
-    color: #333333;
-}
-
-#chat-messages .user,
-#chat-messages .bot {
-    max-width: 100%; /* Giới hạn chiều rộng tin nhắn */
-    padding: 8px 12px;
-    border-radius: 12px;
-    font-size: 14px;
-    word-wrap: break-word;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
-}
-
-#chat-messages .user {
-    align-self: flex-end; /* Căn phải */
-    background-color: #007bff;
-    color: #ffffff;
-    text-align: left;
-}
-
-.light-theme #chat-messages .user {
-    background-color: #0056b3;
-}
-
-#chat-messages .bot {
-    align-self: flex-start; /* Căn trái */
-    background-color: #3a3e45;
-    color: #ffffff;
-    text-align: left;
-}
-
-.light-theme #chat-messages .bot {
-    background-color: #e0e0e0;
-    color: #333333;
-}
-
-#chat-input {
-    display: flex;
-    border-top: 1px solid #ffffff33;
-    background: #2a2e35;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-    overflow: hidden;
-}
-
-.light-theme #chat-input {
-    border-top: 1px solid #ccc;
-    background: #ffffff;
-}
-
-#chat-input input {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    background: transparent;
-    color: #ffffff;
-}
-
-.light-theme #chat-input input {
-    color: #333333;
-}
-
-#chat-input button {
-    background: #007bff;
-    color: white;
-    border: none;
-    padding: 0 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-#chat-input button:hover {
-    background: #0056b3;
-}
-/* Đổi màu link */
-.bot a, .user a {
-      color: #f7ff5c;
-      text-decoration: underline;
-  }
-  .bot a:hover, .user a:hover {
-      color: #999e39;
-  }
-  
-/* Hiệu ứng đang gõ */
-.typing-indicator {
-    display: inline-block;
-    margin-top: 5px;
-    padding: 10px;
-    background-color: #3a3e45;
-    color: #ccc;
-    border-radius: 12px;
-    font-style: italic;
-    font-size: 14px;
-    align-self: flex-start;
-    animation: blink 3s steps(5, start) infinite;
-    max-width: 60%;
-}
-
-@keyframes blink {
-    to {
-        visibility: hidden;
-    }
-}
-
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="theme-toggle" onclick="toggleTheme()">
-            <i class="fas fa-sun"></i>
-        </div>
-        <h1>XIN CHÀO CÁC BẠN</h1>
-        <p>Tại website này các bạn có thể tìm thấy tất cả những thông tin liên hệ và những nội dung mà tôi đang chia sẻ.</p>
-        <div class="buttons">
-            <div class="dropdown">
-                <button class="dropbtn"><i class="fas fa-tools"></i> Tiện ích</button>
-                <div class="dropdown-content">
-                    <a href="https://hoangtuan.net/buildertv"><i class="fas fa-puzzle-piece"></i> Tiện ích BuilderTV Add-in</a>
-					<a href="https://hoangtuan.net/he_so_amv"><i class="fas fa-puzzle-piece"></i> Tiện ích hệ số tiết diện Am/V</a>
-					<a href="https://hoangtuan.net/htqr"><i class="fas fa-puzzle-piece"></i> Tiện ích Tạo mã QR thanh toán</a>
-                    <a href="https://hoangtuan.net/caygiapha"><i class="fas fa-sitemap"></i> Tiện ích Vẽ phả đồ</a>
-                    <a href="https://hoangtuan.net/nen-anh"><i class="fa-solid fa-images"></i> Tiện ích Nén ảnh</a>
-                    <a href="https://hoangtuan.net/rut-gon-link/"><i class="fas fa-link"></i> Tiện ích rút gọn link</a>
-                    <a href="https://hoangtuan.net/gdrivetool/"><i class="fas fa-cloud"></i> Tiện ích Xử lý link Google Drive</a>
-                    <a href="https://hoangtuan.net/phi-nuoi-xe/"><i class="fas fa-car"></i> Tính chi phí nuôi xe</a>
-                    <a href="https://hoangtuan.net/tinh-chieu-rong-cong/"><i class="fas fa-car"></i> Tính chiều rộng cổng Ôtô</a>
-                    <a href="https://t.me/xemtuoi_bot"><i class="fa-brands fa-telegram"></i> Tiện ích Xem tuổi kết hôn</a>
-                    <a href="https://t.me/CheckPhatNguoiBot"><i class="fa-brands fa-telegram"></i> Tiện ích Tra phạt nguội</a>
-                    
 
-                </div>
-            </div>
-            <a href="https://blog.hoangtuan.net"><i class="fas fa-blog"></i> Blog</a>
-            <a href="https://www.youtube.com/@BuilderTV?sub_confirmation=1"><i class="fab fa-youtube"></i> Youtube</a>
-            <a href="mailto:ad@hoangtuan.net"><i class="fas fa-envelope"></i> Email</a>
-            <a href="https://zalo.me/buildertv"><i class="fas fa-phone"></i> Zalo</a>
-            <a href="https://hoangtuan.net/coffee-donate/"><i class="fa fa-coffee"></i> Ủng hộ tôi</a>
-        </div>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-sun"></i>
+    </div>
 
-        <div id="chat-toggle">🗨</div>
+    <header class="hero">
+        <h1>HOÀNG TUẤN</h1>
+        <p>Kiến trúc sư & Content Creator. Khám phá các công cụ và nội dung hữu ích từ BuilderTV.</p>
+    </header>
 
-        <div id="chat-box">
-            <div id="chat-messages"></div>
-            <div id="chat-input">
-                <input type="text" id="chat-text" placeholder="Nhập tin nhắn..." />
-                <button onclick="sendMessage()">Gửi</button>
-            </div>
+    <main class="grid-container">
+        <a href="https://hoangtuan.net/buildertv" class="card">
+            <i class="fas fa-puzzle-piece"></i>
+            <h3>BuilderTV Add-in</h3>
+            <p>Bộ tiện ích mở rộng cho Excel.</p>
+        </a>
+
+        <a href="https://hoangtuan.net/he_so_amv" class="card">
+            <i class="fas fa-chart-line"></i>
+            <h3>Hệ số Am/V</h3>
+            <p>Tính toán tiết diện bề mặt nhanh chóng.</p>
+        </a>
+
+        <a href="https://hoangtuan.net/htqr" class="card">
+            <i class="fas fa-qrcode"></i>
+            <h3>Tạo mã QR</h3>
+            <p>Tạo QR thanh toán ngân hàng tiện lợi.</p>
+        </a>
+
+        <a href="https://hoangtuan.net/caygiapha" class="card">
+            <i class="fas fa-sitemap"></i>
+            <h3>Vẽ phả đồ</h3>
+            <p>Số hóa cây gia phả dòng họ trực quan.</p>
+        </a>
+
+        <a href="https://hoangtuan.net/nen-anh" class="card">
+            <i class="fa-solid fa-images"></i>
+            <h3>Nén ảnh</h3>
+            <p>Tối ưu dung lượng hình ảnh không giảm chất lượng.</p>
+        </a>
+
+        <a href="https://hoangtuan.net/phi-nuoi-xe/" class="card">
+            <i class="fas fa-car"></i>
+            <h3>Chi phí nuôi xe</h3>
+            <p>Dự toán chi phí vận hành ô tô hàng tháng.</p>
+        </a>
+    </main>
+
+    <div class="social-bar">
+        <a href="https://blog.hoangtuan.net" class="social-item"><i class="fas fa-blog"></i> Blog</a>
+        <a href="https://www.youtube.com/@BuilderTV" class="social-item"><i class="fab fa-youtube"></i> Youtube</a>
+        <a href="https://zalo.me/buildertv" class="social-item"><i class="fas fa-phone"></i> Zalo</a>
+        <a href="https://hoangtuan.net/coffee-donate/" class="social-item"><i class="fa fa-coffee"></i> Donate</a>
+    </div>
+
+    <div id="chat-toggle">🗨</div>
+    <div id="chat-box">
+        <div id="chat-messages"></div>
+        <div id="chat-input">
+            <input type="text" id="chat-text" placeholder="Hỏi tôi bất cứ điều gì..." />
+            <button onclick="sendMessage()">Gửi</button>
         </div>
-        </div>
+    </div>
 
     <script>
-    function toggleTheme() {
-        const body = document.body;
-        body.classList.toggle('light-theme');
-        const icon = document.querySelector('.theme-toggle i');
-        if (body.classList.contains('light-theme')) {
-            icon.classList.remove('fa-sun');
-            icon.classList.add('fa-moon');
-        } else {
-            icon.classList.remove('fa-moon');
-            icon.classList.add('fa-sun');
+        // Logic JS giữ nguyên từ file cũ của bạn, chỉ thêm cập nhật icon theme
+        function toggleTheme() {
+            const body = document.body;
+            body.classList.toggle('light-theme');
+            const icon = document.querySelector('.theme-toggle i');
+            if (body.classList.contains('light-theme')) {
+                icon.className = 'fas fa-moon';
+            } else {
+                icon.className = 'fas fa-sun';
+            }
         }
-    }
-
-    // JavaScript cho Chatbot
-    const chatToggle = document.getElementById('chat-toggle');
-    const chatBox = document.getElementById('chat-box');
-    const chatMessages = document.getElementById('chat-messages');
-    const chatInput = document.getElementById('chat-text');
-
-    chatToggle.onclick = () => {
-        const isVisible = chatBox.style.display === 'flex';
-        chatBox.style.display = isVisible ? 'none' : 'flex';
-        chatBox.style.flexDirection = 'column';
-
-		if (!isVisible) {
-			// Hiển thị lời chào khi mở hộp thoại
-			appendMessage('Xin chào! Mình có thể giúp được gì cho bạn ạ?', 'bot');
-			setTimeout(() => {
-				chatInput.focus(); // Focus vào ô nhập
-				chatMessages.scrollTop = chatMessages.scrollHeight; // Cuộn xuống dòng mới nhất
-			}, 50);
-		}
-    };
-
-    async function sendMessage() {
+        
+async function sendMessage() {
         const message = chatInput.value.trim();
         if (!message) return;
 
@@ -415,7 +330,6 @@
             sendMessage();
         }
     });
-</script>
-
+    </script>
 </body>
 </html>

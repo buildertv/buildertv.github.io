@@ -1,130 +1,254 @@
 <!DOCTYPE html>
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
-
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<html lang="vi">
 <head>
-<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8190248740084490" crossorigin="anonymous" type="text/javascript"></script>
-<script async="" custom-element="amp-auto-ads" src="./index_files/amp-auto-ads-0.1.js.download" type="text/javascript"> </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BuilderTV Add-in - Tiện tích Excel chuyên nghiệp</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:image" content="./images/BuilderTV_logo.png" />
-<meta property="og:type" content="website" />
-<meta name="cf-2fa-verify" content="e800bb24882564a">
-<title>BuilderTV Add-in - Tiện tích mở rộng Excel - Trang chủ chính thức</title>
-<meta name="description" content="Builder TV Addin - Tiện tích mở rộng cho Excel - Trang chủ chính thức">
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="shortcut icon" type="image/png" href="./images/BuilderTV_logo.png">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        /* Background Animation Layer (Thay thế particles-js cũ cho nhẹ trang) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
+        /* Container Chính */
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 40px;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-container img {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo-container img:hover { transform: scale(1.05); }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .description {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+
+        /* Nút Download Section */
+        .download-area {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .btn-download {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.3s;
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-primary {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        .btn-primary:hover {
+            background: #7dd3fc;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: var(--text-main);
+        }
+
+        /* Footer Icons */
+        .footer-nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 25px;
+        }
+
+        .footer-nav a {
+            color: var(--text-muted);
+            font-size: 1.4rem;
+            transition: 0.3s;
+        }
+
+        .footer-nav a:hover {
+            color: var(--accent-color);
+        }
+
+        /* Donate Button Floating */
+        .donate-trigger {
+            margin-top: 20px;
+            background: none;
+            border: none;
+            color: #fbbf24;
+            cursor: pointer;
+            font-size: 0.9rem;
+            text-decoration: underline;
+        }
+
+        /* Modal Hiện Đại */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active { display: flex; }
+
+        .modal-content {
+            background: #1e293b;
+            padding: 30px;
+            border-radius: 24px;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+            text-align: center;
+        }
+
+        .modal-content h3 { margin-bottom: 20px; font-size: 1.1rem; }
+
+        .modal-content img {
+            width: 100%;
+            border-radius: 16px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+    </style>
 </head>
-<body bgcolor="black">
-<amp-auto-ads type="adsense" data-ad-client="ca-pub-8190248740084490">
-</amp-auto-ads>
-<button class="donate_block" onclick="if (!window.__cfRLUnblockHandlers) return false; ShowDonate();" data-cf-modified-094f82ebb892baf1a83d47b3->Donate - Ủng hộ tác giả</button>
-<div id="donate_links">
-<ul>
-<li><a id="donate_momo" class="donate_link" href="#">TPBank</a></li>
-<li><a class="donate_link" href="https://www.paypal.me/azchannel" target="_black" rel="noopener">PayPal</a></li>
+<body>
 
-</ul>
-</div>
-<div id="momo_modal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<span class="close">&times;</span>
-<h3 class="modal_header_text">Bạn hãy quét mã QR bên dưới bằng app Bank</h3>
-</div>
-<div class="modal-body">
-<img src="./images/tpb.jpg">
-</div>
-</div>
-</div>
+    <div class="main-card">
+        <div class="logo-container">
+            <img src="./images/BuilderTV_logo.png" alt="BuilderTV Logo">
+        </div>
 
+        <h1>BuilderTV Add-in</h1>
+        <p class="description">Nâng tầm hiệu suất công việc trên Excel với bộ tiện ích chuyên sâu.</p>
 
-<div id="particles-js">
-<div class="header">
-<div class="content-logo tanimation kago">
-<img src="./images/BuilderTV_logo.png" alt="logo" height="180" width="180">
-</div>
-<h1 class="tanimation keader">
-<span class="site-title">BuilderTV Add-in</span>
-<span class="site-description">Tiện tích mở rộng cho Excel</span>
-</h1>
-<!-- DOWNLOAD -->
-<div class="download" style="font-size:15px;">
-<a href="https://drive.google.com/file/d/1EH9HWUjPantzf1IQUnlXKcnpBnrKg6je/view?usp=drivesdk" title="Tải về bản cập nhật mới nhất dành cho bạn đã đăng ký" rel="nofollow">
-<i class="fa fa-download"></i>&nbsp;&nbsp;<span>Bản mới nhất</span></a>
-<a href="https://github.com/buildertv/BuilderTV-Add-in/releases/download/BuilderTV_Add-in/BuilderTV.zip" title="Tải về bản dùng thử (bản cũ)" rel="nofollow">
-<i class="fa fa-download"></i>&nbsp;&nbsp;<span>Bản dùng thử</span></a>
-</div>   
+        <div class="download-area">
+            <a href="https://drive.google.com/file/d/1EH9HWUjPantzf1IQUnlXKcnpBnrKg6je/view" class="btn-download btn-primary">
+                <i class="fas fa-crown"></i> Bản cập nhật mới nhất
+            </a>
+            <a href="https://github.com/buildertv/BuilderTV-Add-in/releases/download/BuilderTV_Add-in/BuilderTV.zip" class="btn-download btn-outline">
+                <i class="fas fa-flask"></i> Bản dùng thử (Miễn phí)
+            </a>
+        </div>
 
-   
-<div class="header-icons tanimation">
-<a aria-label="Send email" href="mailto:ad@hoangtuan.net"><i class="icon fa fa-envelope"></i></a>
-<a aria-label="Trang chủ" target="_blank" href="https://hoangtuan.net"><i class="icon fa fa-home" aria-hidden="true"></i></a>
-<a aria-label="Hướng dẫn" target="_blank" href="https://www.youtube.com/playlist?list=PLkXAvo_Xx0ZMW-11fiJjQ0SSqg-tYM1EE"><i class="icon fa fa-youtube" aria-hidden="true"></i></a>
-</div>
-</div>
-</div>
+        <nav class="footer-nav">
+            <a href="https://hoangtuan.net" title="Trang chủ"><i class="fas fa-home"></i></a>
+            <a href="https://www.youtube.com/playlist?list=PLkXAvo_Xx0ZMW-11fiJjQ0SSqg-tYM1EE" title="Hướng dẫn"><i class="fab fa-youtube"></i></a>
+            <a href="mailto:ad@hoangtuan.net" title="Liên hệ"><i class="fas fa-envelope"></i></a>
+        </nav>
 
-<script type="text/javascript">
-  function ShowDonate() {
-    var x = document.getElementById('donate_links');
-    if (x.style.display == 'block') {
-      x.style.display = 'none';
-    } else {
-      x.style.display = 'block';
-    }
-  }
+        <button class="donate-trigger" onclick="toggleModal('donate-modal')">
+            <i class="fas fa-heart"></i> Donate - Ủng hộ tác giả
+        </button>
+    </div>
 
-  var modal = document.getElementById("momo_modal");
-  var btn = document.getElementById("donate_momo");
-  var span = document.getElementsByClassName("close")[0];
-  btn.onclick = function() {
-    modal.classList.add("active");
-  }
-  span.onclick = function() {
-    modal.classList.remove("active");
-  }
+    <div id="donate-modal" class="modal" onclick="toggleModal('donate-modal')">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <span class="close-btn" onclick="toggleModal('donate-modal')">&times;</span>
+            <h3>Quét mã QR để ủng hộ</h3>
+            <img src="./images/tpb.jpg" alt="QR Banking">
+            <div style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+                <a href="https://www.paypal.me/azchannel" target="_blank" style="color: var(--accent-color); text-decoration: none; font-size: 0.9rem;">Hoặc qua PayPal</a>
+            </div>
+        </div>
+    </div>
 
-  var modal1 = document.getElementById("vtpay_modal");
-  var btn1 = document.getElementById("donate_vtpay");
-  var span1 = document.getElementsByClassName("close")[1];
-  btn1.onclick = function() {
-    modal1.classList.add("active");
-  }
-  span1.onclick = function() {
-    modal1.classList.remove("active");
-  }
+    <script>
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.toggle('active');
+        }
 
-  var modal2 = document.getElementById("zalopay_modal"); 
-  var btn2 = document.getElementById("donate_zalopay");
-  var span2 = document.getElementsByClassName("close")[2];
-  btn2.onclick = function() {
-    modal2.classList.add("active");
-  }
-  span2.onclick = function() {
-    modal2.classList.remove("active");
-  }
-  
-
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.classList.remove("active");
-    }
-    if (event.target == modal1) {
-      modal1.classList.remove("active");
-    }
-    if (event.target == modal2) {
-      modal2.classList.remove("active");
-    }
-  }
-</script>
-
-<script src="cdn-cgi/scripts/rocket-loader.min.js" data-cf-settings="10" defer></script>
+        // Đóng modal khi nhấn phím Esc
+        document.addEventListener('keydown', (e) => {
+            if (e.key === "Escape") {
+                document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            }
+        });
+    </script>
 
 </body>
-
-
 </html>

@@ -3,245 +3,445 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng Tính Chi Phí Nuôi Xe Ô Tô | hoangtuan.net</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Tính Chi Phí Nuôi Xe | hoangtuan.net</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f2f2f2;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
         }
+
         .container {
-            max-width: 700px;  /* Tăng độ rộng container để có thêm không gian */
-            margin: auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
         }
-        h2 {
+
+        header {
             text-align: center;
-            color: #333;
+            margin-bottom: 40px;
         }
-        h3 {
-            text-align: center;
-            color: #333;
+
+        header h2 {
+            font-size: 2rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
         }
-        .input-group {
-            margin-bottom: 15px;
+
+        .video-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #ef4444;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+        .video-link:hover { opacity: 0.8; }
+
+        /* Layout Grid */
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1rem;
+            color: var(--accent-color);
+            margin-bottom: 20px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 10px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
         }
-       label {
-            flex: 0 0 50%;  /* Label chiếm 50% chiều rộng */
-            font-size: 16px;
-            margin-right: 10px;
+
+        .input-group {
+            margin-bottom: 15px;
         }
-        input {
-            flex: 1;
-            padding: 8px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            text-align: right;
-            max-width: 100px; /* Độ rộng tối đa */
+
+        .input-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
         }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e6ffe6;
-            border: 1px solid #4CAF50;
-            border-radius: 4px;
-            text-align: center;
-            font-size: 18px;
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
         }
-        button {
+
+        .input-wrapper input {
             width: 100%;
-            padding: 10px;
-            background-color: #4CAF50;
+            padding: 10px 40px 10px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
             color: white;
-            font-size: 18px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+            text-align: right;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-wrapper span.unit {
+            position: absolute;
+            right: 12px;
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        /* Buttons */
+        .action-btns {
+            grid-column: span 2;
+            display: flex;
+            gap: 15px;
             margin-top: 10px;
         }
-        button:hover {
-            background-color: #45a049;
+
+        button {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
-        .download-button {
-            margin-top: 20px;
-            background-color: #007bff;
+
+        .btn-calc { background: var(--accent-gradient); color: #0f172a; }
+        .btn-download { background: rgba(255, 255, 255, 0.05); color: white; border: 1px solid var(--glass-border); }
+        button:hover { transform: translateY(-2px); opacity: 0.9; }
+
+        /* Result */
+        #result-card {
+            grid-column: span 2;
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(56, 189, 248, 0.1));
+            display: none;
+            animation: fadeIn 0.5s ease;
         }
-        .download-button:hover {
-            background-color: #0056b3;
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            text-align: center;
+        }
+
+        .res-item h4 { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 10px; }
+        .res-item p { font-size: 1.4rem; font-weight: 800; color: var(--success); }
+
+        .youtube-box {
+            grid-column: span 2;
+            margin-top: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 650px) {
+            .calculator-grid { grid-template-columns: 1fr; }
+            .action-btns { grid-column: span 1; flex-direction: column; }
+            #result-card, .youtube-box { grid-column: span 1; }
+            .result-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h2><i class="fas fa-car car-icon"></i> Chi Phí Nuôi Xe | hoangtuan.net</h2>
-    <h3>
-    <a href="https://youtu.be/3pisa-5Esng" target="_blank" style="text-decoration: none; color: blue;">
-        <i class="fab fa-youtube"></i> Video hướng dẫn sử dụng
-    </a>
-    </h3>
-    <div class="input-group">
-        <label for="giaXang">Giá xăng (đ/l):</label>
-        <input type="number" id="giaXang"  value="20000">
-    </div>
-    <div class="input-group">
-        <label for="soKm">Số KM hàng tháng:</label>
-        <input type="number" id="soKm"  value="1000">
-    </div>
-    <div class="input-group">
-        <label for="dinhMuc">Định mức xăng (l/100Km):</label>
-        <input type="number" id="dinhMuc"  value="8">
-    </div>
-    <div class="input-group">
-        <label for="phiDuongBo">Phí sử dụng đường bộ (01 năm):</label>
-        <input type="number" id="phiDuongBo"  value="1560000">
-    </div>
-    <div class="input-group">
-        <label for="baoHiem">Bảo hiểm trách nhiệm dân sự (01 năm):</label>
-        <input type="number" id="baoHiem"  value="437000">
-    </div>
-    <div class="input-group">
-        <label for="baoHiemtv">Bảo hiểm thân vỏ (01 năm):</label>
-        <input type="number" id="baoHiemtv"  value="0">
-    </div>
-    <div class="input-group">
-        <label for="phiDangKiem">Phí đăng kiểm (01 năm):</label>
-        <input type="number" id="phiDangKiem"  value="340000">
-    </div>
-    <div class="input-group">
-        <label for="phiBaoDuong">Phí bảo dưỡng, thay dầu (mỗi 5000Km):</label>
-        <input type="number" id="phiBaoDuong"  value="500000">
-    </div>
-    <div class="input-group">
-        <label for="phiRuaXe">Phí rửa xe (hàng tháng):</label>
-        <input type="number" id="phiRuaXe"  value="200000">
-    </div>
-    <div class="input-group">
-        <label for="phiGuiXe">Phí gửi xe (hàng tháng):</label>
-        <input type="number" id="phiGuiXe"  value="0">
-    </div>
-    <div class="input-group">
-        <label for="phiCaoToc">Phí cao tốc/ cầu đường (hàng tháng):</label>
-        <input type="number" id="phiCaoToc"  value="0">
-    </div>
-        <div class="input-group">
-        <label for="phiTraGop">Phí trả góp (hàng tháng):</label>
-        <input type="number" id="phiTraGop"  value="0">
-    </div>
-    <div class="input-group">
-        <label for="phiKhac">Phí khác (hàng tháng):</label>
-        <input type="number" id="phiKhac"  value="0">
-    </div>
-    <button onclick="tinhChiPhi()">Tính toán chi phí</button>
+    <header>
+        <h2><i class="fas fa-gas-pump"></i> Dự Tính Chi Phí Nuôi Xe</h2>
+        <a href="https://youtu.be/3pisa-5Esng" class="video-link" target="_blank">
+            <i class="fab fa-youtube"></i> Xem video hướng dẫn
+        </a>
+    </header>
 
-    <div class="result" id="result">
-        Kết quả sẽ hiển thị ở đây.
-    </div>
+    <div class="calculator-grid" id="capture-area">
+        <div class="card">
+            <h3 class="section-title"><i class="fas fa-road"></i> Vận hành & Nhiên liệu</h3>
+            <div class="input-group">
+                <label>Giá xăng hiện tại</label>
+                <div class="input-wrapper">
+                    <input type="number" id="giaXang" value="20000">
+                    <span class="unit">đ/l</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Số KM đi hàng tháng</label>
+                <div class="input-wrapper">
+                    <input type="number" id="soKm" value="1000">
+                    <span class="unit">km</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Định mức tiêu thụ</label>
+                <div class="input-wrapper">
+                    <input type="number" id="dinhMuc" value="8">
+                    <span class="unit">l/100km</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Bảo dưỡng (mỗi 5000km)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="phiBaoDuong" value="500000">
+                    <span class="unit">đ</span>
+                </div>
+            </div>
+        </div>
 
-    <!-- Nút tải về hình ảnh -->
-<button class="download-button" onclick="taiVeHinhAnh()">Tải về dưới dạng hình ảnh</button>
+        <div class="card">
+            <h3 class="section-title"><i class="fas fa-file-invoice-dollar"></i> Phí cố định & Gửi xe</h3>
+            <div class="input-group">
+                <label>Phí đường bộ (1 năm)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="phiDuongBo" value="1560000">
+                    <span class="unit">đ</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>BH bắt buộc (1 năm)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="baoHiem" value="437000">
+                    <span class="unit">đ</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>BH thân vỏ (1 năm)</label>
+                <div class="input-wrapper">
+                    <input type="number" id="baoHiemtv" value="0">
+                    <span class="unit">đ</span>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Gửi xe hàng tháng</label>
+                <div class="input-wrapper">
+                    <input type="number" id="phiGuiXe" value="0">
+                    <span class="unit">đ</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="result-card">
+            <div class="result-grid">
+                <div class="res-item">
+                    <h4>Tiền xăng / tháng</h4>
+                    <p id="resXang">0 đ</p>
+                </div>
+                <div class="res-item">
+                    <h4>Tổng chi phí / tháng</h4>
+                    <p id="resTong">0 đ</p>
+                </div>
+                <div class="res-item">
+                    <h4>Chi phí trên 1 km</h4>
+                    <p id="resKm" style="color: var(--accent-color);">0 đ</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-btns">
+            <button class="btn-calc" onclick="tinhChiPhi()">
+                <i class="fas fa-calculator"></i> TÍNH TOÁN NGAY
+            </button>
+            <button class="btn-download" onclick="taiVeHinhAnh()">
+                <i class="fas fa-camera"></i> CHỤP ẢNH KẾT QUẢ
+            </button>
+        </div>
+
+        <div class="youtube-box">
+            <iframe width="100%" height="100%" src="https://www.youtube.com/embed/3pisa-5Esng" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
-        // Hàm định dạng số với dấu chấm phân cách hàng nghìn
-function formatNumber(num) {
-    return new Intl.NumberFormat('vi-VN').format(num);
-}
-    // Hàm chuyển đổi chuỗi số có dấu chấm phân cách thành số
-function parseFormattedNumber(str) {
-    // Loại bỏ dấu chấm và trả về số
-    return parseInt(str.replace(/\./g, ""), 10) || 0;
-}
+    function formatNumber(num) {
+        return new Intl.NumberFormat('vi-VN').format(num);
+    }
 
-    
-     function tinhChiPhi() {
-        // Lấy dữ liệu từ các input
-        const giaXang = parseFormattedNumber(document.getElementById('giaXang').value);
-        const soKm = parseFormattedNumber(document.getElementById('soKm').value);
-        const dinhMuc = parseFormattedNumber(document.getElementById('dinhMuc').value);
-        const phiDuongBo = parseFormattedNumber(document.getElementById('phiDuongBo').value);
-        const baoHiem = parseFormattedNumber(document.getElementById('baoHiem').value);
-        const baoHiemtv = parseFormattedNumber(document.getElementById('baoHiemtv').value);
-        const phiDangKiem = parseFormattedNumber(document.getElementById('phiDangKiem').value);
-        const phiBaoDuong = parseFormattedNumber(document.getElementById('phiBaoDuong').value);
-        const phiRuaXe = parseFormattedNumber(document.getElementById('phiRuaXe').value);
-        const phiGuiXe = parseFormattedNumber(document.getElementById('phiGuiXe').value);
-        const phiCaoToc = parseFormattedNumber(document.getElementById('phiCaoToc').value);
-        const phiTraGop = parseFormattedNumber(document.getElementById('phiTraGop').value);
-        const phiKhac = parseFormattedNumber(document.getElementById('phiKhac').value);
+    function getVal(id) {
+        return parseFloat(document.getElementById(id).value) || 0;
+    }
 
-       // Tính toán chi phí xăng hàng tháng
-        const chiPhiXang = Math.round((giaXang * dinhMuc / 100) * soKm / 1000) * 1000;
+    function tinhChiPhi() {
+        const giaXang = getVal('giaXang');
+        const soKm = getVal('soKm');
+        const dinhMuc = getVal('dinhMuc');
+        const phiDuongBo = getVal('phiDuongBo');
+        const baoHiem = getVal('baoHiem');
+        const baoHiemtv = getVal('baoHiemtv');
+        const phiGuiXe = getVal('phiGuiXe');
+        const phiBaoDuong = getVal('phiBaoDuong');
 
-        // Tính tổng chi phí nuôi xe hàng tháng
-        const tongChiPhi = Math.round((
-            chiPhiXang
-            + phiDuongBo / 12
-            + baoHiem / 12
-            + baoHiemtv / 12
-            + phiDangKiem / 12
-            + (phiBaoDuong / 5000) * soKm
-            + phiRuaXe
-            + phiGuiXe
-            + phiCaoToc
-            + phiTraGop
-            + phiKhac
-        ) / 1000) * 1000;
-    // Tính chi phí /km
-        const ChiPhikm = Math.round((
-            tongChiPhi / soKm
-        ) / 1) * 1;
+        // Logic tính toán
+        const chiPhiXang = Math.round((giaXang * dinhMuc / 100) * soKm);
+        const tongChiPhi = Math.round(
+            chiPhiXang + 
+            (phiDuongBo / 12) + 
+            (baoHiem / 12) + 
+            (baoHiemtv / 12) + 
+            (phiBaoDuong / 5000 * soKm) + 
+            phiGuiXe
+        );
+        const chiPhiTrenKm = Math.round(tongChiPhi / soKm);
 
-        document.getElementById('result').innerHTML = `
-            <p>Chi phí xăng hàng tháng: ${formatNumber(chiPhiXang)} đ</p>
-            <p>Tổng chi phí nuôi xe hàng tháng: ${formatNumber(tongChiPhi)} đ</p>
-            <p>Chi phí/km: ${formatNumber(ChiPhikm)} đ/Km</p
-        `;
+        // Hiển thị
+        document.getElementById('result-card').style.display = 'block';
+        document.getElementById('resXang').innerText = formatNumber(chiPhiXang) + ' đ';
+        document.getElementById('resTong').innerText = formatNumber(tongChiPhi) + ' đ';
+        document.getElementById('resKm').innerText = formatNumber(chiPhiTrenKm) + ' đ/km';
+
+        // Cuộn xuống kết quả trên mobile
+        if(window.innerWidth < 650) {
+            document.getElementById('result-card').scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     function taiVeHinhAnh() {
-        // Đảm bảo rằng kết quả đã được tính toán trước khi tải về
-        tinhChiPhi();
-        
-        // Sử dụng html2canvas để chụp container
-        html2canvas(document.querySelector(".container"), {
-            scale: 2, // Tăng độ phân giải
-            logging: false, // Tắt logging để cải thiện hiệu suất
-            useCORS: true // Cho phép tải nội dung từ các domain khác nếu cần
+        tinhChiPhi(); // Chắc chắn có kết quả trước khi chụp
+        const area = document.getElementById('capture-area');
+        html2canvas(area, {
+            backgroundColor: "#0f172a",
+            scale: 2
         }).then(canvas => {
-            // Chuyển canvas thành ảnh và tải xuống
             let link = document.createElement('a');
-            link.download = 'chi_phi_nuoi_xe_' + new Date().toISOString().slice(0,10) + '.png';
-            link.href = canvas.toDataURL('image/png');
+            link.download = 'chi-phi-nuoi-xe-hoangtuan.png';
+            link.href = canvas.toDataURL();
             link.click();
         });
     }
-        // Định dạng ban đầu cho tất cả các ô input số
-    document.querySelectorAll('.number-input').forEach(input => {
-        input.value = formatNumber(input.value);
-    });
 </script>
-<div style="text-align: center;">
-    <iframe width="560" height="315" 
-            src="https://www.youtube.com/embed/3pisa-5Esng?autoplay=1" 
-            title="YouTube video player" 
-            frameborder="0" 
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-            allowfullscreen>
-    </iframe>
-</div>
+    <style>
+        .footer-nav {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
 
-<script type="text/javascript" src="https://www.free-counters.org/count/gl1o"></script><br>
- <a href='https://www.versicherungen.at/'>Versicherungen online vergleichen</a> <script type='text/javascript' src='https://whomania.com/ctr?id=b518d5a6fd8957daf677afb3401f3366599b6945'></script>
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        .nav-item.active {
+            background: var(--accent-gradient);
+            color: #0f172a;
+            border: none;
+            font-weight: 600;
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            padding: 10px 25px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .home-btn:hover {
+            background: var(--accent-color);
+            color: #0f172a;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+    </style>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" class="home-btn">
+            <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
+        </a>
+
+        <div class="nav-links">
+            <a href="index.html" class="nav-item"><i class="fas fa-qrcode"></i> Tạo QR Pay</a>
+            <a href="am-v.html" class="nav-item"><i class="fas fa-layer-group"></i> Tính Am/V</a>
+            <a href="car-cost.html" class="nav-item active"><i class="fas fa-car"></i> Nuôi xe Ô tô</a>
+            <a href="donate.html" class="nav-item"><i class="fas fa-heart"></i> Ủng hộ</a>
+        </div>
+
+        <div class="copyright">
+            © 2026 <strong>hoangtuan.net</strong> · Phát triển bởi <strong>BuilderTV</strong>
+        </div>
+        
+        <div style="opacity: 0.5; transform: scale(0.8);">
+            <script type="text/javascript" src="https://www.free-counters.org/count/gl1o"></script>
+        </div>
+    </footer>
+    
 </body>
 </html>

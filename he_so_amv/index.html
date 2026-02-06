@@ -229,7 +229,7 @@
             </div>
             <div class="input-group">
                 <label>Chiều cao bụng h₂ (mm)</label>
-                <input id="h2" type="number" placeholder="Nhập h2">
+                <input id="h2" type="number" placeholder="Để trống nếu h2 = h1">
             </div>
             <div class="input-group">
                 <label>Chiều dày bụng t<sub>w</sub> (mm)</label>
@@ -266,7 +266,7 @@
             </div>
 
             <div class="note">
-                <i class="fas fa-info-circle"></i> Quy chuẩn: R15 cho phép không bọc bảo vệ nếu Am/V ≤ 250 m⁻¹.
+                <i class="fas fa-info-circle"></i> Theo Quy chuẩn QCVN 06:2022/BXD: R15 cho phép không bọc bảo vệ nếu Am/V ≤ 250 m⁻¹.
             </div>
         </div>
     </div>
@@ -288,13 +288,19 @@
 
 <script>
 function tinhAmV() {
-    const h1 = parseFloat(document.getElementById("h1").value);
-    const h2 = parseFloat(document.getElementById("h2").value);
+// 1. Lấy giá trị thô từ input
+    const h1Raw = document.getElementById("h1").value;
+    const h2Raw = document.getElementById("h2").value;
     const tw = parseFloat(document.getElementById("tw").value);
     const bf = parseFloat(document.getElementById("bf").value);
     const tf = parseFloat(document.getElementById("tf").value);
 
-    if ([h1, h2, tw, bf, tf].some(isNaN)) {
+    // 2. Xử lý logic h2: Nếu h2 rỗng thì gán bằng h1Raw
+    const h1 = parseFloat(h1Raw);
+    const h2 = h2Raw.trim() === "" ? h1 : parseFloat(h2Raw);
+
+    // 3. Kiểm tra các thông số bắt buộc còn lại
+    if (isNaN(h1) || isNaN(h2) || isNaN(tw) || isNaN(bf) || isNaN(tf)) {
         alert("Vui lòng nhập đầy đủ các thông số!");
         return;
     }

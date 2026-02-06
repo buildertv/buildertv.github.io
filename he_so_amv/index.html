@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tính Am/V Thép Chữ H | hoangtuan.net</title>
-    
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
 
@@ -30,7 +30,8 @@
             min-height: 100vh;
             padding: 40px 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
 
         .container {
@@ -38,7 +39,6 @@
             width: 100%;
         }
 
-        /* Header */
         header {
             text-align: center;
             margin-bottom: 40px;
@@ -53,16 +53,13 @@
             text-transform: uppercase;
         }
 
-        header p {
-            color: var(--text-muted);
-            margin-top: 10px;
-        }
+        header p { color: var(--text-muted); margin-top: 10px; }
 
-        /* Layout Main */
         .calculator-grid {
             display: grid;
             grid-template-columns: 1.2fr 1fr;
             gap: 25px;
+            margin-bottom: 40px;
         }
 
         .card {
@@ -83,11 +80,7 @@
             gap: 10px;
         }
 
-        /* Form */
-        .input-group {
-            margin-bottom: 15px;
-        }
-
+        .input-group { margin-bottom: 15px; }
         .input-group label {
             display: block;
             font-size: 0.85rem;
@@ -107,10 +100,7 @@
             transition: 0.3s;
         }
 
-        .input-group input:focus {
-            border-color: var(--accent-color);
-            background: rgba(255, 255, 255, 0.1);
-        }
+        .input-group input:focus { border-color: var(--accent-color); background: rgba(255, 255, 255, 0.1); }
 
         button {
             width: 100%;
@@ -126,12 +116,8 @@
             transition: 0.3s;
         }
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
-        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
 
-        /* Result Section */
         .result-box {
             text-align: center;
             padding: 20px;
@@ -140,19 +126,8 @@
             margin-top: 20px;
         }
 
-        .result-value {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin: 10px 0;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
+        .result-value { font-size: 2.5rem; font-weight: 800; margin: 10px 0; }
+        .status-badge { display: inline-block; padding: 6px 16px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; }
 
         .note {
             font-size: 0.85rem;
@@ -160,9 +135,12 @@
             line-height: 1.5;
             margin-top: 20px;
             font-style: italic;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 3px solid var(--accent-color);
         }
 
-        /* Diagram */
         .diagram {
             text-align: center;
             background: white;
@@ -171,10 +149,67 @@
             margin-bottom: 20px;
         }
 
-        
-        @media (max-width: 768px) {
-            .calculator-grid { grid-template-columns: 1fr; }
+        /* CSS CHO FOOTER ĐIỀU HƯỚNG */
+        .footer-nav {
+            margin-top: 20px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            width: 100%;
+            max-width: 850px;
         }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding: 10px 25px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .home-btn:hover { background: var(--accent-color); color: #0f172a; }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        @media (max-width: 768px) { .calculator-grid { grid-template-columns: 1fr; } }
     </style>
 </head>
 <body>
@@ -214,10 +249,11 @@
         <div>
             <div class="card">
                 <h3><i class="fas fa-draw-polygon"></i> Tiết diện chữ H</h3>
-                <div class="diagram">
-                    
-                    <p style="color: #333; font-size: 0.7rem; margin-top: 5px;">Sơ đồ thông số tiết diện</p>
-                </div>
+             <div class="diagram">
+    <img src="tietdien.jpg" alt="Sơ đồ tiết diện chữ H" style="max-width: 100%; height: auto; display: block; margin: 0 auto;">
+    <p style="color: #333; font-size: 0.7rem; margin-top: 5px; font-family: 'Inter', sans-serif;">Sơ đồ thông số tiết diện</p>
+</div>
+
 
                 <div id="result-area" style="display: none;">
                     <div class="result-box">
@@ -230,7 +266,7 @@
             </div>
 
             <div class="note">
-                <i class="fas fa-info-circle"></i> Tiêu chuẩn: R15 cho phép không bọc bảo vệ nếu $A_m/V \leq 250\ m^{-1}$.
+                <i class="fas fa-info-circle"></i> Quy chuẩn: R15 cho phép không bọc bảo vệ nếu Am/V ≤ 250 m⁻¹.
             </div>
         </div>
     </div>
@@ -240,7 +276,7 @@
             <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
         </a>
         <div class="nav-links">
-            <a href="#" class="nav-item"><i class="fas fa-sitemap"></i> Vẽ Phả Đồ</a>
+            <a href="https://hoangtuan.net/caygiapha/" class="nav-item"><i class="fas fa-sitemap"></i> Vẽ Phả Đồ</a>
             <a href="https://hoangtuan.net/htqr/" class="nav-item"><i class="fas fa-qrcode"></i> QR Pay</a>
             <a href="https://hoangtuan.net/he_so_amv/" class="nav-item active"><i class="fas fa-drafting-compass"></i> Tính Am/V</a>
             <a href="https://hoangtuan.net/phi-nuoi-xe/" class="nav-item"><i class="fas fa-car"></i> Nuôi xe Ô tô</a>
@@ -263,13 +299,11 @@ function tinhAmV() {
         return;
     }
 
-    // Logic tính toán của bạn
     const H = (h1 + h2) / 2;
     const V = tw * H + 2 * (bf - tw) * tf;
     const Am = 2 * (H + bf) + 2 * (bf - tw);
     const AmV = Math.round(Am / V * 1000);
 
-    // Hiển thị kết quả
     document.getElementById("result-area").style.display = "block";
     const valDisplay = document.getElementById("valAmV");
     const badge = document.getElementById("statusBadge");

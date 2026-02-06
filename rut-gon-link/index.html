@@ -1,184 +1,288 @@
 <!DOCTYPE html>
-<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" /> -->
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://ogp.me/ns/fb#">
-
-<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<html lang="vi">
 <head>
-<script async="" src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8190248740084490" crossorigin="anonymous" type="text/javascript"></script>
-<script async="" custom-element="amp-auto-ads" src="./index_files/amp-auto-ads-0.1.js.download" type="text/javascript"> </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Công cụ rút gọn link miễn phí | hoangtuan.net</title>
+    <meta name="description" content="Tiện tích rút gọn link miễn phí từ BuilderTV">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
 
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta property="og:image" content="./images/BuilderTV_logo.png" />
-<meta property="og:type" content="website" />
-<meta name="cf-2fa-verify" content="e800bb24882564a">
-<title>Công cụ rút gọn link miễn phí</title>
-<meta name="description" content="Tiện tích rút gọn link">
-<link rel="stylesheet" href="assets/css/main.css">
-<link rel="shortcut icon" type="image/png" href="./images/BuilderTV_logo.png">
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        /* Container chính */
+        #particles-js {
+            background: var(--card-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 40px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 50px;
+        }
+
+        .content-logo img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        .site-title {
+            display: block;
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .site-description {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        /* Phần rút gọn link */
+        .download {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .download a {
+            text-decoration: none;
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--glass-border);
+            transition: 0.3s;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .download a:hover {
+            background: var(--accent-color);
+            color: #0f172a;
+        }
+
+        /* Ô Copy Link */
+        .copy-box {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 20px auto;
+            max-width: 400px;
+        }
+
+        .copy-box input {
+            flex: 1;
+            padding: 12px 15px;
+            background: transparent;
+            border: none;
+            color: white;
+            outline: none;
+            font-size: 0.9rem;
+        }
+
+        .copy-box button {
+            background: var(--accent-gradient);
+            border: none;
+            padding: 0 20px;
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .copy-box button:hover { opacity: 0.9; }
+
+        /* Footer chuẩn */
+        .footer-nav {
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 30px;
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding: 10px 25px;
+            border: 2px solid var(--accent-color);
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .home-btn:hover { background: var(--accent-color); color: #0f172a; }
+
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .nav-item:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .copyright { color: var(--text-muted); font-size: 0.8rem; margin-top: 10px; }
+
+        /* Alert Box */
+        #alertBox {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent-gradient);
+            color: #0f172a;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
+        }
+    </style>
 </head>
-<body bgcolor="black">
-<amp-auto-ads type="adsense" data-ad-client="ca-pub-8190248740084490">
-</amp-auto-ads>
-<button class="donate_block" onclick="if (!window.__cfRLUnblockHandlers) return false; ShowDonate();" data-cf-modified-094f82ebb892baf1a83d47b3->Donate</button>
-<div id="donate_links">
-<ul>
-<li><a id="donate_momo" class="donate_link" href="#">TPBank</a></li>
-<li><a class="donate_link" href="https://www.paypal.me/azchannel" target="_black" rel="noopener">PayPal</a></li>
+<body>
 
-</ul>
-</div>
-<div id="momo_modal" class="modal">
-<div class="modal-content">
-<div class="modal-header">
-<span class="close">&times;</span>
-<h3 class="modal_header_text">Bạn hãy quét mã QR bên dưới bằng app Bank</h3>
-</div>
-<div class="modal-body">
-<img src="./images/tpb.jpg">
-</div>
-</div>
-</div>
-
+<div id="alertBox"><span id="alertText"></span></div>
 
 <div id="particles-js">
-<div class="header">
-<div class="content-logo tanimation kago">
-<img src="./images/BuilderTV_logo.png" alt="logo" height="250" width="800">
-</div>
-<h1 class="tanimation keader">
-<span class="site-title">Rút gọn link</span>
-<span class="site-description">Tiện tích rút gọn link miễn phí</span>
-</h1>
+    <div class="header">
+        <div class="content-logo">
+            <img src="./images/BuilderTV_logo.png" alt="logo">
+        </div>
+        
+        <h1 class="tanimation">
+            <span class="site-title">Rút gọn link</span>
+            <span class="site-description">Tiện ích rút gọn link miễn phí</span>
+        </h1>
 
-<!-- DOWNLOAD -->
-<div class="download" style="font-size:15px;">
-<a target="_blank" href="https://github.com/buildertv/s/issues/new/choose" title="Rút gọn link">
-<i class="fa fa-link"></i>&nbsp;&nbsp;<span>Rút gọn link</span></a>
-<a href="./huong-dan/index.html#-hướng-dẫn-sử-dụng" title="Hướng dẫn">
-<i class="fa fa-question"></i>&nbsp;&nbsp;<span>Hướng dẫn</span></a>
-</div>
-	
-<!-- COPY LINK -->
-<div class="download" style="font-size:15px;">
-	<input type="text" value="Nhập số thứ tự cần copy vào đây" id="myInput" onclick="this.value=''" onblur="if (this.value == '') {this.value = 'Nhập số thứ tự cần copy vào đây';}" style="width: 250px;height: 25px;">
-<button onclick="myFunction()" style="height: 30px;"><i class="fa fa-clone" ></i> Copy </button>
+        <div class="download">
+            <a target="_blank" href="https://github.com/buildertv/s/issues/new/choose">
+                <i class="fa fa-link"></i> Tạo link mới
+            </a>
+            <a href="./huong-dan/index.html#-hướng-dẫn-sử-dụng">
+                <i class="fa fa-question"></i> Hướng dẫn
+            </a>
+        </div>
+
+        <div class="copy-box">
+            <input type="text" placeholder="Nhập số thứ tự cần copy..." id="myInput">
+            <button onclick="myFunction()"><i class="fa fa-clone"></i> COPY</button>
+        </div>
+
+        <div class="header-icons" style="margin-top: 20px; font-size: 1.5rem; display: flex; justify-content: center; gap: 20px;">
+            <a href="mailto:ad@hoangtuan.net" style="color: var(--text-muted);"><i class="fa fa-envelope"></i></a>
+            <a href="https://www.youtube.com/@BuilderTV" style="color: var(--text-muted);"><i class="fab fa-youtube"></i></a>
+        </div>
+    </div>
 </div>
 
-<div id="alertBox" style="display: none; position: fixed; z-index: 1; left: 50%; top: 10%; transform: translate(-50%, -50%); background-color: #0FA3CC; color: #FFFFFF; border-color: #0FA3CC; padding: 20px; border-radius: 4px;">
-  <span id="alertText"></span>
-</div>
+<footer class="footer-nav">
+    <a href="https://hoangtuan.net" class="home-btn">
+        <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
+    </a>
+    <div class="nav-links">
+        <a href="https://hoangtuan.net/caygiapha" class="nav-item"><i class="fas fa-sitemap"></i> Vẽ Phả Đồ</a>
+        <a href="https://hoangtuan.net/htqr/" class="nav-item"><i class="fas fa-qrcode"></i> QR Pay</a>
+        <a href="https://hoangtuan.net/he_so_amv/" class="nav-item"><i class="fas fa-drafting-compass"></i> Tính Am/V</a>
+        <a href="https://hoangtuan.net/phi-nuoi-xe/" class="nav-item"><i class="fas fa-car"></i> Nuôi xe Ô tô</a>
+        <a href="https://hoangtuan.net/coffee-donate/" class="nav-item"><i class="fas fa-heart"></i> Ủng hộ</a>
+    </div>
+    <p class="copyright">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
+</footer>
 
 <script>
 function myFunction() {
-  /* Lấy phần tử input */
   var copyText = document.getElementById("myInput");
+  var val = copyText.value.trim();
 
-  /* Kiểm tra xem giá trị nhập vào có phải là số hay không */
-  if(isNaN(copyText.value)) {
+  if(val === "" || isNaN(val)) {
     showAlert('Hãy nhập số thứ tự vào trước khi copy');
     return;
   }
 
-  /* Thêm giá trị của phần tử input vào sau "https://hoangtuan.net/s/" */
-  var fullText = "https://hoangtuan.net/s/" + copyText.value;
+  var fullText = "https://hoangtuan.net/s/" + val;
 
-  /* Tạo một phần tử textarea tạm thời */
   var tempElement = document.createElement("textarea");
   tempElement.value = fullText;
   document.body.appendChild(tempElement);
-
-  /* Chọn văn bản trong phần tử textarea */
   tempElement.select();
   document.execCommand("copy");
-
-  /* Xóa phần tử textarea tạm thời */
   document.body.removeChild(tempElement);
 
-  /* Thông báo cho người dùng văn bản đã được copy */
-  showAlert("Đã copy link: " + fullText);
+  showAlert("Đã copy: " + fullText);
 }
 
 function showAlert(message) {
   var alertBox = document.getElementById('alertBox');
   var alertText = document.getElementById('alertText');
-
   alertText.innerText = message;
   alertBox.style.display = 'block';
-
   setTimeout(function() {
     alertBox.style.display = 'none';
   }, 3000);
 }
 </script>
-<br>
-<br>
-<div class="header-icons tanimation">
-<a aria-label="Send email" href="mailto:ad@hoangtuan.net"><i class="icon fa fa-envelope"></i></a>
-<a aria-label="Trang chủ" target="_blank" href="https://hoangtuan.net"><i class="icon fa fa-home" aria-hidden="true"></i></a>
-<a aria-label="Video hướng dẫn" target="_blank" href="https://www.youtube.com/playlist?list=PLkXAvo_Xx0ZMW-11fiJjQ0SSqg-tYM1EE"><i class="icon fa fa-youtube" aria-hidden="true"></i></a>
-</div>
-</div>
-</div>
-
-<script type="text/javascript">
-  function ShowDonate() {
-    var x = document.getElementById('donate_links');
-    if (x.style.display == 'block') {
-      x.style.display = 'none';
-    } else {
-      x.style.display = 'block';
-    }
-  }
-
-  var modal = document.getElementById("momo_modal");
-  var btn = document.getElementById("donate_momo");
-  var span = document.getElementsByClassName("close")[0];
-  btn.onclick = function() {
-    modal.classList.add("active");
-  }
-  span.onclick = function() {
-    modal.classList.remove("active");
-  }
-
-  var modal1 = document.getElementById("vtpay_modal");
-  var btn1 = document.getElementById("donate_vtpay");
-  var span1 = document.getElementsByClassName("close")[1];
-  btn1.onclick = function() {
-    modal1.classList.add("active");
-  }
-  span1.onclick = function() {
-    modal1.classList.remove("active");
-  }
-
-  var modal2 = document.getElementById("zalopay_modal"); 
-  var btn2 = document.getElementById("donate_zalopay");
-  var span2 = document.getElementsByClassName("close")[2];
-  btn2.onclick = function() {
-    modal2.classList.add("active");
-  }
-  span2.onclick = function() {
-    modal2.classList.remove("active");
-  }
-  
-
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.classList.remove("active");
-    }
-    if (event.target == modal1) {
-      modal1.classList.remove("active");
-    }
-    if (event.target == modal2) {
-      modal2.classList.remove("active");
-    }
-  }
-</script>
-
-<script src="cdn-cgi/scripts/rocket-loader.min.js" data-cf-settings="10" defer></script>
 
 </body>
-
-
 </html>

@@ -192,24 +192,41 @@
  <header class="hero">
     <h1>HOÀNG TUẤN</h1>
     
-    <div id="hero-dynamic-content" style="min-height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <p id="default-desc" style="display: none;">Khám phá các công cụ và nội dung hữu ích từ BuilderTV.</p>
+    <div id="hero-dynamic-content" style="min-height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        
+        <p id="default-desc" style="display: none; font-size: 1.1rem; color: var(--text-muted);">Khám phá các công cụ và nội dung hữu ích từ BuilderTV.</p>
 
-        <div id="countdown-wrapper" class="countdown-container" style="display: none; border: none; background: transparent; margin: 0; padding: 0;">
-            <p id="tet-label" style="font-size: 0.85rem; color: var(--accent-color); margin-bottom: 8px; font-weight: 600; letter-spacing: 1px;">
-                <i class="fas fa-mendi-lantern"></i> TẾT NGUYÊN ĐÁN BÍNH NGỌ 2026 <i class="fas fa-mendi-lantern"></i>
+        <div id="countdown-wrapper" style="display: none;">
+            <p id="tet-label" style="font-size: 0.85rem; color: var(--accent-color); margin-bottom: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase;">
+                <i class="fas fa-lantern"></i> Tết Nguyên Đán Bính Ngọ 2026
             </p>
-            <div id="countdown" style="font-family: 'Courier New', Courier, monospace; gap: 20px;">
-                <div class="countdown-item"><span id="days" style="font-size: 2rem;">00</span><span class="countdown-label">Ngày</span></div>
-                <div class="countdown-item"><span id="hours" style="font-size: 2rem;">00</span><span class="countdown-label">Giờ</span></div>
-                <div class="countdown-item"><span id="minutes" style="font-size: 2rem;">00</span><span class="countdown-label">Phút</span></div>
-                <div class="countdown-item"><span id="seconds" style="font-size: 2rem;">00</span><span class="countdown-label">Giây</span></div>
+            
+            <div id="countdown" style="display: flex; justify-content: center; gap: 15px;">
+                <div class="countdown-item" style="display: flex; flex-direction: column; align-items: center; min-width: 60px;">
+                    <span id="days" style="font-family: 'Courier New', monospace; font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--text-main);">00</span>
+                    <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Ngày</span>
+                </div>
+                
+                <div class="countdown-item" style="display: flex; flex-direction: column; align-items: center; min-width: 60px;">
+                    <span id="hours" style="font-family: 'Courier New', monospace; font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--text-main);">00</span>
+                    <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Giờ</span>
+                </div>
+
+                <div class="countdown-item" style="display: flex; flex-direction: column; align-items: center; min-width: 60px;">
+                    <span id="minutes" style="font-family: 'Courier New', monospace; font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--text-main);">00</span>
+                    <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Phút</span>
+                </div>
+
+                <div class="countdown-item" style="display: flex; flex-direction: column; align-items: center; min-width: 60px;">
+                    <span id="seconds" style="font-family: 'Courier New', monospace; font-size: 2.2rem; font-weight: 800; line-height: 1; color: var(--accent-color);">00</span>
+                    <span style="font-family: 'Inter', sans-serif; font-size: 0.75rem; color: var(--text-muted); margin-top: 5px;">Giây</span>
+                </div>
             </div>
         </div>
 
-        <div id="new-year-msg" style="display: none;">
-            <h2 style="color: #f87171; font-size: 1.8rem; text-shadow: 0 0 15px rgba(248,113,113,0.4);">🧧 CHÚC MỪNG NĂM MỚI! 🧧</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">An khang thịnh vượng - Vạn sự như ý</p>
+        <div id="new-year-msg" style="display: none; text-align: center; animation: pulse 2s infinite;">
+            <h2 style="color: #f87171; font-size: 2rem; font-weight: 800; margin-bottom: 5px;">🧧 CHÚC MỪNG NĂM MỚI! 🧧</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; font-weight: 400;">An khang thịnh vượng — Vạn sự như ý</p>
         </div>
     </div>
 </header>
@@ -268,7 +285,7 @@
         }
 
         // LOGIC ĐẾM NGƯỢC TẾT 2026
-       
+
 
     const tetDate = new Date("Feb 17, 2026 00:00:00").getTime();
     const endDate = new Date("Feb 23, 2026 00:00:00").getTime();
@@ -294,7 +311,7 @@
             desc.style.display = "none";
             countWrapper.style.display = "block";
             msg.style.display = "none";
-            
+
             const distance = tetDate - now;
             const d = Math.floor(distance / (1000 * 60 * 60 * 24));
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

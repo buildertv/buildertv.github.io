@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Chức Năng Thận (eGFR) | hoangtuan.net</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #22c55e;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container { max-width: 900px; width: 100%; }
+
+        header { text-align: center; margin-bottom: 40px; }
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+        header p { color: var(--text-muted); margin-top: 10px; }
+
+        .calculator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .input-group select option { background: var(--primary-bg); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 12px;
+            background: var(--accent-gradient);
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+
+        /* Kết quả */
+        .result-area { display: none; text-align: center; }
+        .result-value { font-size: 3rem; font-weight: 800; margin: 10px 0; }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .warning-box {
+            text-align: left;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: auto;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            width: 100%;
+        }
+        .nav-links { display: flex; justify-content: center; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+        .nav-item:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+        @media (max-width: 768px) { .calculator-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Tính Chức Năng Thận</h1>
+        <p>Ước tính mức lọc cầu thận (eGFR) qua Creatinin huyết thanh</p>
+    </header>
+
+    <div class="calculator-grid">
+        <div class="card">
+            <h3><i class="fas fa-user-md"></i> Thông số đo</h3>
+            <div class="input-group">
+                <label>Giới tính</label>
+                <select id="gender">
+                    <option value="male">Nam</option>
+                    <option value="female">Nữ</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Tuổi</label>
+                <input id="age" type="number" placeholder="Nhập số tuổi">
+            </div>
+            <div class="input-group">
+                <label>Creatinin (µmol/L)</label>
+                <input id="creatinine" type="number" step="0.1" placeholder="Ví dụ: 88.5">
+            </div>
+            <button onclick="calculateGFR()"><i class="fas fa-calculator"></i> TÍNH TOÁN</button>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-clipboard-check"></i> Kết quả phân tích</h3>
+            <div id="result-placeholder" style="text-align: center; color: var(--text-muted); padding: 40px 0;">
+                <i class="fas fa-flask-vial" style="font-size: 3rem; margin-bottom: 15px; opacity: 0.3;"></i>
+                <p>Vui lòng nhập thông số và nhấn tính toán</p>
+            </div>
+
+            <div id="result-display" class="result-area">
+                <p style="font-size: 0.9rem; color: var(--text-muted);">Mức lọc cầu thận (eGFR)</p>
+                <div class="result-value" id="egfr-val">0</div>
+                <p style="margin-bottom: 15px; font-size: 0.8rem;">mL/phút/1.73 m²</p>
+                <div id="status-badge" class="status-badge">---</div>
+                
+                <div class="warning-box" id="warning-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" style="margin-bottom: 40px; font-size: 0.85rem; color: var(--text-muted);">
+        <i class="fas fa-info-circle"></i> <strong>Lưu ý:</strong> Công cụ sử dụng công thức <strong>CKD-EPI (2021)</strong>. Kết quả chỉ mang tính chất tham khảo. Bạn nên tham vấn bác sĩ chuyên khoa để có chẩn đoán chính xác nhất về tình trạng sức khỏe.
+    </div>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 10px 20px; border-radius: 12px;">
+            <i class="fas fa-home"></i> TRANG CHỦ
+        </a>
+        <div class="nav-links">
+            <a href="https://hoangtuan.net/caygiapha" class="nav-item">Vẽ Phả Đồ</a>
+            <a href="https://hoangtuan.net/he_so_amv" class="nav-item">Hệ số Am/V</a>
+            <a href="https://hoangtuan.net/phi-nuoi-xe" class="nav-item">Nuôi xe</a>
+            <a href="https://hoangtuan.net/coffee-donate" class="nav-item">Donate</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.8rem;">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
+    </footer>
+</div>
+
+<script>
+function calculateGFR() {
+    const gender = document.getElementById('gender').value;
+    const age = parseFloat(document.getElementById('age').value);
+    const scr_umol = parseFloat(document.getElementById('creatinine').value);
+
+    if (isNaN(age) || isNaN(scr_umol)) {
+        alert("Vui lòng nhập đầy đủ thông tin!");
+        return;
+    }
+
+    // Chuyển µmol/L sang mg/dL (1 mg/dL = 88.4 µmol/L)
+    const scr = scr_umol / 88.4;
+
+    let kappa, alpha, multiplier;
+    if (gender === 'female') {
+        kappa = 0.7;
+        alpha = -0.241;
+        multiplier = 1.012;
+    } else {
+        kappa = 0.9;
+        alpha = -0.302;
+        multiplier = 1;
+    }
+
+    // Công thức CKD-EPI 2021
+    const term1 = scr / kappa;
+    const egfr = 142 * Math.pow(Math.min(term1, 1), alpha) * Math.pow(Math.max(term1, 1), -1.200) * Math.pow(0.9938, age) * multiplier;
+
+    const finalResult = Math.round(egfr);
+
+    // Hiển thị
+    document.getElementById('result-placeholder').style.display = 'none';
+    document.getElementById('result-display').style.display = 'block';
+    document.getElementById('egfr-val').innerText = finalResult;
+
+    const badge = document.getElementById('status-badge');
+    const warning = document.getElementById('warning-text');
+
+    if (finalResult >= 90) {
+        badge.innerText = "G1: Bình thường";
+        badge.style.backgroundColor = "rgba(34, 197, 94, 0.2)";
+        badge.style.color = "var(--success)";
+        warning.innerHTML = "Chức năng thận bình thường. Hãy duy trì uống đủ nước và lối sống lành mạnh.";
+    } else if (finalResult >= 60) {
+        badge.innerText = "G2: Giảm nhẹ";
+        badge.style.backgroundColor = "rgba(245, 158, 11, 0.2)";
+        badge.style.color = "var(--warning)";
+        warning.innerHTML = "Chức năng thận giảm nhẹ. Cần theo dõi định kỳ và kiểm soát huyết áp, đường huyết.";
+    } else if (finalResult >= 30) {
+        badge.innerText = "G3: Giảm trung bình";
+        badge.style.backgroundColor = "rgba(239, 68, 68, 0.2)";
+        badge.style.color = "var(--danger)";
+        warning.innerHTML = "<strong>Cảnh báo:</strong> Chức năng thận suy giảm mức độ trung bình. Bạn nên đi khám bác sĩ chuyên khoa thận sớm.";
+    } else if (finalResult >= 15) {
+        badge.innerText = "G4: Giảm nặng";
+        badge.style.backgroundColor = "rgba(239, 68, 68, 0.2)";
+        badge.style.color = "var(--danger)";
+        warning.innerHTML = "<strong>Nguy hiểm:</strong> Suy thận nặng. Cần can thiệp y tế ngay lập tức để tránh biến chứng.";
+    } else {
+        badge.innerText = "G5: Suy thận cuối";
+        badge.style.backgroundColor = "#000";
+        badge.style.color = "var(--danger)";
+        warning.innerHTML = "<strong>Cấp cứu:</strong> Suy thận giai đoạn cuối. Cần chuẩn bị điều trị thay thế thận (lọc máu hoặc ghép thận).";
+    }
+}
+</script>
+
+</body>
+</html>
+

@@ -311,9 +311,34 @@ function calculateAlcohol() {
         document.getElementById('timeResult').innerText = `${h}h ${m}p`;
         
         // Tính thời điểm hết cồn
-        const finishDate = new Date(Date.now() + hoursNeeded * 3600000);
+                // Tính thời điểm hết cồn
+        const now = new Date();
+        const finishDate = new Date(now.getTime() + hoursNeeded * 3600000);
+        
+        // Định dạng giờ:phút (ví dụ: 01:30)
         const timeStr = finishDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('finishTime').innerText = `Dự kiến hết nồng độ cồn vào lúc: ${timeStr} hôm nay`;
+        
+        // Tính khoảng cách ngày giữa thời điểm hết cồn và hiện tại
+        // Đặt cả hai về mốc 0h để so sánh số ngày chính xác
+        const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const finishDateOnly = new Date(finishDate.getFullYear(), finishDate.getMonth(), finishDate.getDate());
+        const diffTime = finishDateOnly - nowDateOnly;
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+        let dateLabel = "";
+        if (diffDays === 0) {
+            dateLabel = "hôm nay";
+        } else if (diffDays === 1) {
+            dateLabel = "ngày mai";
+        } else if (diffDays === 2) {
+            dateLabel = "ngày kia";
+        } else {
+            // Nếu trên 2 ngày thì hiện ngày cụ thể (ví dụ: ngày 20/02)
+            dateLabel = `ngày ${finishDate.getDate()}/${finishDate.getMonth() + 1}`;
+        }
+
+        document.getElementById('finishTime').innerText = `Dự kiến hết nồng độ cồn vào lúc: ${timeStr} ${dateLabel}`;
+
         
         // Reset badge cảnh báo
         document.getElementById('safety-badge').innerHTML = '<i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE';

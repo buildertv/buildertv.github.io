@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tính Thời Gian Hết Nồng Độ Cồn | hoangtuan.net</title>
+    <title>Kiểm Tra Nồng Độ Cồn | hoangtuan.net</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -16,6 +16,7 @@
             --text-muted: #94a3b8;
             --glass-border: rgba(255, 255, 255, 0.1);
             --warning-color: #fbbf24;
+            --danger-color: #ef4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,18 +29,19 @@
             align-items: center;
             padding: 40px 20px;
             min-height: 100vh;
+            line-height: 1.6;
         }
 
-        .container { max-width: 800px; width: 100%; }
+        .container { max-width: 650px; width: 100%; }
         header { text-align: center; margin-bottom: 30px; }
         header h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
             font-weight: 800;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             text-transform: uppercase;
-            line-height: 2;
+            letter-spacing: -1px;
         }
 
         .card {
@@ -47,18 +49,15 @@
             backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 24px;
-            padding: 25px;
-            margin-bottom: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
         }
 
-        .input-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
         .input-group { margin-bottom: 15px; }
-        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        
         input, select {
             width: 100%;
             padding: 12px;
@@ -67,54 +66,87 @@
             border-radius: 12px;
             color: white;
             outline: none;
-            transition: 0.3s;
+            font-size: 1rem;
         }
         input:focus { border-color: var(--accent-color); }
+        select option { background: #1e293b; color: white; }
+
+        /* Quick Select Style */
+        .quick-select-label { font-size: 0.85rem; color: var(--accent-color); margin: 20px 0 10px 0; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .quick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
+        .quick-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            padding: 12px 5px;
+            border-radius: 15px;
+            cursor: pointer;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .quick-item:hover { background: rgba(56, 189, 248, 0.1); border-color: var(--accent-color); transform: translateY(-3px); }
+        .quick-item i { font-size: 1.2rem; color: var(--accent-color); display: block; margin-bottom: 5px; }
+        .quick-item span { font-size: 0.7rem; color: var(--text-main); font-weight: 600; }
 
         .btn-calc {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: var(--accent-gradient);
             border: none;
-            border-radius: 12px;
+            border-radius: 14px;
             color: #0f172a;
-            font-weight: 700;
+            font-weight: 800;
+            font-size: 1rem;
             cursor: pointer;
-            margin-top: 10px;
+            transition: 0.3s;
+            text-transform: uppercase;
         }
+        .btn-calc:hover { opacity: 0.9; transform: scale(1.01); }
 
+        /* Result Area */
         .result-box {
             display: none;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed var(--glass-border);
             text-align: center;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px solid var(--glass-border);
+            animation: fadeIn 0.5s ease;
         }
+        .time-val { font-size: 3rem; font-weight: 800; color: var(--accent-color); margin: 5px 0; letter-spacing: -1px; }
+        .safety-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
 
-        .time-val { font-size: 2.5rem; font-weight: 800; color: var(--accent-color); margin: 10px 0; }
-        
         .disclaimer {
-            font-size: 0.8rem;
-            color: var(--warning-color);
-            background: rgba(251, 191, 36, 0.1);
-            padding: 15px;
+            margin-top: 25px;
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger-color);
+            padding: 20px;
             border-radius: 12px;
-            margin-top: 20px;
-            border-left: 4px solid var(--warning-color);
+            font-size: 0.85rem;
+            color: #fca5a5;
         }
 
+        /* Footer */
         .footer-nav {
-            margin-top: 50px;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
             text-align: center;
             width: 100%;
-            border-top: 1px solid var(--glass-border);
-            padding-top: 20px;
         }
-        .nav-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 15px 0; }
-        .nav-item { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; }
-        .nav-item:hover { color: var(--accent-color); }
+        .nav-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .nav-item:hover { color: var(--accent-color); border-color: var(--accent-color); }
 
-        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 500px) { .input-grid { grid-template-columns: 1fr; } .quick-grid { grid-template-columns: repeat(2, 1fr); } }
     </style>
 </head>
 <body>
@@ -122,10 +154,10 @@
 <div class="container">
     <header>
         <h1>Kiểm Tra Nồng Độ Cồn</h1>
-        <p style="color: var(--text-muted); font-size: 0.9rem;">Ước tính thời gian đào thải cồn trong cơ thể</p>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Tính toán thời gian đào thải để lái xe an toàn</p>
     </header>
 
-    <div class="card">
+    <div class="card" id="mainCard">
         <div class="input-grid">
             <div class="input-group">
                 <label><i class="fas fa-weight"></i> Cân nặng (kg)</label>
@@ -141,116 +173,156 @@
         </div>
 
         <div class="input-group">
-            <label><i class="fas fa-utensils"></i> Trạng thái bụng</label>
+            <label><i class="fas fa-utensils"></i> Trạng thái ăn uống</label>
             <select id="stomach">
                 <option value="1.0">Bụng đói (Hấp thụ nhanh)</option>
                 <option value="0.8">Sau khi ăn (Hấp thụ chậm hơn)</option>
             </select>
         </div>
 
+        <div class="quick-select-label">
+            <i class="fas fa-bolt"></i> CHỌN NHANH ĐỒ UỐNG
+        </div>
+        
+        <div class="quick-grid">
+            <div class="quick-item" onclick="quickSet(4.5, 330)">
+                <i class="fas fa-beer"></i>
+                <span>1 Lon Bia</span>
+            </div>
+            <div class="quick-item" onclick="quickSet(5, 300)">
+                <i class="fas fa-beer"></i>
+                <span>1 Cốc Bia</span>
+            </div>
+            <div class="quick-item" onclick="quickSet(12.5, 150)">
+                <i class="fas fa-glass-wine"></i>
+                <span>1 Ly Vang</span>
+            </div>
+            <div class="quick-item" onclick="quickSet(40, 30)">
+                <i class="fas fa-glass-whiskey"></i>
+                <span>1 Chén Rượu</span>
+            </div>
+        </div>
+
         <div class="input-grid">
             <div class="input-group">
-                <label>Loại đồ uống</label>
-                <select id="drinkType">
-                    <option value="4.5">Bia (4.5%)</option>
-                    <option value="5.0">Bia mạnh (5%)</option>
-                    <option value="12.5">Rượu vang (12.5%)</option>
-                    <option value="40">Rượu mạnh (40%)</option>
-                </select>
+                <label>Nồng độ cồn (%)</label>
+                <input type="number" id="drinkType" step="0.1" value="4.5">
             </div>
             <div class="input-group">
-                <label>Số lượng uống</label>
-                <input type="number" id="amount" placeholder="Nhập số lượng">
+                <label>Số lượng (Lon/Chén...)</label>
+                <input type="number" id="amount" value="1">
             </div>
         </div>
 
         <div class="input-group">
-            <label>Đơn vị tính</label>
+            <label>Dung tích mỗi đơn vị (ml)</label>
             <select id="unit">
                 <option value="330">Lon/Chai (330ml)</option>
-                <option value="300">Cốc bia (300ml)</option>
-                <option value="1000">Lít (1000ml)</option>
-            </div>
-        </select>
+                <option value="300">Cốc bia hơi (300ml)</option>
+                <option value="150">Ly rượu vang (150ml)</option>
+                <option value="30">Chén rượu nhỏ (30ml)</option>
+                <option value="1000">1 Lít (1000ml)</option>
+            </select>
+        </div>
 
-        <button class="btn-calc" onclick="calculateAlcohol()">TÍNH THỜI GIAN ĐÀO THẢI</button>
+        <button class="btn-calc" onclick="calculateAlcohol()">TÍNH KẾT QUẢ</button>
 
         <div id="result" class="result-box">
-            <p>Thời gian dự kiến để hết nồng độ cồn:</p>
+            <p style="font-size: 0.9rem; color: var(--text-muted);">Cơ thể cần khoảng:</p>
             <div class="time-val" id="timeResult">0 Giờ</div>
-            <p id="safetyMsg" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+            <div id="safety-badge" class="safety-badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger-color);">
+                <i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE
+            </div>
+            <p id="finishTime" style="margin-top: 15px; font-size: 0.85rem; color: var(--accent-color); font-weight: 600;"></p>
         </div>
     </div>
 
     <div class="disclaimer">
-        <i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý quan trọng:</strong> 
-        Kết quả này chỉ mang tính chất tham khảo dựa trên công thức toán học. Khả năng đào thải cồn thực tế phụ thuộc vào cơ địa, sức khỏe gan và tốc độ chuyển hóa của mỗi người. 
+        <i class="fas fa-exclamation-triangle" style="font-size: 1.2rem; margin-bottom: 10px; display: block;"></i>
+        <strong>LƯU Ý QUAN TRỌNG:</strong> 
+        Kết quả chỉ mang tính chất tham khảo dựa trên công thức Widmark. Tốc độ đào thải thực tế phụ thuộc rất nhiều vào chức năng gan, tình trạng sức khỏe và cơ địa từng người. 
         <br><br>
-        <strong>Đã uống rượu bia thì không lái xe.</strong> Để đảm bảo an toàn tuyệt đối, hãy nghỉ ngơi thêm vài giờ sau thời gian tính toán.
+        <strong>ĐÃ UỐNG RƯỢU BIA - KHÔNG LÁI XE.</strong> Hãy gọi xe công nghệ hoặc nhờ người thân đưa về để đảm bảo an toàn cho chính mình và mọi người.
     </div>
 
     <footer class="footer-nav">
-        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 8px 20px; border-radius: 10px;">
-            <i class="fas fa-home"></i> TRANG CHỦ
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 10px 25px; border-radius: 12px; display: inline-block;">
+            <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
         </a>
         <div class="nav-links">
             <a href="https://hoangtuan.net/egfr" class="nav-item">Chức năng thận</a>
             <a href="https://hoangtuan.net/he_so_amv" class="nav-item">Hệ số Am/V</a>
-            <a href="https://hoangtuan.net/caygiapha" class="nav-item">Vẽ Phả Đồ</a>
+            <a href="https://hoangtuan.net/phi-nuoi-xe" class="nav-item">Chi phí nuôi xe</a>
+            <a href="https://hoangtuan.net/coffee-donate" class="nav-item">Ủng hộ</a>
         </div>
-        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · BuilderTV Ecosystem</p>
+        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
     </footer>
 </div>
 
 <script>
+function quickSet(alcohol, volume) {
+    document.getElementById('drinkType').value = alcohol;
+    document.getElementById('amount').value = 1;
+    document.getElementById('unit').value = volume;
+    
+    // Hiệu ứng phản hồi khi nhấn
+    const card = document.getElementById('mainCard');
+    card.style.borderColor = 'var(--accent-color)';
+    setTimeout(() => card.style.borderColor = 'var(--glass-border)', 400);
+}
+
 function calculateAlcohol() {
     const weight = parseFloat(document.getElementById('weight').value);
-    const genderConstant = parseFloat(document.getElementById('gender').value);
-    const stomachConstant = parseFloat(document.getElementById('stomach').value);
-    const drinkVol = parseFloat(document.getElementById('drinkType').value);
+    const genderR = parseFloat(document.getElementById('gender').value);
+    const stomachK = parseFloat(document.getElementById('stomach').value);
+    const alcoholPercent = parseFloat(document.getElementById('drinkType').value);
     const amount = parseFloat(document.getElementById('amount').value);
-    const unitSize = parseFloat(document.getElementById('unit').value);
+    const mlPerUnit = parseFloat(document.getElementById('unit').value);
 
-    if (!amount || amount <= 0) {
-        alert("Vui lòng nhập số lượng đã uống!");
+    if (!amount || amount <= 0 || !weight) {
+        alert("Vui lòng nhập đầy đủ thông số!");
         return;
     }
 
-    // 1. Tính tổng lượng cồn nguyên chất (gram)
-    // Công thức: Volume (ml) * Nồng độ (%) * 0.79 (khối lượng riêng của cồn)
-    const totalMl = amount * unitSize;
-    const pureAlcohol = totalMl * (drinkVol / 100) * 0.79;
+    // 1. Tổng lượng cồn nguyên chất (gam) = ml * % * 0.79
+    const totalMl = amount * mlPerUnit;
+    const A = totalMl * (alcoholPercent / 100) * 0.79;
 
-    // 2. Tính nồng độ cồn trong máu (BAC) - Công thức Widmark
-    // C = A / (W * r) 
-    // A: Lượng cồn (g), W: Cân nặng (kg), r: Hằng số phân bố
-    let bac = pureAlcohol / (weight * genderConstant);
-    
-    // Điều chỉnh theo trạng thái bụng (Bụng đói hấp thụ gần như 100%, bụng no giảm hấp thụ)
-    bac = bac * stomachConstant;
+    // 2. Nồng độ cồn trong máu (BAC) = A / (W * r)
+    // Điều chỉnh thêm hệ số hấp thụ do ăn uống (stomachK)
+    let bac = (A / (weight * genderR)) * stomachK;
 
-    // 3. Tính thời gian đào thải (T)
-    // Tốc độ đào thải trung bình là 0.015 g/dL mỗi giờ
-    const eliminationRate = 0.15; // mg/ml mỗi giờ tương đương 0.015% BAC
-    
-    const hoursNeeded = bac / 0.15;
-    
+    // 3. Thời gian đào thải (T) = BAC / 0.015 (tốc độ trung bình 0.15mg/ml mỗi giờ)
+    const eliminationRate = 0.15;
+    const hoursNeeded = bac / eliminationRate;
+
     // Hiển thị kết quả
-    const resultBox = document.getElementById('result');
-    const timeDisplay = document.getElementById('timeResult');
-    const safetyMsg = document.getElementById('safetyMsg');
-
-    resultBox.style.display = 'block';
+    document.getElementById('result').style.display = 'block';
     
-    if (hoursNeeded < 0.1) {
-        timeDisplay.innerText = "Sắp hết";
-        safetyMsg.innerText = "Nồng độ cồn rất thấp, nhưng hãy cẩn trọng.";
+    if (hoursNeeded <= 0.1) {
+        document.getElementById('timeResult').innerText = "0 Giờ";
+        document.getElementById('safety-badge').innerHTML = '<i class="fas fa-check-circle"></i> CƠ THỂ ĐÃ SẠCH CỒN';
+        document.getElementById('safety-badge').style.color = '#22c55e';
+        document.getElementById('safety-badge').style.background = 'rgba(34, 197, 94, 0.1)';
+        document.getElementById('finishTime').innerText = "";
     } else {
         const h = Math.floor(hoursNeeded);
         const m = Math.round((hoursNeeded - h) * 60);
-        timeDisplay.innerText = `${h} Giờ ${m} Phút`;
-        safetyMsg.innerText = `Dự kiến đến khoảng ${(new Date(Date.now() + hoursNeeded*3600000)).toLocaleTimeString('vi-VN')} bạn mới hết hoàn toàn nồng độ cồn.`;
+        document.getElementById('timeResult').innerText = `${h}h ${m}p`;
+        
+        // Tính thời điểm hết cồn
+        const finishDate = new Date(Date.now() + hoursNeeded * 3600000);
+        const timeStr = finishDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('finishTime').innerText = `Dự kiến hết nồng độ cồn vào lúc: ${timeStr} hôm nay`;
+        
+        // Reset badge cảnh báo
+        document.getElementById('safety-badge').innerHTML = '<i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE';
+        document.getElementById('safety-badge').style.color = 'var(--danger-color)';
+        document.getElementById('safety-badge').style.background = 'rgba(239, 68, 68, 0.2)';
     }
+
+    // Cuộn xuống kết quả
+    window.scrollTo({ top: document.getElementById('result').offsetTop + 200, behavior: 'smooth' });
 }
 </script>
 

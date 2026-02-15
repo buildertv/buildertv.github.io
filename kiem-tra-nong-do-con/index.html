@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Thời Gian Hết Nồng Độ Cồn | hoangtuan.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --warning-color: #fbbf24;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 800px; width: 100%; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent-color); }
+
+        .btn-calc {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .result-box {
+            display: none;
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .time-val { font-size: 2.5rem; font-weight: 800; color: var(--accent-color); margin: 10px 0; }
+        
+        .disclaimer {
+            font-size: 0.8rem;
+            color: var(--warning-color);
+            background: rgba(251, 191, 36, 0.1);
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 20px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .footer-nav {
+            margin-top: 50px;
+            text-align: center;
+            width: 100%;
+            border-top: 1px solid var(--glass-border);
+            padding-top: 20px;
+        }
+        .nav-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin: 15px 0; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; }
+        .nav-item:hover { color: var(--accent-color); }
+
+        @media (max-width: 600px) { .input-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Kiểm Tra Nồng Độ Cồn</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Ước tính thời gian đào thải cồn trong cơ thể</p>
+    </header>
+
+    <div class="card">
+        <div class="input-grid">
+            <div class="input-group">
+                <label><i class="fas fa-weight"></i> Cân nặng (kg)</label>
+                <input type="number" id="weight" value="65">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-venus-mars"></i> Giới tính</label>
+                <select id="gender">
+                    <option value="0.7">Nam</option>
+                    <option value="0.6">Nữ</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label><i class="fas fa-utensils"></i> Trạng thái bụng</label>
+            <select id="stomach">
+                <option value="1.0">Bụng đói (Hấp thụ nhanh)</option>
+                <option value="0.8">Sau khi ăn (Hấp thụ chậm hơn)</option>
+            </select>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label>Loại đồ uống</label>
+                <select id="drinkType">
+                    <option value="4.5">Bia (4.5%)</option>
+                    <option value="5.0">Bia mạnh (5%)</option>
+                    <option value="12.5">Rượu vang (12.5%)</option>
+                    <option value="40">Rượu mạnh (40%)</option>
+                </select>
+            </div>
+            <div class="input-group">
+                <label>Số lượng uống</label>
+                <input type="number" id="amount" placeholder="Nhập số lượng">
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Đơn vị tính</label>
+            <select id="unit">
+                <option value="330">Lon/Chai (330ml)</option>
+                <option value="300">Cốc bia (300ml)</option>
+                <option value="1000">Lít (1000ml)</option>
+            </div>
+        </select>
+
+        <button class="btn-calc" onclick="calculateAlcohol()">TÍNH THỜI GIAN ĐÀO THẢI</button>
+
+        <div id="result" class="result-box">
+            <p>Thời gian dự kiến để hết nồng độ cồn:</p>
+            <div class="time-val" id="timeResult">0 Giờ</div>
+            <p id="safetyMsg" style="font-size: 0.85rem; color: var(--text-muted);"></p>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <i class="fas fa-exclamation-triangle"></i> <strong>Lưu ý quan trọng:</strong> 
+        Kết quả này chỉ mang tính chất tham khảo dựa trên công thức toán học. Khả năng đào thải cồn thực tế phụ thuộc vào cơ địa, sức khỏe gan và tốc độ chuyển hóa của mỗi người. 
+        <br><br>
+        <strong>Đã uống rượu bia thì không lái xe.</strong> Để đảm bảo an toàn tuyệt đối, hãy nghỉ ngơi thêm vài giờ sau thời gian tính toán.
+    </div>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 8px 20px; border-radius: 10px;">
+            <i class="fas fa-home"></i> TRANG CHỦ
+        </a>
+        <div class="nav-links">
+            <a href="https://hoangtuan.net/egfr" class="nav-item">Chức năng thận</a>
+            <a href="https://hoangtuan.net/he_so_amv" class="nav-item">Hệ số Am/V</a>
+            <a href="https://hoangtuan.net/caygiapha" class="nav-item">Vẽ Phả Đồ</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · BuilderTV Ecosystem</p>
+    </footer>
+</div>
+
+<script>
+function calculateAlcohol() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const genderConstant = parseFloat(document.getElementById('gender').value);
+    const stomachConstant = parseFloat(document.getElementById('stomach').value);
+    const drinkVol = parseFloat(document.getElementById('drinkType').value);
+    const amount = parseFloat(document.getElementById('amount').value);
+    const unitSize = parseFloat(document.getElementById('unit').value);
+
+    if (!amount || amount <= 0) {
+        alert("Vui lòng nhập số lượng đã uống!");
+        return;
+    }
+
+    // 1. Tính tổng lượng cồn nguyên chất (gram)
+    // Công thức: Volume (ml) * Nồng độ (%) * 0.79 (khối lượng riêng của cồn)
+    const totalMl = amount * unitSize;
+    const pureAlcohol = totalMl * (drinkVol / 100) * 0.79;
+
+    // 2. Tính nồng độ cồn trong máu (BAC) - Công thức Widmark
+    // C = A / (W * r) 
+    // A: Lượng cồn (g), W: Cân nặng (kg), r: Hằng số phân bố
+    let bac = pureAlcohol / (weight * genderConstant);
+    
+    // Điều chỉnh theo trạng thái bụng (Bụng đói hấp thụ gần như 100%, bụng no giảm hấp thụ)
+    bac = bac * stomachConstant;
+
+    // 3. Tính thời gian đào thải (T)
+    // Tốc độ đào thải trung bình là 0.015 g/dL mỗi giờ
+    const eliminationRate = 0.15; // mg/ml mỗi giờ tương đương 0.015% BAC
+    
+    const hoursNeeded = bac / 0.15;
+    
+    // Hiển thị kết quả
+    const resultBox = document.getElementById('result');
+    const timeDisplay = document.getElementById('timeResult');
+    const safetyMsg = document.getElementById('safetyMsg');
+
+    resultBox.style.display = 'block';
+    
+    if (hoursNeeded < 0.1) {
+        timeDisplay.innerText = "Sắp hết";
+        safetyMsg.innerText = "Nồng độ cồn rất thấp, nhưng hãy cẩn trọng.";
+    } else {
+        const h = Math.floor(hoursNeeded);
+        const m = Math.round((hoursNeeded - h) * 60);
+        timeDisplay.innerText = `${h} Giờ ${m} Phút`;
+        safetyMsg.innerText = `Dự kiến đến khoảng ${(new Date(Date.now() + hoursNeeded*3600000)).toLocaleTimeString('vi-VN')} bạn mới hết hoàn toàn nồng độ cồn.`;
+    }
+}
+</script>
+
+</body>
+</html>

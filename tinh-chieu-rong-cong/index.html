@@ -3,120 +3,292 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tính Chiều Rộng Cổng/ Ngõ | hoangtuan.net</title>
+    <title>Tính Chiều Rộng Cổng/Ngõ | hoangtuan.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            line-height: 1.6;
         }
-        
-        .container {
-            max-width: 600px;
-            width: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-        }  
-        h2 {
-            color: #333;
+
+        .container { max-width: 800px; width: 100%; }
+
+        header { text-align: center; margin-bottom: 40px; }
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -1px;
         }
-        label {
+        header p { color: var(--text-muted); margin-top: 10px; }
+
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 35px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+        }
+
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .field-group { margin-bottom: 15px; }
+        .field-group label {
             display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .field-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .field-group input:focus {
+            border-color: var(--accent-color);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 14px;
+            color: #0f172a;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
             margin-top: 10px;
         }
-        input[type="number"] {
-            padding: 8px;
-            width: 100%;
-            box-sizing: border-box;
-            margin-top: 5px;
+
+        .btn-calc:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3);
         }
-        button {
-            margin-top: 20px;
-            padding: 10px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-        .result {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-        .illustration {
-            margin-top: 20px;
+
+        /* Kết quả */
+        .result-box {
+            display: none;
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.2);
+            border-radius: 16px;
             text-align: center;
+            animation: fadeIn 0.5s ease;
         }
-        .illustration img {
-            max-width: 100%;
-            height: auto;
+        .result-title { color: var(--success); font-weight: 700; margin-bottom: 5px; }
+        .result-value { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
+
+        /* Media / Video */
+        .media-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .media-box {
+            background: rgba(0,0,0,0.2);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+
+        .media-box img { width: 100%; display: block; }
+
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 */
+            height: 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            width: 100%;
+        }
+        .nav-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .nav-item:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 768px) {
+            .input-grid, .media-section { grid-template-columns: 1fr; }
         }
     </style>
-    <script>
-        function calculateWidth() {
-            // Lấy giá trị từ các hộp input
-            const d = parseFloat(document.getElementById('d').value);
-            const b = parseFloat(document.getElementById('b').value);
-            const R = parseFloat(document.getElementById('R').value);
-            const a = parseFloat(document.getElementById('a').value);
+</head>
+<body>
 
-            // Kiểm tra nếu các giá trị hợp lệ
-            if (isNaN(d) || isNaN(b) || isNaN(R) || isNaN(a)) {
-                alert("Vui lòng nhập đầy đủ và chính xác các giá trị.");
-                return;
-            }
+<div class="container">
+    <header>
+        <h1>Tính Chiều Rộng Cổng</h1>
+        <p>Xác định kích thước cổng/ngõ tối thiểu để xe vào nhà an toàn</p>
+    </header>
 
-            // Kiểm tra nếu chiều rộng đường nhỏ hơn chiều rộng thân xe
-            if (a < b) {
-                alert("Ơ chiều rộng đường nhỏ hơn xe thì bạn bay vào à? Kk.");
-                return;
-            }
+    <div class="main-card">
+        <div class="input-grid">
+            <div class="field-group">
+                <label><i class="fas fa-arrows-alt-h"></i> Chiều dài xe (mm)</label>
+                <input type="number" id="d" placeholder="Ví dụ: 4670">
+            </div>
+            <div class="field-group">
+                <label><i class="fas fa-arrows-alt-v"></i> Chiều rộng xe (mm)</label>
+                <input type="number" id="b" placeholder="Ví dụ: 1800">
+            </div>
+        </div>
 
-            // Tính toán giá trị x theo công thức
+        <div class="input-grid">
+            <div class="field-group">
+                <label><i class="fas fa-sync-alt"></i> Bán kính quay đầu (mm)</label>
+                <input type="number" id="R" placeholder="Bán kính NSX + 500mm">
+            </div>
+            <div class="field-group">
+                <label><i class="fas fa-road"></i> Bề rộng đường (mm)</label>
+                <input type="number" id="a" placeholder="Ví dụ: 3500">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateWidth()">TÍNH TOÁN NGAY</button>
+
+        <div id="resultBox" class="result-box">
+            <p class="result-title"><i class="fas fa-check-circle"></i> KẾT QUẢ TÍNH TOÁN</p>
+            <div class="result-value" id="resultText">0 mm</div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 10px;">
+                💡 Khuyên dùng: Hãy mở rộng thêm 200 - 300mm để lái xe thoải mái hơn!
+            </p>
+        </div>
+
+        <div class="media-section">
+            <div class="media-box">
+                <img src="BuilderTV 71-100_20241103_184351_0000.jpg" alt="Minh họa">
+            </div>
+            <div class="media-box">
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/g5gLkA9AKvc" frameborder="0" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 10px 25px; border-radius: 12px; display: inline-block; margin-bottom: 20px;">
+            <i class="fas fa-home"></i> TRANG CHỦ
+        </a>
+        <div class="nav-links">
+            <a href="https://hoangtuan.net/phi-nuoi-xe" class="nav-item">Chi phí nuôi xe</a>
+            <a href="https://hoangtuan.net/kiem-tra-nong-do-con" class="nav-item">Tính nồng độ cồn</a>
+            <a href="https://hoangtuan.net/egfr" class="nav-item">Chức năng thận</a>
+            <a href="https://hoangtuan.net/caygiapha" class="nav-item">Vẽ Phả Đồ</a>
+            <a href="https://hoangtuan.net/coffee-donate" class="nav-item">Ủng hộ</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
+    </footer>
+</div>
+
+<script>
+    function calculateWidth() {
+        const d = parseFloat(document.getElementById('d').value);
+        const b = parseFloat(document.getElementById('b').value);
+        const R = parseFloat(document.getElementById('R').value);
+        const a = parseFloat(document.getElementById('a').value);
+
+        if (isNaN(d) || isNaN(b) || isNaN(R) || isNaN(a)) {
+            alert("Vui lòng nhập đầy đủ các thông số.");
+            return;
+        }
+
+        if (a < b) {
+            alert("Ơ, đường nhỏ hơn xe thì vào bằng cách nào? Kk.");
+            return;
+        }
+
+        try {
             const x = Math.round(
                 R - Math.sqrt(
                     Math.pow((Math.sqrt(Math.pow(R, 2) - Math.pow(d / 2, 2)) - b), 2) - Math.pow((R - a), 2)
                 )
             );
 
-            // Hiển thị kết quả
-            document.getElementById('result').innerHTML = `Chiều rộng cổng/ngõ tối thiểu là: ${x} mm (${(x / 1000).toFixed(2)} m) - nếu có điều kiện hãy mở rộng thêm 20-30cm!`;
+            if (isNaN(x)) throw new Error();
+
+            const resultBox = document.getElementById('resultBox');
+            const resultText = document.getElementById('resultText');
+            
+            resultBox.style.display = 'block';
+            resultText.innerHTML = `${x} mm <span style="font-size: 1.2rem; opacity: 0.7;">(${(x / 1000).toFixed(2)}m)</span>`;
+            
+            // Cuộn xuống kết quả
+            window.scrollTo({ top: resultBox.offsetTop + 200, behavior: 'smooth' });
+
+        } catch (e) {
+            alert("Các thông số bạn nhập không tạo thành một vòng quay hợp lệ. Vui lòng kiểm tra lại bán kính quay đầu.");
         }
-    </script>
-</head>
-<body>
-   <div class="container">  
-    <h2>Tính Chiều Rộng Cổng/ Ngõ | hoangtuan.net</h2>
+    }
+</script>
 
-    <label for="d">Chiều dài xe (mm):</label>
-    <input type="number" id="d" placeholder="Nhập chiều dài xe">
-
-    <label for="b">Chiều rộng xe (mm):</label>
-    <input type="number" id="b" placeholder="Nhập chiều rộng xe">
-
-    <label for="R">Bán kính quay đầu thân xe (mm):</label>
-    <input type="number" id="R" placeholder="Nhập bán kính quay đầu nhà sản xuất + 500mm">
-
-    <label for="a">Bề rộng đường (mm):</label>
-    <input type="number" id="a" placeholder="Nhập bề rộng đường">
-
-    <button onclick="calculateWidth()">Tính toán</button>
-
-    <div id="result" class="result"></div>
-
-    <div class="illustration">
-        <img src="BuilderTV 71-100_20241103_184351_0000.jpg" alt="Illustration of vehicle turning clearance">
-    </div>
-
-    <p><a href="https://www.youtube.com/watch?v=g5gLkA9AKvc" target="_blank">Video cách xây dựng công thức (link Youtube)</a></p>
-
-    <!-- Video YouTube nhúng tự động phát -->
-    <iframe width="400" height="315" src="https://www.youtube.com/embed/g5gLkA9AKvc?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-<script type="text/javascript" src="https://www.free-counters.org/count/gl1m"></script><br>
- <a href='https://www.versicherungen.at/'>Versicherungen online vergleichen</a> <script type='text/javascript' src='https://www.whomania.com/ctr?id=99fd5f298d256459d6b68be9b426f42933cb1efd'></script>
-   </div>
 </body>
 </html>

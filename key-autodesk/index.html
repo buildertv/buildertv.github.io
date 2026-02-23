@@ -1,92 +1,218 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tra cứu ngày hết hạn key Autodesk</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 50px;
-      text-align: center;
-    }
-    form {
-      max-width: 400px;
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .result {
-      margin-top: 20px;
-      font-weight: bold;
-      font-size: 18px;
-    }
-    .highlight {
-      font-weight: bold;
-      color: blue; /* Màu xanh cho email */
-    }
-    .date {
-      font-weight: bold;
-      color: red; /* Màu đỏ cho ngày hết hạn */
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tra cứu Key Autodesk | hoangtuan.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ef4444;
+            --success: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+
+        .container { max-width: 500px; width: 100%; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+        }
+
+        label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px; }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            margin-bottom: 20px;
+            transition: 0.3s;
+        }
+        input:focus { border-color: var(--accent-color); background: rgba(255, 255, 255, 0.1); }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 12px;
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+
+        .result {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            display: none;
+        }
+
+        .highlight { color: var(--accent-color); font-weight: 600; }
+        .date { color: var(--danger); font-weight: 700; }
+        .remain { font-style: italic; color: var(--success); font-weight: 600; }
+        .expired { color: var(--danger); }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: auto;
+            padding: 40px 0 20px;
+            text-align: center;
+            width: 100%;
+        }
+        .nav-links { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 15px; }
+        .nav-item { color: var(--text-muted); text-decoration: none; font-size: 0.8rem; transition: 0.3s; }
+        .nav-item:hover { color: var(--accent-color); }
+    </style>
 </head>
 <body>
-  <h2>Tra cứu ngày hết hạn key Autodesk</h2>
-  <form id="emailForm">
-    <label for="email">Nhập email đã đăng ký:</label>
-    <input type="email" id="email" placeholder="example@example.com" required>
-    <button type="submit">Tra cứu</button>
-  </form>
-  <div class="result" id="result"></div>
 
-  <script>
+<div class="container">
+    <header>
+        <h1>Tra cứu Key Autodesk</h1>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 5px;">Kiểm tra thời hạn bản quyền theo Email</p>
+    </header>
+
+    <div class="card">
+        <form id="emailForm">
+            <label for="email"><i class="fas fa-envelope"></i> Nhập email đã đăng ký:</label>
+            <input type="email" id="email" placeholder="example@gmail.com" required>
+            <button type="submit" id="submitBtn">Tra cứu ngay</button>
+        </form>
+
+        <div class="result" id="result"></div>
+    </div>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 8px 18px; border-radius: 10px; display: inline-block; margin-bottom: 20px;">
+            <i class="fas fa-home"></i> TRANG CHỦ
+        </a>
+        <div class="nav-links">
+            <a href="https://hoangtuan.net/egfr" class="nav-item">Chức năng thận</a>
+            <a href="https://hoangtuan.net/kiem-tra-nong-do-con" class="nav-item">Nồng độ cồn</a>
+            <a href="https://hoangtuan.net/phi-nuoi-xe" class="nav-item">Chi phí nuôi xe</a>
+            <a href="https://hoangtuan.net/caygiapha" class="nav-item">Vẽ Phả Đồ</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · BuilderTV</p>
+    </footer>
+</div>
+
+<script>
     const encodedApi = "aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J6TExrLUV5RkN4QVBYYzM4a3Z3UDhKa3ZTQnJrN2FKeFNRM3RId0NYVi0tdk5VSHZCS0VvbXlIbldBeUU5YnZnX2gvZXhlYw=="; 
-    const API_URL = atob(encodedApi); // 
-
+    const API_URL = atob(encodedApi);
 
     document.getElementById('emailForm').addEventListener('submit', async (event) => {
-      event.preventDefault(); // Ngăn form gửi lại trang
-      const email = document.getElementById('email').value;
-      const resultDiv = document.getElementById('result');
-      resultDiv.textContent = 'Đang kiểm tra...';
+        event.preventDefault();
+        const email = document.getElementById('email').value;
+        const resultDiv = document.getElementById('result');
+        const submitBtn = document.getElementById('submitBtn');
 
-      try {
-        const response = await fetch(`${API_URL}?email=${encodeURIComponent(email)}`);
-        const result = await response.text();
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang kết nối máy chủ...';
+        submitBtn.disabled = true;
 
-        if (result.includes("Không tìm thấy email")) {
-          resultDiv.textContent = result;
-        } else {
-          const parts = result.match(/Ngày hết hạn của email (.+) là: (\d{2}\/\d{2}\/\d{4})/);
-          if (parts) {
-            resultDiv.innerHTML = `
-              Ngày hết hạn của email 
-              <span class="highlight">${parts[1]}</span> là: 
-              <span class="date">${parts[2]}</span>`;
-          } else {
-            resultDiv.textContent = result;
-          }
+        try {
+            const response = await fetch(`${API_URL}?email=${encodeURIComponent(email)}`);
+            const resultText = await response.text();
+
+            if (resultText.includes("Không tìm thấy email")) {
+                resultDiv.innerHTML = `<span style="color: var(--danger)">${resultText}</span>`;
+            } else {
+                // Regex để lấy phần email và phần chuỗi ngày tháng
+                // Cấu trúc trả về từ API: Ngày hết hạn của email [email] là: [chuỗi date]
+                const match = resultText.match(/Ngày hết hạn của email (.+) là: (.+)/);
+                
+                if (match) {
+                    const mailFound = match[1];
+                    const rawDate = match[2];
+                    
+                    // Chuyển đổi chuỗi "Thu Mar 12 2026..." thành đối tượng Date
+                    const expiryDate = new Date(rawDate);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Đưa về 0h để tính ngày chính xác
+
+                    // Định dạng dd/mm/yyyy
+                    const day = String(expiryDate.getDate()).padStart(2, '0');
+                    const month = String(expiryDate.getMonth() + 1).padStart(2, '0');
+                    const year = expiryDate.getFullYear();
+                    const formattedDate = `${day}/${month}/${year}`;
+
+                    // Tính toán số ngày còn lại
+                    const diffTime = expiryDate - today;
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                    let remainText = '';
+                    let statusClass = 'remain';
+
+                    if (diffDays > 0) {
+                        remainText = `(còn lại ${diffDays} ngày)`;
+                    } else if (diffDays === 0) {
+                        remainText = `(hết hạn hôm nay)`;
+                        statusClass = 'expired';
+                    } else {
+                        remainText = `(đã hết hạn ${Math.abs(diffDays)} ngày)`;
+                        statusClass = 'expired';
+                    }
+
+                    resultDiv.innerHTML = `
+                        Ngày hết hạn của email <span class="highlight">${mailFound}</span> là:<br>
+                        <span class="date">${formattedDate}</span> <span class="${statusClass}">${remainText}</span>
+                    `;
+                } else {
+                    resultDiv.textContent = resultText;
+                }
+            }
+        } catch (error) {
+            resultDiv.innerHTML = '<span style="color: var(--danger)">Lỗi kết nối API. Vui lòng thử lại!</span>';
+            console.error(error);
+        } finally {
+            submitBtn.disabled = false;
         }
-      } catch (error) {
-        resultDiv.textContent = 'Đã xảy ra lỗi. Vui lòng thử lại.';
-        console.error(error);
-      }
     });
-  </script>
+</script>
+
 </body>
 </html>

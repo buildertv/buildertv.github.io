@@ -1,6 +1,10 @@
 {
   "name": "hoangtuan.net",
   "short_name": "hoangtuan",
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#0f172a",
+  "background_color": "#0f172a",
   "icons": [
     {
       "src": "/images/android-chrome-192x192.png",
@@ -12,8 +16,5 @@
       "sizes": "512x512",
       "type": "image/png"
     }
-  ],
-  "theme_color": "#0f172a",
-  "background_color": "#0f172a",
-  "display": "standalone"
+  ]
 }

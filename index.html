@@ -362,12 +362,16 @@
     setInterval(updateHeader, 1000);
     updateHeader(); // Chạy ngay lập tức khi load trang
 
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-          .then(() => console.log('SW registered'));
-      }
+    
 
 
     </script>
+    
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js')
+      .then(() => console.log('SW registered'));
+  }
+</script>
 </body>
 </html>

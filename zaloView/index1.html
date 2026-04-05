@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Zalo Secure Archive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root { --zalo-blue: #0068ff; --chat-bg: #e5ddd5; }
+        body { font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; margin: 0; background-color: #f0f2f5; }
+        
+        .login-screen { position: fixed; inset: 0; background: linear-gradient(135deg, #0068ff 0%, #0052cc 100%); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .login-card { background: white; width: 100%; max-width: 360px; border-radius: 24px; padding: 32px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); text-align: center; }
+        
+        .app-container { display: flex; height: 100vh; width: 100%; position: relative; overflow: hidden; }
+        .sidebar { width: 100%; background: white; z-index: 10; transition: transform 0.3s ease; border-right: 1px solid #e5e7eb; display: flex; flex-direction: column; }
+        .main-chat { position: absolute; inset: 0; width: 100%; background: var(--chat-bg); z-index: 20; transform: translateX(100%); transition: transform 0.3s ease; display: flex; flex-direction: column; }
+        
+        @media (min-width: 768px) {
+            .sidebar { width: 350px; position: relative; transform: none !important; }
+            .main-chat { position: relative; transform: none !important; flex: 1; }
+            .back-button { display: none !important; }
+        }
+
+        .show-chat .main-chat { transform: translateX(0); }
+        .show-chat .sidebar { transform: translateX(-20%); }
+
+        .message-bubble { max-width: 85%; border-radius: 12px; padding: 10px 14px; margin-bottom: 6px; box-shadow: 0 1px 0.5px rgba(0,0,0,0.1); word-wrap: break-word; }
+        .message-in { background-color: #fff; align-self: flex-start; border-top-left-radius: 2px; }
+        .active-item { background-color: #e7f3ff; border-left: 4px solid var(--zalo-blue); }
+        
+        .loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 150; display: flex; flex-direction: column; align-items: center; justify-content: center; display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Màn hình đăng nhập -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <div class="w-20 h-20 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-6 text-blue-600">
+                <i class="fas fa-shield-alt text-4xl"></i>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Yêu cầu truy cập</h1>
+            <p class="text-gray-500 text-sm mb-8">Vui lòng nhập mật khẩu để xem nội dung tin nhắn Zalo.</p>
+            
+            <div class="space-y-4">
+                <input type="password" id="passInput" placeholder="Mật khẩu của bạn" 
+                       class="w-full px-5 py-3.5 bg-gray-100 border-none rounded-xl text-center font-bold tracking-widest outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                
+                <button onclick="checkPassword()" id="loginBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-blue-200 transition-all flex items-center justify-center gap-2">
+                    <span>Xác nhận</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </button>
+            </div>
+            <p id="loginError" class="text-red-500 text-xs mt-4 font-medium h-4"></p>
+        </div>
+    </div>
+
+    <!-- Lớp phủ Loading -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        <p class="mt-4 text-gray-600 font-medium">Đang giải mã dữ liệu...</p>
+    </div>
+
+    <!-- App Body -->
+    <div class="app-container hidden" id="appBody">
+        <aside class="sidebar h-full overflow-hidden">
+            <header class="h-16 bg-[#0068ff] text-white flex items-center px-4 shrink-0 shadow-md">
+                <span class="font-bold text-lg">Zalo Archive</span>
+            </header>
+            <div class="p-3 bg-gray-50 border-b">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400 text-sm"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm người hoặc tin nhắn..." class="w-full pl-10 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm outline-none">
+                </div>
+            </div>
+            <div id="chatList" class="flex-1 overflow-y-auto"></div>
+        </aside>
+
+        <main class="main-chat h-full shadow-2xl">
+            <header class="h-16 bg-white border-b flex items-center px-2 shrink-0 z-10">
+                <button onclick="closeChat()" class="back-button w-12 h-12 flex items-center justify-center text-blue-600"><i class="fas fa-arrow-left text-xl"></i></button>
+                <div id="headerAvatar" class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold mr-3 shrink-0">?</div>
+                <div class="flex-1 min-w-0">
+                    <div id="currentChatTitle" class="font-bold text-[16px] text-gray-800 truncate">Chọn hội thoại</div>
+                    <div id="chatSubtext" class="text-[11px] text-gray-400">...</div>
+                </div>
+            </header>
+            <div id="messageArea" class="flex-1 p-4 overflow-y-auto flex flex-col">
+                <div class="h-full flex flex-col items-center justify-center text-gray-300">
+                    <i class="fas fa-comments text-7xl mb-4"></i>
+                    <p class="font-medium">Vui lòng chọn một cuộc trò chuyện</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // QUAN TRỌNG: Dán link Web App của bạn vào đây
+        const WEB_APP_URL = "DÁN_LINK_WEB_APP_CỦA_BẠN_VÀO_ĐÂY";
+
+        let conversations = {};
+        let conversationOrder = [];
+
+        async function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            const errorEl = document.getElementById('loginError');
+            const btn = document.getElementById('loginBtn');
+            
+            if (!pass) { errorEl.innerText = "Chưa nhập mật khẩu!"; return; }
+            if (WEB_APP_URL.includes("DÁN_LINK")) { alert("Bạn chưa dán link Web App vào code HTML!"); return; }
+
+            errorEl.innerText = "";
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner animate-spin"></i> Đang kiểm tra...';
+            
+            try {
+                // Gọi API kèm theo tham số mật khẩu
+                const response = await fetch(`${WEB_APP_URL}?pass=${encodeURIComponent(pass)}`);
+                const result = await response.json();
+
+                if (result.error) {
+                    errorEl.innerText = result.error;
+                    btn.disabled = false;
+                    btn.innerHTML = 'Xác nhận <i class="fas fa-arrow-right text-xs"></i>';
+                } else {
+                    processData(result);
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('appBody').classList.remove('hidden');
+                }
+            } catch (err) {
+                errorEl.innerText = "Lỗi kết nối máy chủ!";
+                btn.disabled = false;
+                btn.innerHTML = 'Xác nhận <i class="fas fa-arrow-right text-xs"></i>';
+            }
+        }
+
+        // Hỗ trợ nhấn Enter để đăng nhập
+        document.getElementById('passInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkPassword();
+        });
+
+        function processData(data) {
+            const chatMap = new Map();
+            data.forEach((row) => {
+                const time = row[0];        // A
+                const type = String(row[1]); // B
+                const sender = row[5] || "Ẩn danh"; // F
+                const content = row[6] || "";      // G
+                const groupName = row[9];           // J
+                
+                let chatId = (type === "1" && groupName) ? groupName : sender;
+                if (!chatId || chatId === "Nhóm") return;
+
+                if (!chatMap.has(chatId)) {
+                    chatMap.set(chatId, { title: chatId, type, messages: [] });
+                }
+                chatMap.get(chatId).messages.push({ time, sender, content });
+            });
+
+            conversations = Object.fromEntries(chatMap);
+            conversationOrder = Array.from(chatMap.keys());
+            renderChatList();
+        }
+
+        function renderChatList(filter = '') {
+            const listEl = document.getElementById('chatList');
+            listEl.innerHTML = '';
+            conversationOrder.forEach(id => {
+                const chat = conversations[id];
+                const lastMsg = chat.messages[chat.messages.length - 1];
+                if (filter && !id.toLowerCase().includes(filter.toLowerCase()) && !lastMsg.content.toLowerCase().includes(filter.toLowerCase())) return;
+
+                const item = document.createElement('div');
+                item.className = 'p-4 border-b hover:bg-gray-50 cursor-pointer flex items-center gap-3 active:bg-gray-100 transition-colors';
+                item.onclick = () => openChat(id, item);
+                const isGroup = chat.type === "1";
+                item.innerHTML = `
+                    <div class="w-12 h-12 rounded-full ${isGroup ? 'bg-blue-600' : 'bg-emerald-600'} text-white shrink-0 flex items-center justify-center font-bold text-lg">${id.charAt(0).toUpperCase()}</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-baseline mb-0.5">
+                            <h3 class="font-bold text-[15px] truncate text-gray-800">${id}</h3>
+                            <span class="text-[10px] text-gray-400 ml-2">${String(lastMsg.time).split(' ')[1]?.substring(0, 5) || ''}</span>
+                        </div>
+                        <p class="text-[13px] text-gray-500 truncate">${lastMsg.sender}: ${lastMsg.content}</p>
+                    </div>
+                `;
+                listEl.appendChild(item);
+            });
+        }
+
+        function openChat(id, el) {
+            const chat = conversations[id];
+            const msgArea = document.getElementById('messageArea');
+            document.getElementById('appBody').classList.add('show-chat');
+            document.querySelectorAll('#chatList > div').forEach(item => item.classList.remove('active-item'));
+            if(el) el.classList.add('active-item');
+            document.getElementById('currentChatTitle').innerText = id;
+            document.getElementById('chatSubtext').innerText = (chat.type === "1" ? "Nhóm" : "Cá nhân") + " • " + chat.messages.length + " tin nhắn";
+            document.getElementById('headerAvatar').innerText = id.charAt(0).toUpperCase();
+            msgArea.innerHTML = '';
+            chat.messages.forEach(m => {
+                const bubble = document.createElement('div');
+                bubble.className = 'flex flex-col mb-4 items-start';
+                bubble.innerHTML = `<div class="flex items-center gap-2 mb-1 px-1"><span class="text-[11px] font-bold text-gray-700">${m.sender}</span><span class="text-[9px] text-gray-400">${m.time}</span></div><div class="message-bubble message-in bg-white"><p class="text-[14px] text-gray-800">${m.content}</p></div>`;
+                msgArea.appendChild(bubble);
+            });
+            msgArea.scrollTop = msgArea.scrollHeight;
+        }
+
+        function closeChat() { document.getElementById('appBody').classList.remove('show-chat'); }
+        document.getElementById('searchInput').oninput = (e) => renderChatList(e.target.value);
+    </script>
+</body>
+</html>

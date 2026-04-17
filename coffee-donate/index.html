@@ -221,13 +221,7 @@
             <div id="total-donation" class="total-badge">0 VNĐ</div>
         </div>
 
-        <ul id="donation-list">
-            <li>Ngày 20/11/2024: 50 000 VNĐ - Cảm ơn bạn LE NGUYEN KHANG</li>
-            <li>Ngày 05/02/2025: 100 000 VNĐ - Cảm ơn bạn TRAN HIEU ANH</li>
-            <li>Ngày 25/06/2025: 100 000 VNĐ - Cảm ơn anh NGUYỄN THANH VÂN</li>
-            <li>Ngày 02/07/2025: 200 000 VNĐ - Cảm ơn bạn TRƯƠNG THỊ PHƯỢNG</li>    
-            <li>Ngày 22/07/2025: 200 000 VNĐ - Cảm ơn bạn NGUYỄN NGỌC THUỲ DUNG</li>
-        </ul>
+        <ul id="donation-list"></ul>
     </div>
 
     <footer>
@@ -236,37 +230,42 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const donationItems = document.querySelectorAll('#donation-list li');
-        const listContainer = document.getElementById('donation-list');
+document.addEventListener('DOMContentLoaded', async () => {
+    const listContainer = document.getElementById('donation-list');
+    const totalEl = document.getElementById('total-donation');
+
+    const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRpD7O0TXn9Jf826KdrGSU7tSQn3hgoSxse_cIAF4J94w-a83tlsgDVNH9oFe7WCx2wmvlto6CgQrHr/pub?gid=0&single=true&output=csv";
+
+    try {
+        const res = await fetch(SHEET_URL);
+        const csv = await res.text();
+
+        const rows = csv.trim().split("\n").slice(1); // bỏ header
+
         let total = 0;
 
-        // Lưu dữ liệu tạm để render lại đẹp hơn
-        const rawData = [];
-        
-        donationItems.forEach(item => {
-            const text = item.textContent;
-            const dateMatch = text.match(/Ngày ([\d\/]+)/);
-            const amountMatch = text.match(/: ([\d\s]+) VNĐ/);
-            const nameMatch = text.match(/Cảm ơn (.*)/);
+        const data = rows.map(row => {
+            const [date, name, amount] = row.split(",");
 
-            if (amountMatch) {
-                const amount = parseInt(amountMatch[1].replace(/\s/g, ''));
-                total += amount;
-                
-                rawData.push({
-                    date: dateMatch ? dateMatch[1] : '',
-                    amount: amount,
-                    name: nameMatch ? nameMatch[1] : 'Mạnh thường quân'
-                });
-            }
+            const money = parseInt(amount);
+
+            total += money;
+
+            return {
+                date: date,
+                name: name || "Mạnh thường quân",
+                amount: money
+            };
         });
 
-        // Cập nhật tổng tiền
-        document.getElementById('total-donation').textContent = total.toLocaleString('vi-VN') + ' VNĐ';
+        // 👉 Đảo ngược: dòng nhập sau lên đầu
+        const sorted = data.reverse();
 
-        // Render lại danh sách với UI mới
-        listContainer.innerHTML = rawData.reverse().map(item => `
+        // Tổng tiền
+        totalEl.textContent = total.toLocaleString('vi-VN') + ' VNĐ';
+
+        // Render
+        listContainer.innerHTML = sorted.map(item => `
             <li>
                 <div class="donator-info">
                     <span class="donator-name">${item.name}</span>
@@ -275,7 +274,12 @@
                 <span class="donator-amount">+${item.amount.toLocaleString('vi-VN')} VNĐ</span>
             </li>
         `).join('');
-    });
+
+    } catch (err) {
+        console.error("Lỗi load Google Sheet:", err);
+        listContainer.innerHTML = "<li>Lỗi tải dữ liệu</li>";
+    }
+});
 </script>
 
 </body>

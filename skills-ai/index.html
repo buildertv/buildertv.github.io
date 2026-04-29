@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn cài đặt Skill ND30-SUALOI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Thêm FontAwesome cho Footer -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(168, 85, 247, 0.15) 0px, transparent 50%);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .badge {
+            background: rgba(99, 102, 241, 0.2);
+            color: #818cf8;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
+
+        .step-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .step-number {
+            font-size: 5rem;
+            font-weight: 800;
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            opacity: 0.05;
+            color: var(--primary);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        h2 span {
+            background: var(--primary);
+            width: 35px;
+            height: 35px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            font-size: 1.2rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: opacity 0.3s;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-zalo {
+            background: #0084ff;
+            box-shadow: 0 10px 20px rgba(0, 132, 255, 0.3);
+        }
+
+        code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-family: monospace;
+            color: #fbbf24;
+        }
+
+        .path-box {
+            background: #000;
+            padding: 15px;
+            border-radius: 12px;
+            margin: 15px 0;
+            border-left: 4px solid var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        /* Footer Custom Styles */
+        .footer-nav {
+            margin-top: 80px;
+            padding: 40px 20px;
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 30px 30px 0 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 30px;
+            padding: 10px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 100px;
+            transition: background 0.3s;
+        }
+
+        .home-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .nav-item {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .nav-item:hover {
+            color: var(--primary);
+        }
+
+        .copyright {
+            opacity: 0.5;
+            font-size: 0.8rem;
+            margin-top: 20px;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .features { grid-template-columns: 1fr; }
+            h1 { font-size: 2.5rem; }
+            .nav-links { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <span class="badge">Version 2.5 • Official Guide</span>
+            <h1>ND30-SUALOI</h1>
+            <p>Giải pháp AI soát lỗi & chuẩn hóa văn bản hành chính cho Builder chuyên nghiệp</p>
+        </header>
+
+        <!-- BƯỚC 1 -->
+        <div class="step-card">
+            <div class="step-number">01</div>
+            <h2><span>1</span> Cài đặt môi trường Node.js</h2>
+            <p>Đây là nền tảng cốt lõi để chạy các script xử lý văn bản. Bạn cần cài bản <b>LTS</b> để ổn định nhất.</p>
+            <a href="https://nodejs.org/" target="_blank" class="btn"><i class="fab fa-node-js"></i> Tải Node.js</a>
+        </div>
+
+        <!-- BƯỚC 2 -->
+        <div class="step-card">
+            <div class="step-number">02</div>
+            <h2><span>2</span> Cài đặt Antigravity AI</h2>
+            <p>Tải bộ công cụ AI Antigravity - Trợ lý mã nguồn mạnh mẽ của Google Deepmind dành cho lập trình viên và builder.</p>
+            <a href="https://antigravity.google/download" target="_blank" class="btn"><i class="fas fa-robot"></i> Tải Antigravity AI</a>
+        </div>
+
+        <!-- BƯỚC 3 -->
+        <div class="step-card">
+            <div class="step-number">03</div>
+            <h2><span>3</span> Cài đặt Skill ND30-SUALOI</h2>
+            <p>Tải bộ Skill chuyên dụng để bắt đầu soát lỗi và chuẩn hóa văn bản theo Nghị định 30.</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="https://hoangtuan.net/s/229" target="_blank" class="btn"><i class="fas fa-download"></i> Tải Skill (.zip)</a>
+                <a href="https://zalo.me/0904123456" target="_blank" class="btn btn-zalo"><i class="fas fa-comment-dots"></i> Zalo Hỗ trợ</a>
+            </div>
+            <div class="path-box">
+                <b>Vị trí cài đặt:</b><br>
+                <code>%USERPROFILE%\.gemini\antigravity\skills\nd30-sualoi</code>
+            </div>
+        </div>
+
+        <!-- BƯỚC 4 -->
+        <div class="step-card">
+            <div class="step-number">04</div>
+            <h2><span>4</span> Bắt đầu trải nghiệm</h2>
+            <p>Hãy mở Antigravity và dán đường dẫn file Word bạn muốn xử lý. Bạn có thể ra lệnh như sau:</p>
+            <div class="path-box">
+                <i class="fas fa-terminal"></i> <i>"Dùng skill nd30-sualoi soát lỗi và chỉnh văn bản này cho tôi: C:\Path\To\File.docx"</i>
+            </div>
+            <div class="features">
+                <div class="feature-item">
+                    <h3>Bản Chuẩn hóa</h3>
+                    <p>Sửa lỗi chính tả, dính chữ, chỉnh lề chuẩn 100% Nghị định 30. Giữ nguyên câu chữ gốc.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Bản Tối ưu</h3>
+                    <p>Viết lại câu văn mượt mà, chuyên nghiệp + Tự động nhận diện cấu trúc ký 2 bên cho Hợp đồng/Biên bản.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER CUSTOM -->
+        <footer class="footer-nav">
+            <a href="https://hoangtuan.net" class="home-btn">
+                <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
+            </a>
+            <div class="nav-links">
+                <a href="https://hoangtuan.net/caygiapha" class="nav-item"><i class="fas fa-sitemap"></i> Vẽ Phả Đồ</a>
+                <a href="https://hoangtuan.net/htqr/" class="nav-item"><i class="fas fa-qrcode"></i> QR Pay</a>
+                <a href="https://hoangtuan.net/he_so_amv/" class="nav-item"><i class="fas fa-drafting-compass"></i> Tính Am/V</a>
+                <a href="https://hoangtuan.net/phi-nuoi-xe/" class="nav-item"><i class="fas fa-car"></i> Nuôi xe Ô tô</a>
+                <a href="https://hoangtuan.net/coffee-donate/" class="nav-item"><i class="fas fa-heart"></i> Ủng hộ</a>
+            </div>
+            <p class="copyright">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
+        </footer>
+    </div>
+
+</body>
+</html>

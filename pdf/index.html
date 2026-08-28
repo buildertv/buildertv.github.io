@@ -1,452 +1,2856 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trình chỉnh sửa PDF Offline - hoangtuan.net</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-  
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
-    
-    header { text-align: center; margin-bottom: 20px; }
-    header h1 { font-size: 24px; color: #0f172a; }
-    
-    #drop-zone { border: 2px dashed #3b82f6; background: #ffffff; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
-    #drop-zone:hover { background: #eff6ff; }
-    
-    #toolbar { background: #ffffff; padding: 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; position: sticky; top: 10px; z-index: 90; }
-    
-    .btn { background: #2563eb; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; }
-    .btn:hover { background: #1d4ed8; }
-    .btn-secondary { background: #64748b; }
-    .btn-secondary:hover { background: #475569; }
-    .btn-success { background: #16a34a; }
-    .btn-success:hover { background: #15803d; }
-    .btn-danger { background: #dc2626; }
-    .btn-danger:hover { background: #b91c1c; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    .zoom-group { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; }
+<title>Trình Chỉnh Sửa & Ghép Nối PDF - hoangtuan.net</title>
 
-    #grid-container { display: flex; flex-wrap: wrap; gap: 15px; min-height: 250px; padding: 10px; background: #e2e8f0; border-radius: 8px; }
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
-    .page-card { position: relative; background: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); cursor: grab; user-select: none; display: flex; flex-direction: column; align-items: center; }
-    .page-card.selected { border-color: #2563eb; background: #eff6ff; }
-    
-    .canvas-wrapper { width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; overflow: hidden; margin: 4px 0; }
-    .page-card canvas { max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 4px; pointer-events: none; transition: transform 0.2s ease; }
-    
-    .card-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-    .card-header input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-    .page-info { font-size: 11px; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-    
-    .card-actions { margin-top: 6px; display: flex; gap: 4px; width: 100%; }
-    .card-actions button { flex: 1; padding: 4px 0; font-size: 11px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; }
-    .card-actions button:hover { background: #e2e8f0; }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-    /* CSS CHO MODAL XEM ANH VOI PHONG TO */
-    .modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, 0.9); flex-direction: column; }
-    .modal.active { display: flex; }
-    .modal-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: rgba(0, 0, 0, 0.4); color: white; }
-    .modal-body { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
-    .modal-body canvas { max-height: 85vh; max-width: 85vw; transition: transform 0.1s ease-out; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: white; border: none; font-size: 24px; padding: 16px 12px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
-    .modal-nav:hover { background: rgba(255,255,255,0.4); }
-    .modal-nav.prev { left: 20px; }
-    .modal-nav.next { right: 20px; }
-  </style>
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+}
+
+/* =========================================================
+   THUMBNAIL
+========================================================= */
+
+.page-wrapper {
+    position: relative;
+    cursor: grab;
+    user-select: none;
+}
+
+.page-wrapper:active {
+    cursor: grabbing;
+}
+
+.page-wrapper:hover {
+    box-shadow: 0 8px 20px rgba(0,0,0,.12);
+}
+
+.page-wrapper.page-selected {
+    border-color: #ef4444 !important;
+    background: #fef2f2;
+}
+
+.page-wrapper.insert-indicator {
+    border-left-color: #22c55e !important;
+}
+
+.page-wrapper canvas {
+    transition: transform .25s ease;
+}
+
+.sortable-ghost {
+    opacity: .35;
+    background: #dbeafe;
+}
+
+/* checkbox */
+
+.page-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    accent-color: #ef4444;
+}
+
+/* =========================================================
+   VIEWER
+========================================================= */
+
+#viewer-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(2, 6, 23, .96);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+}
+
+#viewer-modal.open {
+    display: flex;
+}
+
+#viewer-toolbar {
+    height: 58px;
+    min-height: 58px;
+    background: rgba(15, 23, 42, .98);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-bottom: 1px solid #334155;
+    z-index: 10;
+}
+
+#viewer-file-name {
+    min-width: 160px;
+    max-width: 30vw;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    font-weight: 600;
+    margin-right: auto;
+}
+
+.viewer-btn {
+    height: 38px;
+    min-width: 38px;
+    padding: 0 11px;
+    border: 1px solid #475569;
+    background: #1e293b;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: .15s;
+}
+
+.viewer-btn:hover {
+    background: #334155;
+}
+
+.viewer-btn:active {
+    transform: scale(.95);
+}
+
+#viewer-counter {
+    min-width: 70px;
+    text-align: center;
+    font-size: 13px;
+    color: #cbd5e1;
+}
+
+#viewer-zoom-value {
+    min-width: 55px;
+    text-align: center;
+    font-size: 13px;
+    color: #e2e8f0;
+}
+
+/* =========================================================
+   VIEWER STAGE
+========================================================= */
+
+#viewer-stage {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at center, #1e293b 0%, #020617 80%);
+}
+
+/*
+    Đây là vùng pan.
+    Không dùng transform trên canvas để zoom.
+    Canvas được đặt bằng left/top + width/height.
+*/
+
+#viewer-pan {
+    position: absolute;
+    left: 0;
+    top: 0;
+    transform-origin: 0 0;
+    cursor: grab;
+}
+
+#viewer-pan.dragging {
+    cursor: grabbing;
+}
+
+#viewer-canvas {
+    display: block;
+    background: white;
+    box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+#viewer-loading {
+    position: absolute;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 16px;
+    background: rgba(2,6,23,.4);
+    z-index: 5;
+}
+
+#viewer-loading.show {
+    display: flex;
+}
+
+#viewer-help {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+    transform: translateX(-50%);
+    color: #cbd5e1;
+    background: rgba(15,23,42,.75);
+    border: 1px solid #475569;
+    border-radius: 20px;
+    padding: 7px 15px;
+    font-size: 12px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width: 768px) {
+
+    #viewer-toolbar {
+        gap: 4px;
+        padding: 6px;
+    }
+
+    #viewer-file-name {
+        display: none;
+    }
+
+    .viewer-btn {
+        min-width: 34px;
+        padding: 0 7px;
+    }
+
+    #viewer-help {
+        font-size: 10px;
+        bottom: 8px;
+    }
+}
+
+/* scrollbar */
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+</style>
 </head>
-<body>
 
-  <header>
-    <h1>Trình Chỉnh Sửa & Quản Lý PDF Offline</h1>
-  </header>
+<body class="bg-gray-100 min-h-screen p-4 md:p-6">
 
-  <div id="drop-zone">
-    <p><strong>Kéo & thả file PDF vào đây</strong> hoặc nhấp để chọn tệp từ máy tính</p>
-    <input type="file" id="file-input" multiple accept="application/pdf" style="display:none">
-  </div>
+<!-- =========================================================
+     MAIN LAYOUT
+========================================================= -->
 
-  <div id="toolbar">
-    <button class="btn btn-secondary" onclick="selectPages('all')">Chọn tất cả</button>
-    <button class="btn btn-secondary" onclick="selectPages('even')">Trang chẵn</button>
-    <button class="btn btn-secondary" onclick="selectPages('odd')">Trang lẻ</button>
-    <button class="btn btn-secondary" onclick="selectPages('none')">Bỏ chọn</button>
-    
-    <div style="border-left: 1px solid #cbd5e1; height: 24px; margin: 0 4px;"></div>
+<div class="max-w-[1500px] mx-auto flex flex-col md:flex-row gap-6">
 
-    <button class="btn" onclick="rotateSelected(90)">↺ Xoay trái 90°</button>
-    <button class="btn" onclick="rotateSelected(-90)">↻ Xoay phải 90°</button>
-    <button class="btn btn-danger" onclick="deleteSelected()">Xóa trang chọn</button>
+    <!-- SIDEBAR -->
 
-    <div style="border-left: 1px solid #cbd5e1; height: 24px; margin: 0 4px;"></div>
+    <aside
+        class="w-full md:w-1/4 lg:w-1/5
+               bg-white rounded-xl shadow-lg p-5
+               h-fit md:sticky md:top-6 z-40">
 
-    <button class="btn btn-success" onclick="exportPDF(true)">Xuất các trang đã chọn</button>
-    <button class="btn btn-success" onclick="exportPDF(false)">Lưu file PDF mới</button>
+        <h2 class="text-xl font-bold text-gray-800 border-b pb-3 mb-4">
+            📑 Quản lý tài liệu
+        </h2>
 
-    <div class="zoom-group">
-      <label for="zoom-slider">Zoom Grid:</label>
-      <input type="range" id="zoom-slider" min="120" max="350" value="180">
-    </div>
-  </div>
+        <div class="bg-blue-50 p-3 rounded-lg border border-blue-100 mb-4">
 
-  <div id="grid-container"></div>
+            <p class="text-sm text-blue-800 font-semibold mb-2">
+                Thống kê
+            </p>
 
-  <div id="viewer-modal" class="modal">
-    <div class="modal-toolbar">
-      <span id="modal-title" style="font-size: 14px; font-weight: 500;">-</span>
-      <div style="display: flex; gap: 10px; align-items: center;">
-        <button class="btn" onclick="rotateCurrentModalPage(-90)">↺ Xoay trái</button>
-        <button class="btn" onclick="rotateCurrentModalPage(90)">↻ Xoay phải</button>
-        <label style="font-size: 13px; margin-left: 10px;">Zoom View: 
-          <input type="range" id="modal-zoom-slider" min="0.5" max="3" step="0.1" value="1">
-        </label>
-        <button class="btn btn-danger" onclick="closeModal()" style="margin-left: 15px;">✕ Đóng (Esc)</button>
-      </div>
-    </div>
-    <div class="modal-body" id="modal-body">
-      <button class="modal-nav prev" onclick="navigateModal(-1)">❮</button>
-      <canvas id="modal-canvas"></canvas>
-      <button class="modal-nav next" onclick="navigateModal(1)">❯</button>
-    </div>
-  </div>
+            <div class="flex justify-between text-sm text-blue-700">
+                <span>Số file:</span>
+                <b id="stat-files">0</b>
+            </div>
 
-  <script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+            <div class="flex justify-between text-sm text-blue-700 border-t border-blue-200 pt-1 mt-1">
+                <span>Số trang:</span>
+                <b id="stat-pages" class="text-lg">0</b>
+            </div>
 
-    const dropZone = document.getElementById('drop-zone');
-    const fileInput = document.getElementById('file-input');
-    const container = document.getElementById('grid-container');
-    const zoomSlider = document.getElementById('zoom-slider');
-
-    let pageList = []; 
-    let currentModalIndex = -1;
-    let modalZoomScale = 1;
-
-    new Sortable(container, {
-      animation: 150,
-      ghostClass: 'sortable-ghost',
-      onEnd: () => syncPageListOrder()
-    });
-
-    dropZone.addEventListener('click', () => fileInput.click());
-    dropZone.addEventListener('dragover', (e) => e.preventDefault());
-    dropZone.addEventListener('drop', (e) => {
-      e.preventDefault();
-      handleFiles(e.dataTransfer.files);
-    });
-    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
-
-    async function handleFiles(files) {
-      for (let file of files) {
-        if (file.type !== 'application/pdf') continue;
-        const arrayBuffer = await file.arrayBuffer();
-        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
-
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-          const page = await pdfDoc.getPage(i);
-          const pageId = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-          
-          const pageData = {
-            id: pageId,
-            fileBuffer: arrayBuffer,
-            srcPageIndex: i - 1,
-            rotation: 0,
-            fileName: file.name
-          };
-
-          pageList.push(pageData);
-          await renderCard(page, pageData);
-        }
-      }
-    }
-
-    async function renderCard(pdfPage, pageData) {
-      const viewport = pdfPage.getViewport({ scale: 0.4 });
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
-
-      const card = document.createElement('div');
-      card.className = 'page-card';
-      card.id = pageData.id;
-      card.style.width = zoomSlider.value + 'px';
-
-      card.innerHTML = `
-        <div class="card-header">
-          <input type="checkbox" class="page-checkbox" onchange="toggleSelect(this)">
-          <span class="page-info" title="${pageData.fileName}">${pageData.fileName} - p.${pageData.srcPageIndex + 1}</span>
         </div>
-      `;
 
-      const canvasWrapper = document.createElement('div');
-      canvasWrapper.className = 'canvas-wrapper';
-      canvasWrapper.onclick = () => openModal(pageData.id);
-      canvasWrapper.appendChild(canvas);
-      card.appendChild(canvasWrapper);
+        <h3 class="text-sm font-bold text-gray-500 uppercase mb-2">
+            File gốc
+        </h3>
 
-      const actionDiv = document.createElement('div');
-      actionDiv.className = 'card-actions';
-      actionDiv.innerHTML = `
-        <button onclick="copyToClipboard('${pageData.id}')" title="Copy ảnh">Copy</button>
-        <button onclick="downloadImage('${pageData.id}')" title="Tải ảnh">Ảnh</button>
-      `;
-      card.appendChild(actionDiv);
+        <ul
+            id="sidebar-file-list"
+            class="space-y-2 overflow-y-auto max-h-[500px] pr-1 custom-scrollbar">
 
-      container.appendChild(card);
+            <li
+                id="sidebar-empty"
+                class="text-sm text-gray-400 italic text-center py-4">
+                Chưa có file nào
+            </li>
+
+        </ul>
+
+    </aside>
+
+
+    <!-- MAIN -->
+
+    <main class="w-full md:w-3/4 lg:w-4/5 bg-white rounded-xl shadow-lg p-6">
+
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-8">
+            Trình Chỉnh Sửa & Ghép Nối PDF
+        </h1>
+
+
+        <!-- DROP -->
+
+        <div
+            id="drop-zone"
+            class="border-2 border-dashed border-blue-400
+                   rounded-lg p-8 text-center
+                   cursor-pointer hover:bg-blue-50
+                   transition-colors mb-6">
+
+            <input
+                type="file"
+                id="file-input"
+                accept="application/pdf"
+                multiple
+                class="hidden">
+
+            <p class="text-gray-600 font-medium text-lg">
+
+                <span class="font-bold text-blue-600">
+                    Kéo & thả MỘT hoặc NHIỀU file PDF vào đây
+                </span>
+
+                <br>
+
+                <span class="text-sm text-gray-500">
+                    Hoặc nhấp để chọn file
+                </span>
+
+            </p>
+
+        </div>
+
+
+        <!-- TOOLBAR -->
+
+        <div
+            id="toolbar"
+            class="hidden flex-wrap items-center gap-3
+                   bg-white p-4 rounded-lg
+                   border border-gray-200
+                   mb-4 shadow-md
+                   sticky top-4 z-50">
+
+            <div class="flex gap-2 border-r pr-3 border-gray-300">
+
+                <button
+                    id="btn-select-all"
+                    class="tool-btn">
+                    Chọn tất cả
+                </button>
+
+                <button
+                    id="btn-select-even"
+                    class="tool-btn">
+                    Trang chẵn
+                </button>
+
+                <button
+                    id="btn-select-odd"
+                    class="tool-btn">
+                    Trang lẻ
+                </button>
+
+                <button
+                    id="btn-deselect"
+                    class="tool-btn">
+                    Bỏ chọn
+                </button>
+
+            </div>
+
+
+            <div class="flex gap-2 border-r pr-3 border-gray-300">
+
+                <button
+                    id="btn-rotate-left"
+                    class="tool-btn bg-blue-500 hover:bg-blue-600">
+                    ↺ Xoay trái
+                </button>
+
+                <button
+                    id="btn-rotate-right"
+                    class="tool-btn bg-blue-500 hover:bg-blue-600">
+                    ↻ Xoay phải
+                </button>
+
+                <button
+                    id="btn-delete"
+                    class="tool-btn bg-red-500 hover:bg-red-600">
+                    Xóa trang chọn
+                </button>
+
+            </div>
+
+
+            <div class="flex gap-2">
+
+                <button
+                    id="btn-export-selected"
+                    class="tool-btn bg-green-500 hover:bg-green-600">
+                    Xuất trang đã chọn
+                </button>
+
+                <button
+                    id="btn-save-new"
+                    class="tool-btn bg-green-600 hover:bg-green-700 font-bold">
+                    Lưu PDF mới
+                </button>
+
+            </div>
+
+
+            <div class="ml-auto flex items-center gap-2">
+
+                <label class="text-sm text-gray-600">
+                    Zoom Grid
+                </label>
+
+                <input
+                    type="range"
+                    id="zoom-grid"
+                    min="120"
+                    max="400"
+                    value="180"
+                    class="w-28">
+
+            </div>
+
+        </div>
+
+
+        <p
+            id="insert-tip"
+            class="hidden text-sm text-blue-600
+                   italic mb-2 text-center
+                   bg-blue-50 p-2 rounded">
+
+            💡 Click vào ảnh để mở Viewer.
+            Tick ✓ để chọn trang.
+            Kéo trang để đổi vị trí.
+
+        </p>
+
+
+        <!-- GRID -->
+
+        <div
+            id="pdf-container"
+            class="grid gap-6 bg-gray-200
+                   p-6 rounded-lg min-h-[400px]"
+            style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));">
+
+            <div
+                id="empty-state"
+                class="col-span-full text-center text-gray-400 mt-28">
+
+                Lưới hiển thị trang đang trống.
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<!-- =========================================================
+     VIEWER MODAL
+========================================================= -->
+
+<div id="viewer-modal">
+
+    <div id="viewer-toolbar">
+
+        <div id="viewer-file-name"></div>
+
+
+        <button
+            id="viewer-prev"
+            class="viewer-btn"
+            title="Trang trước">
+            ◀
+        </button>
+
+
+        <div id="viewer-counter">
+            1 / 1
+        </div>
+
+
+        <button
+            id="viewer-next"
+            class="viewer-btn"
+            title="Trang sau">
+            ▶
+        </button>
+
+
+        <div class="w-px h-7 bg-slate-600 mx-2"></div>
+
+
+        <button
+            id="viewer-zoom-out"
+            class="viewer-btn"
+            title="Thu nhỏ">
+            −
+        </button>
+
+
+        <span id="viewer-zoom-value">
+            100%
+        </span>
+
+
+        <button
+            id="viewer-zoom-in"
+            class="viewer-btn"
+            title="Phóng to">
+            +
+        </button>
+
+
+        <button
+            id="viewer-fit"
+            class="viewer-btn"
+            title="Vừa màn hình">
+            ⛶
+        </button>
+
+
+        <button
+            id="viewer-reset"
+            class="viewer-btn"
+            title="Reset">
+            1:1
+        </button>
+
+
+        <button
+            id="viewer-rotate"
+            class="viewer-btn"
+            title="Xoay">
+            ↻
+        </button>
+
+
+        <button
+            id="viewer-copy"
+            class="viewer-btn"
+            title="Copy ảnh vào Clipboard">
+            📋
+        </button>
+
+
+        <button
+            id="viewer-download"
+            class="viewer-btn"
+            title="Xuất PNG">
+            🖼️
+        </button>
+
+
+        <button
+            id="viewer-close"
+            class="viewer-btn"
+            title="Đóng">
+            ✕
+        </button>
+
+    </div>
+
+
+    <div id="viewer-stage">
+
+        <div id="viewer-pan">
+
+            <canvas id="viewer-canvas"></canvas>
+
+        </div>
+
+
+        <div id="viewer-loading">
+            Đang tải trang...
+        </div>
+
+
+        <div id="viewer-help">
+            Kéo chuột để di chuyển ảnh • Con lăn để zoom • ← → chuyển trang • Esc đóng
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   PDF.JS
+========================================================= */
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+    "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+
+/* =========================================================
+   DATA MODEL
+========================================================= */
+
+/*
+    Không lưu PDF.js PDFDocument vào page.
+
+    Chỉ lưu:
+        - fileId
+        - page number
+        - buffer PDF gốc
+
+    Viewer mỗi lần mở sẽ lấy PDF từ cache an toàn.
+*/
+
+let uploadedFiles = [];
+
+let fileIdCounter = 0;
+
+
+/* =========================================================
+   DOM
+========================================================= */
+
+const dropZone =
+    document.getElementById("drop-zone");
+
+const fileInput =
+    document.getElementById("file-input");
+
+const pdfContainer =
+    document.getElementById("pdf-container");
+
+const toolbar =
+    document.getElementById("toolbar");
+
+const insertTip =
+    document.getElementById("insert-tip");
+
+const zoomGrid =
+    document.getElementById("zoom-grid");
+
+
+/* =========================================================
+   TOOL BUTTON STYLE
+========================================================= */
+
+const toolStyle = document.createElement("style");
+
+toolStyle.textContent = `
+.tool-btn {
+    padding:6px 10px;
+    background:#64748b;
+    color:white;
+    border-radius:6px;
+    font-size:13px;
+    font-weight:500;
+    transition:.15s;
+}
+.tool-btn:hover {
+    background:#475569;
+}
+.tool-btn:disabled {
+    opacity:.5;
+    cursor:not-allowed;
+}
+`;
+
+document.head.appendChild(toolStyle);
+
+
+/* =========================================================
+   FILE CACHE
+========================================================= */
+
+/*
+    ArrayBuffer có thể bị detach bởi PDF.js.
+
+    Vì vậy:
+        1. Lưu Uint8Array độc lập.
+        2. Mỗi lần PDF.js load dùng .slice().
+*/
+
+const pdfJsCache = new Map();
+
+const pdfLibCache = new Map();
+
+
+async function getPdfJsDocument(fileId) {
+
+    if (pdfJsCache.has(fileId)) {
+        return pdfJsCache.get(fileId);
     }
 
-    function syncPageListOrder() {
-      const currentIds = Array.from(container.children).map(card => card.id);
-      pageList.sort((a, b) => currentIds.indexOf(a.id) - currentIds.indexOf(b.id));
+    const fileData =
+        uploadedFiles.find(f => f.id === fileId);
+
+    if (!fileData) {
+        throw new Error("Không tìm thấy file PDF.");
     }
 
-    function toggleSelect(checkbox) {
-      const card = checkbox.closest('.page-card');
-      card.classList.toggle('selected', checkbox.checked);
-    }
+    const bytes =
+        new Uint8Array(fileData.buffer.slice(0));
 
-    function selectPages(type) {
-      const cards = container.querySelectorAll('.page-card');
-      cards.forEach((card, index) => {
-        const cb = card.querySelector('.page-checkbox');
-        let check = false;
-        if (type === 'all') check = true;
-        if (type === 'none') check = false;
-        if (type === 'even') check = (index + 1) % 2 === 0;
-        if (type === 'odd') check = (index + 1) % 2 !== 0;
-        
-        cb.checked = check;
-        card.classList.toggle('selected', check);
-      });
-    }
-
-    function rotateSelected(deg) {
-      const cards = container.querySelectorAll('.page-card');
-      cards.forEach(card => {
-        const cb = card.querySelector('.page-checkbox');
-        if (cb.checked) {
-          applyRotation(card.id, deg);
-        }
-      });
-    }
-
-    function applyRotation(cardId, deg) {
-      const item = pageList.find(p => p.id === cardId);
-      if (item) {
-        item.rotation = (item.rotation + deg) % 360;
-        const card = document.getElementById(cardId);
-        if (card) {
-          const canvas = card.querySelector('canvas');
-          canvas.style.transform = `rotate(${item.rotation}deg)`;
-        }
-      }
-    }
-
-    function deleteSelected() {
-      const cards = container.querySelectorAll('.page-card');
-      cards.forEach(card => {
-        if (card.querySelector('.page-checkbox').checked) {
-          pageList = pageList.filter(p => p.id !== card.id);
-          card.remove();
-        }
-      });
-    }
-
-    zoomSlider.addEventListener('input', (e) => {
-      document.querySelectorAll('.page-card').forEach(card => {
-        card.style.width = e.target.value + 'px';
-      });
-    });
-
-    // --- CHỨC NĂNG LIGHTBOX MODAL (VIEWER) ---
-    const modal = document.getElementById('viewer-modal');
-    const modalTitle = document.getElementById('modal-title');
-    const modalCanvas = document.getElementById('modal-canvas');
-    const modalZoomSlider = document.getElementById('modal-zoom-slider');
-
-    async function openModal(cardId) {
-      syncPageListOrder();
-      currentModalIndex = pageList.findIndex(p => p.id === cardId);
-      if (currentModalIndex === -1) return;
-
-      modalZoomScale = 1;
-      modalZoomSlider.value = 1;
-      modal.classList.add('active');
-      await renderModalPage();
-    }
-
-    function closeModal() {
-      modal.classList.remove('active');
-      currentModalIndex = -1;
-    }
-
-    async function renderModalPage() {
-      if (currentModalIndex < 0 || currentModalIndex >= pageList.length) return;
-      const pageData = pageList[currentModalIndex];
-
-      modalTitle.innerText = `Trang ${currentModalIndex + 1} / ${pageList.length} - [${pageData.fileName}]`;
-
-      const pdfDoc = await pdfjsLib.getDocument({ data: pageData.fileBuffer.slice(0) }).promise;
-      const page = await pdfDoc.getPage(pageData.srcPageIndex + 1);
-
-      const totalRotation = (page.rotate + pageData.rotation) % 360;
-      const viewport = page.getViewport({ scale: 1.8, rotation: totalRotation });
-
-      const ctx = modalCanvas.getContext('2d');
-      modalCanvas.width = viewport.width;
-      modalCanvas.height = viewport.height;
-
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      updateModalTransform();
-    }
-
-    function updateModalTransform() {
-      modalCanvas.style.transform = `scale(${modalZoomScale})`;
-    }
-
-    function rotateCurrentModalPage(deg) {
-      if (currentModalIndex === -1) return;
-      const pageData = pageList[currentModalIndex];
-      applyRotation(pageData.id, deg);
-      renderModalPage();
-    }
-
-    function navigateModal(direction) {
-      const newIndex = currentModalIndex + direction;
-      if (newIndex >= 0 && newIndex < pageList.length) {
-        currentModalIndex = newIndex;
-        modalZoomScale = 1;
-        modalZoomSlider.value = 1;
-        renderModalPage();
-      }
-    }
-
-    modalZoomSlider.addEventListener('input', (e) => {
-      modalZoomScale = parseFloat(e.target.value);
-      updateModalTransform();
-    });
-
-    // Zoom bằng con lăn chuột trong Modal
-    document.getElementById('modal-body').addEventListener('wheel', (e) => {
-      if (!modal.classList.contains('active')) return;
-      e.preventDefault();
-      modalZoomScale += e.deltaY < 0 ? 0.1 : -0.1;
-      modalZoomScale = Math.min(Math.max(0.5, modalZoomScale), 3);
-      modalZoomSlider.value = modalZoomScale;
-      updateModalTransform();
-    }, { passive: false });
-
-    // Phím tắt bàn phím (Mũi tên trái/phải & Esc)
-    window.addEventListener('keydown', (e) => {
-      if (!modal.classList.contains('active')) return;
-      if (e.key === 'ArrowLeft') navigateModal(-1);
-      if (e.key === 'ArrowRight') navigateModal(1);
-      if (e.key === 'Escape') closeModal();
-    });
-
-    // --- CÁC HÀM PHỤ TRỢ XUẤT ẢNH & PDF ---
-    async function renderHighResCanvas(cardId, scale = 2.5) {
-      const pageData = pageList.find(p => p.id === cardId);
-      if (!pageData) return null;
-
-      const pdfDoc = await pdfjsLib.getDocument({ data: pageData.fileBuffer.slice(0) }).promise;
-      const page = await pdfDoc.getPage(pageData.srcPageIndex + 1);
-
-      const totalRotation = (page.rotate + pageData.rotation) % 360;
-      const viewport = page.getViewport({ scale: scale, rotation: totalRotation });
-
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      await page.render({ canvasContext: ctx, viewport }).promise;
-      return canvas;
-    }
-
-    async function copyToClipboard(cardId) {
-      try {
-        const highResCanvas = await renderHighResCanvas(cardId, 2.5);
-        if (!highResCanvas) return;
-
-        highResCanvas.toBlob(async (blob) => {
-          try {
-            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-            alert('Đã sao chép ảnh nét cao vào Bộ nhớ tạm!');
-          } catch (err) {
-            alert('Không thể sao chép ảnh. Lỗi: ' + err);
-          }
-        }, 'image/png');
-      } catch (err) {
-        alert('Lỗi khi xử lý ảnh nét cao: ' + err);
-      }
-    }
-
-    async function downloadImage(cardId) {
-      try {
-        const pageData = pageList.find(p => p.id === cardId);
-        const highResCanvas = await renderHighResCanvas(cardId, 2.5);
-        if (!highResCanvas) return;
-
-        const link = document.createElement('a');
-        link.download = `${pageData ? pageData.fileName.replace('.pdf', '') : 'page'}_p${pageData ? pageData.srcPageIndex + 1 : 1}.png`;
-        link.href = highResCanvas.toDataURL('image/png');
-        link.click();
-      } catch (err) {
-        alert('Lỗi khi tải ảnh: ' + err);
-      }
-    }
-
-    async function exportPDF(onlySelected = false) {
-      syncPageListOrder();
-      
-      let targetPages = pageList;
-      if (onlySelected) {
-        targetPages = pageList.filter(p => {
-          const card = document.getElementById(p.id);
-          return card && card.querySelector('.page-checkbox').checked;
+    const loadingTask =
+        pdfjsLib.getDocument({
+            data: bytes
         });
-      }
 
-      if (targetPages.length === 0) {
-        alert('Không có trang nào được chọn để xuất!');
-        return;
-      }
+    const pdf =
+        await loadingTask.promise;
 
-      const newPdf = await PDFLib.PDFDocument.create();
-      const pdfCache = new Map();
+    pdfJsCache.set(fileId, pdf);
 
-      for (let p of targetPages) {
-        if (!pdfCache.has(p.fileBuffer)) {
-          const srcDoc = await PDFLib.PDFDocument.load(p.fileBuffer);
-          pdfCache.set(p.fileBuffer, srcDoc);
-        }
+    return pdf;
+}
 
-        const srcDoc = pdfCache.get(p.fileBuffer);
-        const [copiedPage] = await newPdf.copyPages(srcDoc, [p.srcPageIndex]);
-        
-        if (p.rotation !== 0) {
-          const currentRotation = copiedPage.getRotation().angle;
-          copiedPage.setRotation(PDFLib.degrees(currentRotation + p.rotation));
-        }
 
-        newPdf.addPage(copiedPage);
-      }
+async function getPdfLibDocument(fileId) {
 
-      const pdfBytes = await newPdf.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = onlySelected ? 'selected_pages.pdf' : 'edited_document.pdf';
-      link.click();
+    if (pdfLibCache.has(fileId)) {
+        return pdfLibCache.get(fileId);
     }
-  </script>
+
+    const fileData =
+        uploadedFiles.find(f => f.id === fileId);
+
+    if (!fileData) {
+        throw new Error("Không tìm thấy file PDF.");
+    }
+
+    const bytes =
+        fileData.buffer.slice(0);
+
+    const pdf =
+        await PDFLib.PDFDocument.load(bytes);
+
+    pdfLibCache.set(fileId, pdf);
+
+    return pdf;
+}
+
+
+/* =========================================================
+   SORTABLE
+========================================================= */
+
+new Sortable(pdfContainer, {
+
+    animation:150,
+
+    ghostClass:"sortable-ghost",
+
+    filter:".page-control",
+
+    preventOnFilter:false,
+
+    onEnd() {
+        updateGridStats();
+    }
+
+});
+
+
+/* =========================================================
+   FILE INPUT
+========================================================= */
+
+dropZone.addEventListener("click", () => {
+
+    fileInput.click();
+
+});
+
+
+fileInput.addEventListener("change", e => {
+
+    processMultipleFiles(
+        e.target.files
+    );
+
+    fileInput.value = "";
+
+});
+
+
+dropZone.addEventListener("dragover", e => {
+
+    e.preventDefault();
+
+    dropZone.classList.add(
+        "bg-blue-50"
+    );
+
+});
+
+
+dropZone.addEventListener("dragleave", () => {
+
+    dropZone.classList.remove(
+        "bg-blue-50"
+    );
+
+});
+
+
+dropZone.addEventListener("drop", e => {
+
+    e.preventDefault();
+
+    dropZone.classList.remove(
+        "bg-blue-50"
+    );
+
+    processMultipleFiles(
+        e.dataTransfer.files
+    );
+
+});
+
+
+/* =========================================================
+   GRID DROP
+========================================================= */
+
+pdfContainer.addEventListener("dragover", e => {
+
+    e.preventDefault();
+
+});
+
+
+pdfContainer.addEventListener("drop", e => {
+
+    e.preventDefault();
+
+    if (
+        e.dataTransfer.files &&
+        e.dataTransfer.files.length
+    ) {
+
+        const target =
+            e.target.closest(".page-wrapper");
+
+        processMultipleFiles(
+            e.dataTransfer.files,
+            target
+        );
+
+    }
+
+});
+
+
+/* =========================================================
+   PROCESS FILES
+========================================================= */
+
+async function processMultipleFiles(
+    files,
+    insertBeforeElement = null
+) {
+
+    const validFiles =
+        Array.from(files).filter(
+            f => f.type === "application/pdf"
+        );
+
+    if (!validFiles.length)
+        return;
+
+
+    const empty =
+        document.getElementById(
+            "empty-state"
+        );
+
+    if (empty)
+        empty.remove();
+
+
+    toolbar.classList.remove("hidden");
+
+    toolbar.classList.add("flex");
+
+    insertTip.classList.remove("hidden");
+
+
+    for (const file of validFiles) {
+
+        try {
+
+            fileIdCounter++;
+
+            const id =
+                fileIdCounter;
+
+
+            /*
+                Quan trọng:
+
+                arrayBuffer() lấy buffer riêng.
+                Chúng ta lưu bản copy.
+            */
+
+            const originalBuffer =
+                await file.arrayBuffer();
+
+            const storedBuffer =
+                originalBuffer.slice(0);
+
+
+            uploadedFiles.push({
+
+                id,
+
+                name:file.name,
+
+                buffer:storedBuffer
+
+            });
+
+
+            /*
+                PDF.js dùng một bản copy.
+            */
+
+            const pdf =
+                await pdfjsLib
+                    .getDocument({
+                        data:new Uint8Array(
+                            storedBuffer.slice(0)
+                        )
+                    })
+                    .promise;
+
+
+            addFileToSidebar(
+                id,
+                file.name,
+                pdf.numPages
+            );
+
+
+            for (
+                let pageNum = 1;
+                pageNum <= pdf.numPages;
+                pageNum++
+            ) {
+
+                await renderPage(
+                    pdf,
+                    pageNum,
+                    id,
+                    file.name,
+                    insertBeforeElement
+                );
+
+            }
+
+        }
+        catch(error) {
+
+            console.error(error);
+
+            alert(
+                "Không thể đọc file:\n" +
+                file.name +
+                "\n\n" +
+                (error.message || error)
+            );
+
+        }
+
+    }
+
+
+    updateGridStats();
+
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+function addFileToSidebar(
+    fileId,
+    fileName,
+    numPages
+) {
+
+    const list =
+        document.getElementById(
+            "sidebar-file-list"
+        );
+
+    const empty =
+        document.getElementById(
+            "sidebar-empty"
+        );
+
+    if (empty)
+        empty.remove();
+
+
+    const li =
+        document.createElement("li");
+
+    li.className =
+        "bg-gray-50 p-3 rounded-lg border border-gray-200";
+
+
+    li.innerHTML = `
+
+        <div
+            class="font-bold text-gray-700 truncate"
+            title="${escapeHtml(fileName)}">
+
+            ${escapeHtml(fileName)}
+
+        </div>
+
+        <div
+            class="text-gray-500 text-xs mt-1 flex justify-between">
+
+            <span
+                class="bg-blue-100 text-blue-700 px-2 py-0.5 rounded">
+
+                ${numPages} trang
+
+            </span>
+
+            <span class="font-mono">
+                #${fileId}
+            </span>
+
+        </div>
+
+    `;
+
+
+    list.appendChild(li);
+
+}
+
+
+/* =========================================================
+   RENDER THUMBNAIL
+========================================================= */
+
+async function renderPage(
+    pdf,
+    pageNum,
+    fileId,
+    fileName,
+    insertBeforeElement
+) {
+
+    const page =
+        await pdf.getPage(pageNum);
+
+
+    const viewport =
+        page.getViewport({
+            scale:1.2
+        });
+
+
+    const wrapper =
+        document.createElement("div");
+
+
+    wrapper.className =
+        "page-wrapper flex flex-col items-center " +
+        "relative bg-white p-2 rounded shadow " +
+        "border-4 border-transparent";
+
+
+    wrapper.dataset.fileId =
+        fileId;
+
+    wrapper.dataset.originalPage =
+        pageNum;
+
+    wrapper.dataset.rotation =
+        "0";
+
+
+    /* =====================================================
+       TOP CONTROL
+    ===================================================== */
+
+    const control =
+        document.createElement("div");
+
+    control.className =
+        "page-control w-full flex items-center " +
+        "justify-between mb-2";
+
+
+    /*
+        CHECKBOX
+
+        Đây là vùng CHỌN.
+        Không mở Viewer.
+    */
+
+    const checkbox =
+        document.createElement("input");
+
+    checkbox.type =
+        "checkbox";
+
+    checkbox.className =
+        "page-checkbox";
+
+
+    checkbox.title =
+        "Chọn trang";
+
+
+    checkbox.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            wrapper.classList.toggle(
+                "page-selected",
+                checkbox.checked
+            );
+
+        }
+    );
+
+
+    /*
+        NÚT VIEWER
+
+        Có thể dùng để mở Viewer.
+    */
+
+    const viewerButton =
+        document.createElement("button");
+
+    viewerButton.type =
+        "button";
+
+    viewerButton.className =
+        "text-xs bg-blue-50 text-blue-600 " +
+        "px-2 py-1 rounded hover:bg-blue-100";
+
+
+    viewerButton.textContent =
+        "👁 Xem";
+
+
+    viewerButton.title =
+        "Mở Viewer";
+
+
+    viewerButton.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            openViewer(wrapper);
+
+        }
+    );
+
+
+    control.appendChild(
+        checkbox
+    );
+
+    control.appendChild(
+        viewerButton
+    );
+
+
+    /* =====================================================
+       CANVAS
+    ===================================================== */
+
+    const canvas =
+        document.createElement("canvas");
+
+    const context =
+        canvas.getContext(
+            "2d",
+            { willReadFrequently:true }
+        );
+
+
+    canvas.width =
+        Math.ceil(viewport.width);
+
+    canvas.height =
+        Math.ceil(viewport.height);
+
+
+    canvas.className =
+        "max-w-full h-auto border border-gray-200 rounded";
+
+
+    await page.render({
+
+        canvasContext:context,
+
+        viewport
+
+    }).promise;
+
+
+    /* =====================================================
+       LABEL
+    ===================================================== */
+
+    const label =
+        document.createElement("div");
+
+    label.className =
+        "text-center mt-2 text-xs font-medium " +
+        "text-gray-600 w-full border-t pt-2";
+
+
+    const shortName =
+        fileName.length > 18
+            ? fileName.substring(0,18) + "..."
+            : fileName;
+
+
+    label.innerHTML = `
+
+        <span
+            class="text-blue-600 font-bold truncate block"
+            title="${escapeHtml(fileName)}">
+
+            ${escapeHtml(shortName)}
+
+        </span>
+
+        Trang ${pageNum}
+
+    `;
+
+
+    wrapper.appendChild(control);
+
+    wrapper.appendChild(canvas);
+
+    wrapper.appendChild(label);
+
+
+    /* =====================================================
+       CLICK CANVAS → VIEWER
+    ===================================================== */
+
+    canvas.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            openViewer(wrapper);
+
+        }
+    );
+
+
+    /*
+        Label cũng mở Viewer.
+    */
+
+    label.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            openViewer(wrapper);
+
+        }
+    );
+
+
+    /* =====================================================
+       INSERT
+    ===================================================== */
+
+    if (
+        insertBeforeElement &&
+        insertBeforeElement.parentNode === pdfContainer
+    ) {
+
+        pdfContainer.insertBefore(
+            wrapper,
+            insertBeforeElement
+        );
+
+    }
+    else {
+
+        pdfContainer.appendChild(
+            wrapper
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SELECT FUNCTIONS
+========================================================= */
+
+function getPageWrappers() {
+
+    return Array.from(
+        pdfContainer.querySelectorAll(
+            ".page-wrapper"
+        )
+    );
+
+}
+
+
+function selectPages(type) {
+
+    const pages =
+        getPageWrappers();
+
+
+    pages.forEach(
+        (page, index) => {
+
+            const checkbox =
+                page.querySelector(
+                    ".page-checkbox"
+                );
+
+            let selected =
+                false;
+
+
+            if (type === "all")
+                selected = true;
+
+
+            if (type === "none")
+                selected = false;
+
+
+            if (type === "even")
+                selected =
+                    (index + 1) % 2 === 0;
+
+
+            if (type === "odd")
+                selected =
+                    (index + 1) % 2 !== 0;
+
+
+            checkbox.checked =
+                selected;
+
+
+            page.classList.toggle(
+                "page-selected",
+                selected
+            );
+
+        }
+    );
+
+}
+
+
+document.getElementById(
+    "btn-select-all"
+).onclick = () =>
+    selectPages("all");
+
+
+document.getElementById(
+    "btn-select-even"
+).onclick = () =>
+    selectPages("even");
+
+
+document.getElementById(
+    "btn-select-odd"
+).onclick = () =>
+    selectPages("odd");
+
+
+document.getElementById(
+    "btn-deselect"
+).onclick = () =>
+    selectPages("none");
+
+
+/* =========================================================
+   ROTATE SELECTED
+========================================================= */
+
+function rotateSelected(angle) {
+
+    const selected =
+        getPageWrappers()
+            .filter(
+                el =>
+                    el.classList.contains(
+                        "page-selected"
+                    )
+            );
+
+
+    if (!selected.length) {
+
+        alert(
+            "Vui lòng chọn ít nhất một trang."
+        );
+
+        return;
+
+    }
+
+
+    selected.forEach(
+        el => {
+
+            let rotation =
+                parseInt(
+                    el.dataset.rotation || "0"
+                );
+
+
+            rotation =
+                (rotation + angle + 360) % 360;
+
+
+            el.dataset.rotation =
+                rotation;
+
+
+            const canvas =
+                el.querySelector("canvas");
+
+
+            canvas.style.transform =
+                `rotate(${rotation}deg)`;
+
+        }
+    );
+
+}
+
+
+document.getElementById(
+    "btn-rotate-left"
+).onclick = () =>
+    rotateSelected(-90);
+
+
+document.getElementById(
+    "btn-rotate-right"
+).onclick = () =>
+    rotateSelected(90);
+
+
+/* =========================================================
+   DELETE
+========================================================= */
+
+document.getElementById(
+    "btn-delete"
+).onclick = () => {
+
+    const selected =
+        getPageWrappers()
+            .filter(
+                el =>
+                    el.classList.contains(
+                        "page-selected"
+                    )
+            );
+
+
+    if (!selected.length) {
+
+        alert(
+            "Vui lòng chọn trang cần xóa."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Bạn có chắc muốn xóa ${selected.length} trang?`
+        )
+    )
+        return;
+
+
+    selected.forEach(
+        el => el.remove()
+    );
+
+
+    updateGridStats();
+
+};
+
+
+/* =========================================================
+   GRID ZOOM
+========================================================= */
+
+zoomGrid.addEventListener(
+    "input",
+    e => {
+
+        pdfContainer.style.gridTemplateColumns =
+            `repeat(auto-fill,minmax(${e.target.value}px,1fr))`;
+
+    }
+);
+
+
+/* =========================================================
+   GRID STATS
+========================================================= */
+
+function updateGridStats() {
+
+    document.getElementById(
+        "stat-files"
+    ).textContent =
+        uploadedFiles.length;
+
+
+    document.getElementById(
+        "stat-pages"
+    ).textContent =
+        getPageWrappers().length;
+
+}
+
+
+/* =========================================================
+   EXPORT PDF
+========================================================= */
+
+async function exportPDF(
+    onlySelected = false
+) {
+
+    const pages =
+        onlySelected
+            ? getPageWrappers()
+                .filter(
+                    p =>
+                        p.classList.contains(
+                            "page-selected"
+                        )
+                )
+            : getPageWrappers();
+
+
+    if (!pages.length) {
+
+        alert(
+            "Không có trang để xuất."
+        );
+
+        return;
+
+    }
+
+
+    const button =
+        document.getElementById(
+            onlySelected
+                ? "btn-export-selected"
+                : "btn-save-new"
+        );
+
+
+    const oldText =
+        button.textContent;
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Đang ghép...";
+
+
+    try {
+
+        const newPdf =
+            await PDFLib.PDFDocument.create();
+
+
+        /*
+            Cache PDF-Lib theo file.
+        */
+
+        const cache =
+            new Map();
+
+
+        for (
+            const pageEl of pages
+        ) {
+
+            const fileId =
+                parseInt(
+                    pageEl.dataset.fileId
+                );
+
+
+            const pageIndex =
+                parseInt(
+                    pageEl.dataset.originalPage
+                ) - 1;
+
+
+            const rotation =
+                parseInt(
+                    pageEl.dataset.rotation || "0"
+                );
+
+
+            let sourceDoc =
+                cache.get(fileId);
+
+
+            if (!sourceDoc) {
+
+                sourceDoc =
+                    await getPdfLibDocument(
+                        fileId
+                    );
+
+                cache.set(
+                    fileId,
+                    sourceDoc
+                );
+
+            }
+
+
+            const [
+                copiedPage
+            ] =
+                await newPdf.copyPages(
+                    sourceDoc,
+                    [pageIndex]
+                );
+
+
+            if (rotation !== 0) {
+
+                const current =
+                    copiedPage.getRotation();
+
+
+                const currentAngle =
+                    current
+                        ? current.angle
+                        : 0;
+
+
+                copiedPage.setRotation(
+                    PDFLib.degrees(
+                        currentAngle + rotation
+                    )
+                );
+
+            }
+
+
+            newPdf.addPage(
+                copiedPage
+            );
+
+        }
+
+
+        const bytes =
+            await newPdf.save();
+
+
+        downloadBlob(
+            new Blob(
+                [bytes],
+                {
+                    type:"application/pdf"
+                }
+            ),
+            onlySelected
+                ? "TrangDaChon.pdf"
+                : "TaiLieu_GhepNoi.pdf"
+        );
+
+
+    }
+    catch(error) {
+
+        console.error(error);
+
+        alert(
+            "Lỗi khi tạo PDF:\n\n" +
+            (error.message || error)
+        );
+
+    }
+    finally {
+
+        button.disabled = false;
+
+        button.textContent =
+            oldText;
+
+    }
+
+}
+
+
+document.getElementById(
+    "btn-export-selected"
+).onclick = () =>
+    exportPDF(true);
+
+
+document.getElementById(
+    "btn-save-new"
+).onclick = () =>
+    exportPDF(false);
+
+
+/* =========================================================
+   VIEWER STATE
+========================================================= */
+
+const viewerModal =
+    document.getElementById(
+        "viewer-modal"
+    );
+
+
+const viewerCanvas =
+    document.getElementById(
+        "viewer-canvas"
+    );
+
+
+const viewerPan =
+    document.getElementById(
+        "viewer-pan"
+    );
+
+
+const viewerStage =
+    document.getElementById(
+        "viewer-stage"
+    );
+
+
+const viewerLoading =
+    document.getElementById(
+        "viewer-loading"
+    );
+
+
+const viewerFileName =
+    document.getElementById(
+        "viewer-file-name"
+    );
+
+
+const viewerCounter =
+    document.getElementById(
+        "viewer-counter"
+    );
+
+
+const viewerZoomValue =
+    document.getElementById(
+        "viewer-zoom-value"
+    );
+
+
+let viewerPages = [];
+
+let viewerIndex = 0;
+
+
+/*
+    Zoom được giữ lại khi Next / Prev.
+
+    Ví dụ:
+        Fit → 100%
+        Zoom → 180%
+        Next → vẫn 180%
+*/
+
+let viewerZoom =
+    1;
+
+
+let viewerRotation =
+    0;
+
+
+let viewerFitMode =
+    true;
+
+
+/*
+    Pan position
+*/
+
+let panX = 0;
+let panY = 0;
+
+
+/*
+    Trang hiện tại PDF.js.
+*/
+
+let currentViewerPdf = null;
+
+
+/* =========================================================
+   OPEN VIEWER
+========================================================= */
+
+async function openViewer(
+    wrapper
+) {
+
+    viewerPages =
+        getPageWrappers();
+
+
+    viewerIndex =
+        viewerPages.indexOf(
+            wrapper
+        );
+
+
+    if (viewerIndex < 0)
+        return;
+
+
+    viewerModal.classList.add(
+        "open"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+
+    /*
+        Mỗi lần mở Viewer:
+        mặc định Fit màn hình.
+
+        Nhưng sau khi Next/Prev,
+        viewerZoom không thay đổi.
+    */
+
+    viewerFitMode = true;
+
+    viewerRotation = 0;
+
+    panX = 0;
+
+    panY = 0;
+
+
+    await renderViewerPage();
+
+}
+
+
+/* =========================================================
+   RENDER VIEWER PAGE
+========================================================= */
+
+async function renderViewerPage() {
+
+    const wrapper =
+        viewerPages[viewerIndex];
+
+
+    if (!wrapper)
+        return;
+
+
+    const fileId =
+        parseInt(
+            wrapper.dataset.fileId
+        );
+
+
+    const pageNumber =
+        parseInt(
+            wrapper.dataset.originalPage
+        );
+
+
+    const pageRotation =
+        parseInt(
+            wrapper.dataset.rotation || "0"
+        );
+
+
+    viewerFileName.textContent =
+        getFileName(fileId);
+
+
+    viewerCounter.textContent =
+        `${viewerIndex + 1} / ${viewerPages.length}`;
+
+
+    viewerLoading.classList.add(
+        "show"
+    );
+
+
+    try {
+
+        const pdf =
+            await getPdfJsDocument(
+                fileId
+            );
+
+
+        currentViewerPdf =
+            pdf;
+
+
+        const page =
+            await pdf.getPage(
+                pageNumber
+            );
+
+
+        /*
+            Render độ phân giải cao.
+
+            Scale 2 giúp PNG và zoom rõ hơn.
+        */
+
+        const baseViewport =
+            page.getViewport({
+                scale:2,
+                rotation:
+                    pageRotation +
+                    viewerRotation
+            });
+
+
+        viewerCanvas.width =
+            Math.ceil(
+                baseViewport.width
+            );
+
+
+        viewerCanvas.height =
+            Math.ceil(
+                baseViewport.height
+            );
+
+
+        const ctx =
+            viewerCanvas.getContext(
+                "2d"
+            );
+
+
+        await page.render({
+
+            canvasContext:ctx,
+
+            viewport:baseViewport
+
+        }).promise;
+
+
+        /*
+            Khi mở trang đầu tiên:
+            Fit màn hình.
+        */
+
+        if (viewerFitMode) {
+
+            fitViewer();
+
+        }
+        else {
+
+            applyViewerTransform();
+
+        }
+
+
+    }
+    catch(error) {
+
+        console.error(
+            "Viewer error:",
+            error
+        );
+
+
+        alert(
+            "Không thể hiển thị trang PDF.\n\n" +
+            (error.message || error)
+        );
+
+    }
+    finally {
+
+        viewerLoading.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   FIT
+========================================================= */
+
+function fitViewer() {
+
+    const stageWidth =
+        viewerStage.clientWidth;
+
+
+    const stageHeight =
+        viewerStage.clientHeight;
+
+
+    const canvasWidth =
+        viewerCanvas.width;
+
+
+    const canvasHeight =
+        viewerCanvas.height;
+
+
+    const margin =
+        50;
+
+
+    const scaleX =
+        (stageWidth - margin) /
+        canvasWidth;
+
+
+    const scaleY =
+        (stageHeight - margin) /
+        canvasHeight;
+
+
+    viewerZoom =
+        Math.min(
+            scaleX,
+            scaleY,
+            1
+        );
+
+
+    /*
+        Nếu PDF rất nhỏ,
+        không phóng quá lớn khi Fit.
+    */
+
+    viewerZoom =
+        Math.max(
+            viewerZoom,
+            0.1
+        );
+
+
+    panX =
+        (stageWidth -
+         canvasWidth * viewerZoom) / 2;
+
+
+    panY =
+        (stageHeight -
+         canvasHeight * viewerZoom) / 2;
+
+
+    viewerFitMode =
+        true;
+
+
+    applyViewerTransform();
+
+}
+
+
+/* =========================================================
+   APPLY TRANSFORM
+========================================================= */
+
+function applyViewerTransform() {
+
+    viewerPan.style.width =
+        `${viewerCanvas.width}px`;
+
+    viewerPan.style.height =
+        `${viewerCanvas.height}px`;
+
+
+    viewerPan.style.left =
+        `${panX}px`;
+
+
+    viewerPan.style.top =
+        `${panY}px`;
+
+
+    viewerPan.style.transform =
+        `scale(${viewerZoom})`;
+
+
+    viewerZoomValue.textContent =
+        `${Math.round(viewerZoom * 100)}%`;
+
+}
+
+
+/* =========================================================
+   ZOOM
+========================================================= */
+
+function setViewerZoom(
+    newZoom,
+    centerX = null,
+    centerY = null
+) {
+
+    const oldZoom =
+        viewerZoom;
+
+
+    newZoom =
+        Math.max(
+            0.1,
+            Math.min(
+                newZoom,
+                6
+            )
+        );
+
+
+    /*
+        Nếu zoom bằng con trỏ,
+        giữ điểm dưới con trỏ cố định.
+    */
+
+    if (
+        centerX !== null &&
+        centerY !== null
+    ) {
+
+        const rect =
+            viewerStage.getBoundingClientRect();
+
+
+        const mouseX =
+            centerX - rect.left;
+
+
+        const mouseY =
+            centerY - rect.top;
+
+
+        const imageX =
+            (mouseX - panX) /
+            oldZoom;
+
+
+        const imageY =
+            (mouseY - panY) /
+            oldZoom;
+
+
+        panX =
+            mouseX -
+            imageX * newZoom;
+
+
+        panY =
+            mouseY -
+            imageY * newZoom;
+
+    }
+
+
+    viewerZoom =
+        newZoom;
+
+
+    viewerFitMode =
+        false;
+
+
+    applyViewerTransform();
+
+}
+
+
+document.getElementById(
+    "viewer-zoom-in"
+).onclick = () => {
+
+    setViewerZoom(
+        viewerZoom * 1.2,
+        viewerStage.clientWidth / 2,
+        viewerStage.clientHeight / 2
+    );
+
+};
+
+
+document.getElementById(
+    "viewer-zoom-out"
+).onclick = () => {
+
+    setViewerZoom(
+        viewerZoom / 1.2,
+        viewerStage.clientWidth / 2,
+        viewerStage.clientHeight / 2
+    );
+
+};
+
+
+document.getElementById(
+    "viewer-reset"
+).onclick = () => {
+
+    viewerZoom = 1;
+
+    viewerFitMode = false;
+
+    panX =
+        (viewerStage.clientWidth -
+         viewerCanvas.width) / 2;
+
+    panY =
+        (viewerStage.clientHeight -
+         viewerCanvas.height) / 2;
+
+    applyViewerTransform();
+
+};
+
+
+document.getElementById(
+    "viewer-fit"
+).onclick = () => {
+
+    fitViewer();
+
+};
+
+
+/* =========================================================
+   WHEEL ZOOM
+========================================================= */
+
+viewerStage.addEventListener(
+    "wheel",
+    e => {
+
+        e.preventDefault();
+
+
+        const factor =
+            e.deltaY < 0
+                ? 1.15
+                : 1 / 1.15;
+
+
+        setViewerZoom(
+            viewerZoom * factor,
+            e.clientX,
+            e.clientY
+        );
+
+    },
+    {
+        passive:false
+    }
+);
+
+
+/* =========================================================
+   PAN
+========================================================= */
+
+let dragging =
+    false;
+
+
+let dragStartX =
+    0;
+
+
+let dragStartY =
+    0;
+
+
+let initialPanX =
+    0;
+
+
+let initialPanY =
+    0;
+
+
+viewerStage.addEventListener(
+    "mousedown",
+    e => {
+
+        /*
+            Chỉ pan khi đang zoom
+            hoặc luôn cho phép kéo.
+        */
+
+        dragging = true;
+
+
+        viewerPan.classList.add(
+            "dragging"
+        );
+
+
+        dragStartX =
+            e.clientX;
+
+
+        dragStartY =
+            e.clientY;
+
+
+        initialPanX =
+            panX;
+
+
+        initialPanY =
+            panY;
+
+
+        e.preventDefault();
+
+    }
+);
+
+
+window.addEventListener(
+    "mousemove",
+    e => {
+
+        if (!dragging)
+            return;
+
+
+        panX =
+            initialPanX +
+            e.clientX -
+            dragStartX;
+
+
+        panY =
+            initialPanY +
+            e.clientY -
+            dragStartY;
+
+
+        viewerFitMode =
+            false;
+
+
+        applyViewerTransform();
+
+    }
+);
+
+
+window.addEventListener(
+    "mouseup",
+    () => {
+
+        dragging = false;
+
+        viewerPan.classList.remove(
+            "dragging"
+        );
+
+    }
+);
+
+
+/* =========================================================
+   ROTATE VIEWER
+========================================================= */
+
+document.getElementById(
+    "viewer-rotate"
+).onclick = async () => {
+
+    viewerRotation =
+        (viewerRotation + 90) % 360;
+
+
+    await renderViewerPage();
+
+};
+
+
+/* =========================================================
+   PREVIOUS
+========================================================= */
+
+async function viewerPrev() {
+
+    if (
+        viewerIndex <= 0
+    )
+        return;
+
+
+    viewerIndex--;
+
+
+    /*
+        Quan trọng:
+
+        viewerFitMode = false
+
+        để giữ zoom hiện tại.
+    */
+
+    viewerFitMode = false;
+
+
+    /*
+        Nếu đang Fit trang trước,
+        lấy zoom hiện tại làm zoom
+        cho trang sau.
+    */
+
+    await renderViewerPage();
+
+}
+
+
+document.getElementById(
+    "viewer-prev"
+).onclick =
+    viewerPrev;
+
+
+/* =========================================================
+   NEXT
+========================================================= */
+
+async function viewerNext() {
+
+    if (
+        viewerIndex >=
+        viewerPages.length - 1
+    )
+        return;
+
+
+    viewerIndex++;
+
+
+    /*
+        Giữ nguyên viewerZoom.
+    */
+
+    viewerFitMode = false;
+
+
+    await renderViewerPage();
+
+}
+
+
+document.getElementById(
+    "viewer-next"
+).onclick =
+    viewerNext;
+
+
+/* =========================================================
+   CLOSE
+========================================================= */
+
+function closeViewer() {
+
+    viewerModal.classList.remove(
+        "open"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+
+    currentViewerPdf =
+        null;
+
+}
+
+
+document.getElementById(
+    "viewer-close"
+).onclick =
+    closeViewer;
+
+
+viewerModal.addEventListener(
+    "click",
+    e => {
+
+        /*
+            Click vùng trống ngoài ảnh
+            không đóng để tránh thao tác nhầm.
+        */
+
+    }
+);
+
+
+/* =========================================================
+   KEYBOARD
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    e => {
+
+        if (
+            !viewerModal.classList.contains(
+                "open"
+            )
+        )
+            return;
+
+
+        if (e.key === "Escape") {
+
+            closeViewer();
+
+            return;
+
+        }
+
+
+        if (e.key === "ArrowLeft") {
+
+            viewerPrev();
+
+            return;
+
+        }
+
+
+        if (e.key === "ArrowRight") {
+
+            viewerNext();
+
+            return;
+
+        }
+
+
+        if (e.key === "+" ||
+            e.key === "=") {
+
+            setViewerZoom(
+                viewerZoom * 1.2
+            );
+
+            return;
+
+        }
+
+
+        if (e.key === "-") {
+
+            setViewerZoom(
+                viewerZoom / 1.2
+            );
+
+            return;
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   COPY VIEWER IMAGE
+========================================================= */
+
+document.getElementById(
+    "viewer-copy"
+).onclick = async () => {
+
+    try {
+
+        const blob =
+            await new Promise(
+                resolve =>
+                    viewerCanvas.toBlob(
+                        resolve,
+                        "image/png"
+                    )
+            );
+
+
+        await navigator.clipboard.write([
+            new ClipboardItem({
+                "image/png":blob
+            })
+        ]);
+
+
+        alert(
+            "Đã copy ảnh vào Clipboard."
+        );
+
+    }
+    catch(error) {
+
+        console.error(error);
+
+        alert(
+            "Không thể copy ảnh.\n\n" +
+            (error.message || error)
+        );
+
+    }
+
+};
+
+
+/* =========================================================
+   DOWNLOAD PNG
+========================================================= */
+
+document.getElementById(
+    "viewer-download"
+).onclick = () => {
+
+    const wrapper =
+        viewerPages[viewerIndex];
+
+
+    if (!wrapper)
+        return;
+
+
+    const fileId =
+        parseInt(
+            wrapper.dataset.fileId
+        );
+
+
+    const page =
+        parseInt(
+            wrapper.dataset.originalPage
+        );
+
+
+    const name =
+        getFileName(fileId)
+            .replace(/\.pdf$/i,"");
+
+
+    downloadBlob(
+
+        canvasToBlob(
+            viewerCanvas,
+            "image/png"
+        ),
+
+        `${name}_Trang_${page}.png`
+
+    );
+
+};
+
+
+/* =========================================================
+   HELPERS
+========================================================= */
+
+function canvasToBlob(
+    canvas,
+    type
+) {
+
+    return new Promise(
+        resolve =>
+            canvas.toBlob(
+                resolve,
+                type
+            )
+    );
+
+}
+
+
+function downloadBlob(
+    blob,
+    fileName
+) {
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+
+    const a =
+        document.createElement(
+            "a"
+        );
+
+
+    a.href =
+        url;
+
+
+    a.download =
+        fileName;
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+
+    setTimeout(
+        () =>
+            URL.revokeObjectURL(url),
+        1000
+    );
+
+}
+
+
+function getFileName(
+    fileId
+) {
+
+    const file =
+        uploadedFiles.find(
+            f => f.id === fileId
+        );
+
+
+    return file
+        ? file.name
+        : "";
+
+}
+
+
+function escapeHtml(
+    text
+) {
+
+    return String(text)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* =========================================================
+   INITIAL
+========================================================= */
+
+updateGridStats();
+
+</script>
+
 </body>
 </html>

@@ -2685,49 +2685,61 @@ document.getElementById(
 /* =========================================================
    DOWNLOAD PNG
 ========================================================= */
+/* =========================================================
+   DOWNLOAD PNG
+========================================================= */
 
-document.getElementById(
-    "viewer-download"
-).onclick = () => {
+document.getElementById("viewer-download").onclick = () => {
 
-    const wrapper =
-        viewerPages[viewerIndex];
+    const wrapper = viewerPages[viewerIndex];
 
-
-    if (!wrapper)
+    if (!wrapper) {
+        alert("Không xác định được trang hiện tại.");
         return;
+    }
 
+    const fileId = parseInt(wrapper.dataset.fileId);
+    const page = parseInt(wrapper.dataset.originalPage);
 
-    const fileId =
-        parseInt(
-            wrapper.dataset.fileId
-        );
+    const name = getFileName(fileId)
+        .replace(/\.pdf$/i, "");
 
+    // Lấy canvas thật đang nằm trong Viewer
+    const canvas = document.getElementById("viewer-canvas");
 
-    const page =
-        parseInt(
-            wrapper.dataset.originalPage
-        );
+    if (!canvas ||
+        canvas.width === 0 ||
+        canvas.height === 0) {
 
+        alert("Trang PDF chưa được tải xong.");
+        return;
+    }
 
-    const name =
-        getFileName(fileId)
-            .replace(/\.pdf$/i,"");
+    canvas.toBlob(function(blob) {
 
+        if (!blob) {
+            alert("Không thể tạo ảnh PNG.");
+            return;
+        }
 
-    downloadBlob(
+        const url = URL.createObjectURL(blob);
 
-        canvasToBlob(
-            viewerCanvas,
-            "image/png"
-        ),
+        const link = document.createElement("a");
 
-        `${name}_Trang_${page}.png`
+        link.href = url;
+        link.download =
+            `${name}_Trang_${page}.png`;
 
-    );
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
 
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 1000);
+
+    }, "image/png");
 };
-
 
 /* =========================================================
    HELPERS

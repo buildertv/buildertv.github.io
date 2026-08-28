@@ -401,40 +401,17 @@ body {
 
             <div class="flex gap-2 border-r pr-3 border-gray-300">
 
-                <button
-                    id="btn-rotate-left"
-                    class="tool-btn bg-blue-500 hover:bg-blue-600">
-                    ↺ Xoay trái
-                </button>
-
-                <button
-                    id="btn-rotate-right"
-                    class="tool-btn bg-blue-500 hover:bg-blue-600">
-                    ↻ Xoay phải
-                </button>
-
-                <button
-                    id="btn-delete"
-                    class="tool-btn bg-red-500 hover:bg-red-600">
-                    Xóa trang chọn
-                </button>
+                <button id="btn-rotate-left" class="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium flex items-center gap-1 transition-colors">↺ Xoay trái</button>
+                    <button id="btn-rotate-right" class="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm font-medium flex items-center gap-1 transition-colors">↻ Xoay phải</button>
+                    <button id="btn-delete" class="px-3 py-1.5 bg-red-500 text-white rounded hover:bg-red-600 text-sm font-medium transition-colors">Xóa trang chọn</button>
 
             </div>
 
 
             <div class="flex gap-2">
 
-                <button
-                    id="btn-export-selected"
-                    class="tool-btn bg-green-500 hover:bg-green-600">
-                    Xuất trang đã chọn
-                </button>
-
-                <button
-                    id="btn-save-new"
-                    class="tool-btn bg-green-600 hover:bg-green-700 font-bold">
-                    Lưu PDF mới
-                </button>
+                <button id="btn-export-selected" class="px-3 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 text-sm font-medium transition-colors">Xuất trang đã chọn</button>
+                    <button id="btn-save-new" class="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium font-bold transition-colors">Lưu file PDF mới</button>
 
             </div>
 
@@ -466,7 +443,7 @@ body {
 
             💡 Click vào ảnh để mở Viewer.
             Tick ✓ để chọn trang.
-            Kéo trang để đổi vị trí.
+            Kéo trang để đổi vị trí, HOẶC kéo file trực tiếp từ máy tính thả vào khe giữa các trang để chèn..
 
         </p>
 
@@ -2852,5 +2829,7 @@ updateGridStats();
 
 </script>
 
+
+  
 </body>
 </html>

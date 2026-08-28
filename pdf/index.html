@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trình chỉnh sửa PDF Offline</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+  
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; background: #f1f5f9; color: #1e293b; padding: 20px; }
+    
+    header { text-align: center; margin-bottom: 20px; }
+    header h1 { font-size: 24px; color: #0f172a; }
+    
+    #drop-zone { border: 2px dashed #3b82f6; background: #ffffff; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
+    #drop-zone:hover { background: #eff6ff; }
+    
+    #toolbar { background: #ffffff; padding: 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; }
+    
+    .btn { background: #2563eb; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; }
+    .btn:hover { background: #1d4ed8; }
+    .btn-secondary { background: #64748b; }
+    .btn-secondary:hover { background: #475569; }
+    .btn-success { background: #16a34a; }
+    .btn-success:hover { background: #15803d; }
+    .btn-danger { background: #dc2626; }
+    .btn-danger:hover { background: #b91c1c; }
+
+    .zoom-group { display: flex; align-items: center; gap: 8px; margin-left: auto; font-size: 13px; }
+
+    #grid-container { display: flex; flex-wrap: wrap; gap: 15px; min-height: 250px; padding: 10px; background: #e2e8f0; border-radius: 8px; }
+
+    .page-card { position: relative; background: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); cursor: grab; user-select: none; display: flex; flex-direction: column; align-items: center; }
+    .page-card.selected { border-color: #2563eb; background: #eff6ff; }
+    .page-card canvas { max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 4px; pointer-events: none; transition: transform 0.2s ease; }
+    
+    .card-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .card-header input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
+    .page-info { font-size: 11px; color: #64748b; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+    
+    .card-actions { margin-top: 6px; display: flex; gap: 4px; width: 100%; }
+    .card-actions button { flex: 1; padding: 4px 0; font-size: 11px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; }
+    .card-actions button:hover { background: #e2e8f0; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Trình Chỉnh Sửa & Quản Lý PDF Offline</h1>
+  </header>
+
+  <div id="drop-zone">
+    <p><strong>Kéo & thả file PDF vào đây</strong> hoặc nhấp để chọn tệp từ máy tính</p>
+    <input type="file" id="file-input" multiple accept="application/pdf" style="display:none">
+  </div>
+
+  <div id="toolbar">
+    <button class="btn btn-secondary" onclick="selectPages('all')">Chọn tất cả</button>
+    <button class="btn btn-secondary" onclick="selectPages('even')">Trang chẵn</button>
+    <button class="btn btn-secondary" onclick="selectPages('odd')">Trang lẻ</button>
+    <button class="btn btn-secondary" onclick="selectPages('none')">Bỏ chọn</button>
+    
+    <div style="border-left: 1px solid #cbd5e1; height: 24px; margin: 0 4px;"></div>
+
+    <button class="btn" onclick="rotateSelected(90)">↺ Xoay trái 90°</button>
+    <button class="btn" onclick="rotateSelected(-90)">↻ Xoay phải 90°</button>
+    <button class="btn btn-danger" onclick="deleteSelected()">Xóa trang chọn</button>
+
+    <div style="border-left: 1px solid #cbd5e1; height: 24px; margin: 0 4px;"></div>
+
+    <button class="btn btn-success" onclick="exportPDF(true)">Xuất các trang đã chọn</button>
+    <button class="btn btn-success" onclick="exportPDF(false)">Lưu file PDF mới</button>
+
+    <div class="zoom-group">
+      <label for="zoom-slider">Zoom:</label>
+      <input type="range" id="zoom-slider" min="120" max="350" value="180">
+    </div>
+  </div>
+
+  <div id="grid-container"></div>
+
+  <script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const container = document.getElementById('grid-container');
+    const zoomSlider = document.getElementById('zoom-slider');
+
+    // Mảng lưu trữ dữ liệu các trang đang quản lý
+    let pageList = []; 
+
+    // Kích hoạt tính năng kéo thả đổi vị trí
+    new Sortable(container, {
+      animation: 150,
+      ghostClass: 'sortable-ghost',
+      onEnd: () => syncPageListOrder()
+    });
+
+    // Bắt sự kiện tải file
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('dragover', (e) => e.preventDefault());
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      handleFiles(e.dataTransfer.files);
+    });
+    fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+    async function handleFiles(files) {
+      for (let file of files) {
+        if (file.type !== 'application/pdf') continue;
+        const arrayBuffer = await file.arrayBuffer();
+        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer.slice(0) }).promise;
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          const page = await pdfDoc.getPage(i);
+          const pageId = 'page_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+          
+          const pageData = {
+            id: pageId,
+            fileBuffer: arrayBuffer,
+            srcPageIndex: i - 1, // 0-based index
+            rotation: 0,
+            fileName: file.name
+          };
+
+          pageList.push(pageData);
+          await renderCard(page, pageData);
+        }
+      }
+    }
+
+    async function renderCard(pdfPage, pageData) {
+      const viewport = pdfPage.getViewport({ scale: 0.4 });
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await pdfPage.render({ canvasContext: ctx, viewport }).promise;
+
+      const card = document.createElement('div');
+      card.className = 'page-card';
+      card.id = pageData.id;
+      card.style.width = zoomSlider.value + 'px';
+
+      card.innerHTML = `
+        <div class="card-header">
+          <input type="checkbox" class="page-checkbox" onchange="toggleSelect(this)">
+          <span class="page-info" title="${pageData.fileName}">${pageData.fileName} - p.${pageData.srcPageIndex + 1}</span>
+        </div>
+      `;
+
+      card.appendChild(canvas);
+
+      const actionDiv = document.createElement('div');
+      actionDiv.className = 'card-actions';
+      actionDiv.innerHTML = `
+        <button onclick="copyToClipboard('${pageData.id}')" title="Copy ảnh">Copy</button>
+        <button onclick="downloadImage('${pageData.id}')" title="Tải ảnh">Ảnh</button>
+      `;
+      card.appendChild(actionDiv);
+
+      container.appendChild(card);
+    }
+
+    function syncPageListOrder() {
+      const currentIds = Array.from(container.children).map(card => card.id);
+      pageList.sort((a, b) => currentIds.indexOf(a.id) - currentIds.indexOf(b.id));
+    }
+
+    function toggleSelect(checkbox) {
+      const card = checkbox.closest('.page-card');
+      card.classList.toggle('selected', checkbox.checked);
+    }
+
+    function selectPages(type) {
+      const cards = container.querySelectorAll('.page-card');
+      cards.forEach((card, index) => {
+        const cb = card.querySelector('.page-checkbox');
+        let check = false;
+        if (type === 'all') check = true;
+        if (type === 'none') check = false;
+        if (type === 'even') check = (index + 1) % 2 === 0;
+        if (type === 'odd') check = (index + 1) % 2 !== 0;
+        
+        cb.checked = check;
+        card.classList.toggle('selected', check);
+      });
+    }
+
+    function rotateSelected(deg) {
+      const cards = container.querySelectorAll('.page-card');
+      cards.forEach(card => {
+        const cb = card.querySelector('.page-checkbox');
+        if (cb.checked) {
+          const item = pageList.find(p => p.id === card.id);
+          if (item) {
+            item.rotation = (item.rotation + deg) % 360;
+            const canvas = card.querySelector('canvas');
+            canvas.style.transform = `rotate(${item.rotation}deg)`;
+          }
+        }
+      });
+    }
+
+    function deleteSelected() {
+      const cards = container.querySelectorAll('.page-card');
+      cards.forEach(card => {
+        if (card.querySelector('.page-checkbox').checked) {
+          pageList = pageList.filter(p => p.id !== card.id);
+          card.remove();
+        }
+      });
+    }
+
+    // Zoom điều khiển bằng Slider & Con lăn chuột
+    zoomSlider.addEventListener('input', (e) => {
+      document.querySelectorAll('.page-card').forEach(card => {
+        card.style.width = e.target.value + 'px';
+      });
+    });
+
+    window.addEventListener('wheel', (e) => {
+      if (e.ctrlKey) {
+        e.preventDefault();
+        let val = parseInt(zoomSlider.value);
+        val = e.deltaY < 0 ? Math.min(val + 15, 350) : Math.max(val - 15, 120);
+        zoomSlider.value = val;
+        zoomSlider.dispatchEvent(new Event('input'));
+      }
+    }, { passive: false });
+
+    // Copy ảnh vào Clipboard
+    async function copyToClipboard(cardId) {
+      const card = document.getElementById(cardId);
+      const canvas = card.querySelector('canvas');
+      canvas.toBlob(async (blob) => {
+        try {
+          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+          alert('Đã sao chép ảnh trang vào Bộ nhớ tạm!');
+        } catch (err) {
+          alert('Không thể sao chép ảnh. Lỗi: ' + err);
+        }
+      });
+    }
+
+    // Tải trang ra file ảnh PNG
+    function downloadImage(cardId) {
+      const card = document.getElementById(cardId);
+      const canvas = card.querySelector('canvas');
+      const link = document.createElement('a');
+      link.download = `${cardId}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+
+    // Xuất file PDF hoàn chỉnh sử dụng PDF-Lib
+    async function exportPDF(onlySelected = false) {
+      syncPageListOrder();
+      
+      let targetPages = pageList;
+      if (onlySelected) {
+        targetPages = pageList.filter(p => {
+          const card = document.getElementById(p.id);
+          return card && card.querySelector('.page-checkbox').checked;
+        });
+      }
+
+      if (targetPages.length === 0) {
+        alert('Không có trang nào được chọn để xuất!');
+        return;
+      }
+
+      const newPdf = await PDFLib.PDFDocument.create();
+
+      // Cấu hình cache các file PDF gốc để tối ưu hiệu năng
+      const pdfCache = new Map();
+
+      for (let p of targetPages) {
+        if (!pdfCache.has(p.fileBuffer)) {
+          const srcDoc = await PDFLib.PDFDocument.load(p.fileBuffer);
+          pdfCache.set(p.fileBuffer, srcDoc);
+        }
+
+        const srcDoc = pdfCache.get(p.fileBuffer);
+        const [copiedPage] = await newPdf.copyPages(srcDoc, [p.srcPageIndex]);
+        
+        // Cập nhật góc xoay trang
+        if (p.rotation !== 0) {
+          const currentRotation = copiedPage.getRotation().angle;
+          copiedPage.setRotation(PDFLib.degrees(currentRotation + p.rotation));
+        }
+
+        newPdf.addPage(copiedPage);
+      }
+
+      const pdfBytes = await newPdf.save();
+      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = onlySelected ? 'selected_pages.pdf' : 'edited_document.pdf';
+      link.click();
+    }
+  </script>
+</body>
+</html>

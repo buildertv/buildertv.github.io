@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Trình chỉnh sửa PDF Offline</title>
+  <title>Trình chỉnh sửa PDF Offline - hoangtuan.net</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
@@ -18,7 +18,7 @@
     #drop-zone { border: 2px dashed #3b82f6; background: #ffffff; padding: 30px; text-align: center; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-bottom: 20px; }
     #drop-zone:hover { background: #eff6ff; }
     
-    #toolbar { background: #ffffff; padding: 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; position: sticky; top: 10px; z-index: 100; }
+    #toolbar { background: #ffffff; padding: 12px; border-radius: 8px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; position: sticky; top: 10px; z-index: 90; }
     
     .btn { background: #2563eb; color: #fff; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; transition: 0.2s; }
     .btn:hover { background: #1d4ed8; }
@@ -35,6 +35,8 @@
 
     .page-card { position: relative; background: #ffffff; border: 2px solid transparent; border-radius: 6px; padding: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.08); cursor: grab; user-select: none; display: flex; flex-direction: column; align-items: center; }
     .page-card.selected { border-color: #2563eb; background: #eff6ff; }
+    
+    .canvas-wrapper { width: 100%; display: flex; justify-content: center; align-items: center; cursor: pointer; overflow: hidden; margin: 4px 0; }
     .page-card canvas { max-width: 100%; height: auto; border: 1px solid #cbd5e1; border-radius: 4px; pointer-events: none; transition: transform 0.2s ease; }
     
     .card-header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -44,6 +46,17 @@
     .card-actions { margin-top: 6px; display: flex; gap: 4px; width: 100%; }
     .card-actions button { flex: 1; padding: 4px 0; font-size: 11px; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 4px; cursor: pointer; }
     .card-actions button:hover { background: #e2e8f0; }
+
+    /* CSS CHO MODAL XEM ANH VOI PHONG TO */
+    .modal { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(15, 23, 42, 0.9); flex-direction: column; }
+    .modal.active { display: flex; }
+    .modal-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 24px; background: rgba(0, 0, 0, 0.4); color: white; }
+    .modal-body { flex: 1; display: flex; justify-content: center; align-items: center; overflow: hidden; position: relative; }
+    .modal-body canvas { max-height: 85vh; max-width: 85vw; transition: transform 0.1s ease-out; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+    .modal-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); color: white; border: none; font-size: 24px; padding: 16px 12px; cursor: pointer; border-radius: 4px; transition: 0.2s; }
+    .modal-nav:hover { background: rgba(255,255,255,0.4); }
+    .modal-nav.prev { left: 20px; }
+    .modal-nav.next { right: 20px; }
   </style>
 </head>
 <body>
@@ -75,12 +88,31 @@
     <button class="btn btn-success" onclick="exportPDF(false)">Lưu file PDF mới</button>
 
     <div class="zoom-group">
-      <label for="zoom-slider">Zoom:</label>
+      <label for="zoom-slider">Zoom Grid:</label>
       <input type="range" id="zoom-slider" min="120" max="350" value="180">
     </div>
   </div>
 
   <div id="grid-container"></div>
+
+  <div id="viewer-modal" class="modal">
+    <div class="modal-toolbar">
+      <span id="modal-title" style="font-size: 14px; font-weight: 500;">-</span>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="btn" onclick="rotateCurrentModalPage(-90)">↺ Xoay trái</button>
+        <button class="btn" onclick="rotateCurrentModalPage(90)">↻ Xoay phải</button>
+        <label style="font-size: 13px; margin-left: 10px;">Zoom View: 
+          <input type="range" id="modal-zoom-slider" min="0.5" max="3" step="0.1" value="1">
+        </label>
+        <button class="btn btn-danger" onclick="closeModal()" style="margin-left: 15px;">✕ Đóng (Esc)</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modal-body">
+      <button class="modal-nav prev" onclick="navigateModal(-1)">❮</button>
+      <canvas id="modal-canvas"></canvas>
+      <button class="modal-nav next" onclick="navigateModal(1)">❯</button>
+    </div>
+  </div>
 
   <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -90,17 +122,16 @@
     const container = document.getElementById('grid-container');
     const zoomSlider = document.getElementById('zoom-slider');
 
-    // Mảng lưu trữ dữ liệu các trang đang quản lý
     let pageList = []; 
+    let currentModalIndex = -1;
+    let modalZoomScale = 1;
 
-    // Kích hoạt tính năng kéo thả đổi vị trí
     new Sortable(container, {
       animation: 150,
       ghostClass: 'sortable-ghost',
       onEnd: () => syncPageListOrder()
     });
 
-    // Bắt sự kiện tải file
     dropZone.addEventListener('click', () => fileInput.click());
     dropZone.addEventListener('dragover', (e) => e.preventDefault());
     dropZone.addEventListener('drop', (e) => {
@@ -122,7 +153,7 @@
           const pageData = {
             id: pageId,
             fileBuffer: arrayBuffer,
-            srcPageIndex: i - 1, // 0-based index
+            srcPageIndex: i - 1,
             rotation: 0,
             fileName: file.name
           };
@@ -154,7 +185,11 @@
         </div>
       `;
 
-      card.appendChild(canvas);
+      const canvasWrapper = document.createElement('div');
+      canvasWrapper.className = 'canvas-wrapper';
+      canvasWrapper.onclick = () => openModal(pageData.id);
+      canvasWrapper.appendChild(canvas);
+      card.appendChild(canvasWrapper);
 
       const actionDiv = document.createElement('div');
       actionDiv.className = 'card-actions';
@@ -197,14 +232,21 @@
       cards.forEach(card => {
         const cb = card.querySelector('.page-checkbox');
         if (cb.checked) {
-          const item = pageList.find(p => p.id === card.id);
-          if (item) {
-            item.rotation = (item.rotation + deg) % 360;
-            const canvas = card.querySelector('canvas');
-            canvas.style.transform = `rotate(${item.rotation}deg)`;
-          }
+          applyRotation(card.id, deg);
         }
       });
+    }
+
+    function applyRotation(cardId, deg) {
+      const item = pageList.find(p => p.id === cardId);
+      if (item) {
+        item.rotation = (item.rotation + deg) % 360;
+        const card = document.getElementById(cardId);
+        if (card) {
+          const canvas = card.querySelector('canvas');
+          canvas.style.transform = `rotate(${item.rotation}deg)`;
+        }
+      }
     }
 
     function deleteSelected() {
@@ -217,48 +259,151 @@
       });
     }
 
-    // Zoom điều khiển bằng Slider & Con lăn chuột
     zoomSlider.addEventListener('input', (e) => {
       document.querySelectorAll('.page-card').forEach(card => {
         card.style.width = e.target.value + 'px';
       });
     });
 
-    window.addEventListener('wheel', (e) => {
-      if (e.ctrlKey) {
-        e.preventDefault();
-        let val = parseInt(zoomSlider.value);
-        val = e.deltaY < 0 ? Math.min(val + 15, 350) : Math.max(val - 15, 120);
-        zoomSlider.value = val;
-        zoomSlider.dispatchEvent(new Event('input'));
+    // --- CHỨC NĂNG LIGHTBOX MODAL (VIEWER) ---
+    const modal = document.getElementById('viewer-modal');
+    const modalTitle = document.getElementById('modal-title');
+    const modalCanvas = document.getElementById('modal-canvas');
+    const modalZoomSlider = document.getElementById('modal-zoom-slider');
+
+    async function openModal(cardId) {
+      syncPageListOrder();
+      currentModalIndex = pageList.findIndex(p => p.id === cardId);
+      if (currentModalIndex === -1) return;
+
+      modalZoomScale = 1;
+      modalZoomSlider.value = 1;
+      modal.classList.add('active');
+      await renderModalPage();
+    }
+
+    function closeModal() {
+      modal.classList.remove('active');
+      currentModalIndex = -1;
+    }
+
+    async function renderModalPage() {
+      if (currentModalIndex < 0 || currentModalIndex >= pageList.length) return;
+      const pageData = pageList[currentModalIndex];
+
+      modalTitle.innerText = `Trang ${currentModalIndex + 1} / ${pageList.length} - [${pageData.fileName}]`;
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: pageData.fileBuffer.slice(0) }).promise;
+      const page = await pdfDoc.getPage(pageData.srcPageIndex + 1);
+
+      const totalRotation = (page.rotate + pageData.rotation) % 360;
+      const viewport = page.getViewport({ scale: 1.8, rotation: totalRotation });
+
+      const ctx = modalCanvas.getContext('2d');
+      modalCanvas.width = viewport.width;
+      modalCanvas.height = viewport.height;
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      updateModalTransform();
+    }
+
+    function updateModalTransform() {
+      modalCanvas.style.transform = `scale(${modalZoomScale})`;
+    }
+
+    function rotateCurrentModalPage(deg) {
+      if (currentModalIndex === -1) return;
+      const pageData = pageList[currentModalIndex];
+      applyRotation(pageData.id, deg);
+      renderModalPage();
+    }
+
+    function navigateModal(direction) {
+      const newIndex = currentModalIndex + direction;
+      if (newIndex >= 0 && newIndex < pageList.length) {
+        currentModalIndex = newIndex;
+        modalZoomScale = 1;
+        modalZoomSlider.value = 1;
+        renderModalPage();
       }
+    }
+
+    modalZoomSlider.addEventListener('input', (e) => {
+      modalZoomScale = parseFloat(e.target.value);
+      updateModalTransform();
+    });
+
+    // Zoom bằng con lăn chuột trong Modal
+    document.getElementById('modal-body').addEventListener('wheel', (e) => {
+      if (!modal.classList.contains('active')) return;
+      e.preventDefault();
+      modalZoomScale += e.deltaY < 0 ? 0.1 : -0.1;
+      modalZoomScale = Math.min(Math.max(0.5, modalZoomScale), 3);
+      modalZoomSlider.value = modalZoomScale;
+      updateModalTransform();
     }, { passive: false });
 
-    // Copy ảnh vào Clipboard
+    // Phím tắt bàn phím (Mũi tên trái/phải & Esc)
+    window.addEventListener('keydown', (e) => {
+      if (!modal.classList.contains('active')) return;
+      if (e.key === 'ArrowLeft') navigateModal(-1);
+      if (e.key === 'ArrowRight') navigateModal(1);
+      if (e.key === 'Escape') closeModal();
+    });
+
+    // --- CÁC HÀM PHỤ TRỢ XUẤT ẢNH & PDF ---
+    async function renderHighResCanvas(cardId, scale = 2.5) {
+      const pageData = pageList.find(p => p.id === cardId);
+      if (!pageData) return null;
+
+      const pdfDoc = await pdfjsLib.getDocument({ data: pageData.fileBuffer.slice(0) }).promise;
+      const page = await pdfDoc.getPage(pageData.srcPageIndex + 1);
+
+      const totalRotation = (page.rotate + pageData.rotation) % 360;
+      const viewport = page.getViewport({ scale: scale, rotation: totalRotation });
+
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+      return canvas;
+    }
+
     async function copyToClipboard(cardId) {
-      const card = document.getElementById(cardId);
-      const canvas = card.querySelector('canvas');
-      canvas.toBlob(async (blob) => {
-        try {
-          await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-          alert('Đã sao chép ảnh trang vào Bộ nhớ tạm!');
-        } catch (err) {
-          alert('Không thể sao chép ảnh. Lỗi: ' + err);
-        }
-      });
+      try {
+        const highResCanvas = await renderHighResCanvas(cardId, 2.5);
+        if (!highResCanvas) return;
+
+        highResCanvas.toBlob(async (blob) => {
+          try {
+            await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
+            alert('Đã sao chép ảnh nét cao vào Bộ nhớ tạm!');
+          } catch (err) {
+            alert('Không thể sao chép ảnh. Lỗi: ' + err);
+          }
+        }, 'image/png');
+      } catch (err) {
+        alert('Lỗi khi xử lý ảnh nét cao: ' + err);
+      }
     }
 
-    // Tải trang ra file ảnh PNG
-    function downloadImage(cardId) {
-      const card = document.getElementById(cardId);
-      const canvas = card.querySelector('canvas');
-      const link = document.createElement('a');
-      link.download = `${cardId}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
+    async function downloadImage(cardId) {
+      try {
+        const pageData = pageList.find(p => p.id === cardId);
+        const highResCanvas = await renderHighResCanvas(cardId, 2.5);
+        if (!highResCanvas) return;
+
+        const link = document.createElement('a');
+        link.download = `${pageData ? pageData.fileName.replace('.pdf', '') : 'page'}_p${pageData ? pageData.srcPageIndex + 1 : 1}.png`;
+        link.href = highResCanvas.toDataURL('image/png');
+        link.click();
+      } catch (err) {
+        alert('Lỗi khi tải ảnh: ' + err);
+      }
     }
 
-    // Xuất file PDF hoàn chỉnh sử dụng PDF-Lib
     async function exportPDF(onlySelected = false) {
       syncPageListOrder();
       
@@ -276,8 +421,6 @@
       }
 
       const newPdf = await PDFLib.PDFDocument.create();
-
-      // Cấu hình cache các file PDF gốc để tối ưu hiệu năng
       const pdfCache = new Map();
 
       for (let p of targetPages) {
@@ -289,7 +432,6 @@
         const srcDoc = pdfCache.get(p.fileBuffer);
         const [copiedPage] = await newPdf.copyPages(srcDoc, [p.srcPageIndex]);
         
-        // Cập nhật góc xoay trang
         if (p.rotation !== 0) {
           const currentRotation = copiedPage.getRotation().angle;
           copiedPage.setRotation(PDFLib.degrees(currentRotation + p.rotation));

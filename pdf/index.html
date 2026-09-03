@@ -2340,9 +2340,21 @@ document.getElementById(
 };
 
 
-document.getElementById(
-    "viewer-reset"
-).onclick = () => {
+/* =========================================================
+   VIEWER ACTIONS
+========================================================= */
+
+async function rotateViewer() {
+
+    viewerRotation =
+        (viewerRotation + 90) % 360;
+
+    await renderViewerPage();
+
+}
+
+
+function resetViewer() {
 
     viewerZoom = 1;
 
@@ -2358,16 +2370,33 @@ document.getElementById(
 
     applyViewerTransform();
 
-};
+}
+
+
+function fitViewerMode() {
+
+    fitViewer();
+
+}
+
+
+/* =========================================================
+   VIEWER BUTTONS
+========================================================= */
+
+document.getElementById(
+    "viewer-rotate"
+).onclick = rotateViewer;
+
+
+document.getElementById(
+    "viewer-reset"
+).onclick = resetViewer;
 
 
 document.getElementById(
     "viewer-fit"
-).onclick = () => {
-
-    fitViewer();
-
-};
+).onclick = fitViewerMode;
 
 
 /* =========================================================
@@ -2507,22 +2536,6 @@ window.addEventListener(
 );
 
 
-/* =========================================================
-   ROTATE VIEWER
-========================================================= */
-
-document.getElementById(
-    "viewer-rotate"
-).onclick = async () => {
-
-    viewerRotation =
-        (viewerRotation + 90) % 360;
-
-
-    await renderViewerPage();
-
-};
-
 
 /* =========================================================
    PREVIOUS
@@ -2657,7 +2670,13 @@ document.addEventListener(
             return;
 
 
+        /* =========================================
+           ESC
+        ========================================= */
+
         if (e.key === "Escape") {
+
+            e.preventDefault();
 
             closeViewer();
 
@@ -2666,7 +2685,13 @@ document.addEventListener(
         }
 
 
+        /* =========================================
+           PREVIOUS PAGE
+        ========================================= */
+
         if (e.key === "ArrowLeft") {
+
+            e.preventDefault();
 
             viewerPrev();
 
@@ -2675,7 +2700,13 @@ document.addEventListener(
         }
 
 
+        /* =========================================
+           NEXT PAGE
+        ========================================= */
+
         if (e.key === "ArrowRight") {
+
+            e.preventDefault();
 
             viewerNext();
 
@@ -2684,8 +2715,16 @@ document.addEventListener(
         }
 
 
-        if (e.key === "+" ||
-            e.key === "=") {
+        /* =========================================
+           ZOOM IN
+        ========================================= */
+
+        if (
+            e.key === "+" ||
+            e.key === "="
+        ) {
+
+            e.preventDefault();
 
             setViewerZoom(
                 viewerZoom * 1.2
@@ -2696,11 +2735,67 @@ document.addEventListener(
         }
 
 
+        /* =========================================
+           ZOOM OUT
+        ========================================= */
+
         if (e.key === "-") {
+
+            e.preventDefault();
 
             setViewerZoom(
                 viewerZoom / 1.2
             );
+
+            return;
+
+        }
+
+
+        /* =========================================
+           FIT
+           0
+        ========================================= */
+
+        if (e.key === "0") {
+
+            e.preventDefault();
+
+            fitViewerMode();
+
+            return;
+
+        }
+
+
+        /* =========================================
+           RESET 100%
+           1
+        ========================================= */
+
+        if (e.key === "1") {
+
+            e.preventDefault();
+
+            resetViewer();
+
+            return;
+
+        }
+
+
+        /* =========================================
+           ROTATE
+           R
+        ========================================= */
+
+        if (
+            e.key.toLowerCase() === "r"
+        ) {
+
+            e.preventDefault();
+
+            rotateViewer();
 
             return;
 
@@ -2778,9 +2873,6 @@ document.getElementById("viewer-copy").onclick = async () => {
 };
 
 
-/* =========================================================
-   DOWNLOAD PNG
-========================================================= */
 /* =========================================================
    DOWNLOAD PNG
 ========================================================= */

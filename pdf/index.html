@@ -100,6 +100,80 @@ body {
     border-bottom: 1px solid #334155;
     z-index: 10;
 }
+/* =========================================================
+   MOBILE VIEWER TOOLBAR
+========================================================= */
+
+@media (max-width: 640px) {
+
+    #viewer-toolbar {
+        height: auto;
+        min-height: 96px;
+
+        display: flex;
+        flex-wrap: wrap;
+
+        align-content: center;
+        justify-content: center;
+
+        gap: 4px;
+
+        padding:
+            6px 8px
+            calc(6px + env(safe-area-inset-bottom))
+            8px;
+
+        overflow: visible;
+    }
+
+
+    #viewer-file-name {
+        display: none;
+    }
+
+
+    #viewer-toolbar .w-px {
+        display: none;
+    }
+
+
+    #viewer-toolbar .mx-2 {
+        margin-left: 2px;
+        margin-right: 2px;
+    }
+
+
+    .viewer-btn {
+        width: 38px;
+        height: 38px;
+
+        min-width: 38px;
+        min-height: 38px;
+
+        padding: 0;
+
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 18px;
+    }
+
+
+    #viewer-counter {
+        min-width: 52px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+
+    #viewer-zoom-value {
+        min-width: 42px;
+        text-align: center;
+        font-size: 14px;
+    }
+
+}
 
 #viewer-file-name {
     min-width: 160px;
@@ -443,7 +517,7 @@ body {
 
             💡 Click vào ảnh để mở Viewer.
             Tick ✓ để chọn trang.
-            Kéo trang để đổi vị trí, HOẶC kéo file trực tiếp từ máy tính thả vào khe giữa các trang để chèn..
+            Kéo trang để đổi vị trí, HOẶC kéo file trực tiếp từ máy tính thả vào giữa trang để chèn..
 
         </p>
 
@@ -2640,37 +2714,59 @@ document.addEventListener(
    COPY VIEWER IMAGE
 ========================================================= */
 
-document.getElementById(
-    "viewer-copy"
-).onclick = async () => {
+document.getElementById("viewer-copy").onclick = async () => {
 
     try {
 
-        const blob =
-            await new Promise(
-                resolve =>
-                    viewerCanvas.toBlob(
-                        resolve,
-                        "image/png"
-                    )
+        // Kiểm tra Clipboard API
+        if (
+            !navigator.clipboard ||
+            typeof ClipboardItem === "undefined"
+        ) {
+            throw new Error(
+                "Trình duyệt không hỗ trợ Clipboard API."
+            );
+        }
+
+        // Lấy canvas của trang PDF đang xem
+        const canvas = viewerCanvas;
+
+        if (!canvas) {
+            throw new Error(
+                "Không tìm thấy ảnh trang PDF."
+            );
+        }
+
+        // Chuyển canvas thành PNG Blob
+        const blob = await new Promise((resolve, reject) => {
+
+            canvas.toBlob(
+                b => b ? resolve(b) : reject(
+                    new Error("Không thể tạo ảnh PNG.")
+                ),
+                "image/png"
             );
 
+        });
 
-        await navigator.clipboard.write([
-            new ClipboardItem({
-                "image/png":blob
-            })
-        ]);
+        // Copy ảnh vào Clipboard
+        const item = new ClipboardItem({
+            "image/png": blob
+        });
 
+        await navigator.clipboard.write([item]);
 
         alert(
             "Đã copy ảnh vào Clipboard."
         );
 
     }
-    catch(error) {
+    catch (error) {
 
-        console.error(error);
+        console.error(
+            "COPY IMAGE ERROR:",
+            error
+        );
 
         alert(
             "Không thể copy ảnh.\n\n" +

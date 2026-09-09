@@ -432,7 +432,20 @@ body {
             </p>
 
         </div>
-
+        <div class="flex items-center justify-center gap-2 mb-4">
+            <input
+                type="checkbox"
+                id="fast-load-mode"
+                class="w-5 h-5 cursor-pointer"
+            >
+        
+            <label
+                for="fast-load-mode"
+                class="text-sm font-medium text-gray-700 cursor-pointer"
+            >
+                ⚡ Chế độ tải nhanh — không render ảnh trang
+            </label>
+        </div>
 
         <!-- TOOLBAR -->
 
@@ -725,6 +738,8 @@ const insertTip =
 
 const zoomGrid =
     document.getElementById("zoom-grid");
+const fastLoadMode =
+    document.getElementById("fast-load-mode");
 
 
 /* =========================================================
@@ -1033,15 +1048,29 @@ async function processMultipleFiles(
                 pageNum <= pdf.numPages;
                 pageNum++
             ) {
-
-                await renderPage(
-                    pdf,
-                    pageNum,
-                    id,
-                    file.name,
-                    insertBeforeElement
-                );
-
+            
+                if (fastLoadMode.checked) {
+            
+                    await createFastPage(
+                        pageNum,
+                        id,
+                        file.name,
+                        insertBeforeElement
+                    );
+            
+                }
+                else {
+            
+                    await renderPage(
+                        pdf,
+                        pageNum,
+                        id,
+                        file.name,
+                        insertBeforeElement
+                    );
+            
+                }
+            
             }
 
         }
@@ -1135,6 +1164,192 @@ function addFileToSidebar(
    RENDER THUMBNAIL
 ========================================================= */
 
+async function createFastPage(
+    pageNum,
+    fileId,
+    fileName,
+    insertBeforeElement
+) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "page-wrapper flex flex-col items-center " +
+        "relative bg-white p-3 rounded shadow " +
+        "border-4 border-transparent " +
+        "min-h-[120px]";
+
+    wrapper.dataset.fileId =
+        fileId;
+
+    wrapper.dataset.originalPage =
+        pageNum;
+
+    wrapper.dataset.rotation =
+        "0";
+
+
+    /* =====================================================
+       TOP CONTROL
+    ===================================================== */
+
+    const control =
+        document.createElement("div");
+
+    control.className =
+        "page-control w-full flex items-center " +
+        "justify-between mb-2";
+
+
+    const checkbox =
+        document.createElement("input");
+
+    checkbox.type =
+        "checkbox";
+
+    checkbox.className =
+        "page-checkbox";
+
+    checkbox.title =
+        "Chọn trang";
+
+
+    checkbox.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            wrapper.classList.toggle(
+                "page-selected",
+                checkbox.checked
+            );
+
+        }
+    );
+
+
+    const viewerButton =
+        document.createElement("button");
+
+    viewerButton.type =
+        "button";
+
+    viewerButton.className =
+        "text-xs bg-blue-50 text-blue-600 " +
+        "px-2 py-1 rounded hover:bg-blue-100";
+
+    viewerButton.textContent =
+        "👁 Xem";
+
+    viewerButton.title =
+        "Mở Viewer";
+
+
+    viewerButton.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            openViewer(wrapper);
+
+        }
+    );
+
+
+    control.appendChild(
+        checkbox
+    );
+
+    control.appendChild(
+        viewerButton
+    );
+
+
+    /* =====================================================
+       FAST PAGE DISPLAY
+    ===================================================== */
+
+    const pageNumberBox =
+        document.createElement("div");
+
+    pageNumberBox.className =
+        "flex-1 flex flex-col items-center " +
+        "justify-center text-gray-400 " +
+        "select-none cursor-pointer";
+
+    pageNumberBox.innerHTML = `
+
+        <div class="text-5xl opacity-40 mb-2">
+            📄
+        </div>
+
+        <div class="text-lg font-bold text-gray-600">
+            Trang ${pageNum}
+        </div>
+
+        <div class="text-xs text-gray-400 mt-1 truncate max-w-full px-2"
+             title="${escapeHtml(fileName)}">
+
+            ${escapeHtml(fileName)}
+
+        </div>
+
+    `;
+
+
+    pageNumberBox.addEventListener(
+        "click",
+        e => {
+
+            e.stopPropagation();
+
+            openViewer(wrapper);
+
+        }
+    );
+
+
+    /* =====================================================
+       APPEND
+    ===================================================== */
+
+    wrapper.appendChild(
+        control
+    );
+
+    wrapper.appendChild(
+        pageNumberBox
+    );
+
+
+    /* =====================================================
+       INSERT
+    ===================================================== */
+
+    if (
+        insertBeforeElement &&
+        insertBeforeElement.parentNode === pdfContainer
+    ) {
+
+        pdfContainer.insertBefore(
+            wrapper,
+            insertBeforeElement
+        );
+
+    }
+    else {
+
+        pdfContainer.appendChild(
+            wrapper
+        );
+
+    }
+
+}
+    
 async function renderPage(
     pdf,
     pageNum,

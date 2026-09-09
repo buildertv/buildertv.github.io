@@ -905,7 +905,7 @@ dropZone.addEventListener("dragleave", () => {
 });
 
 
-dropZone.addEventListener("drop", e => {
+dropZone.addEventListener("drop", async e => {
 
     e.preventDefault();
 
@@ -913,9 +913,53 @@ dropZone.addEventListener("drop", e => {
         "bg-blue-50"
     );
 
-    processMultipleFiles(
-        e.dataTransfer.files
-    );
+    const items =
+        Array.from(e.dataTransfer.items);
+
+    const files = [];
+
+    for (const item of items) {
+
+        const entry =
+            item.webkitGetAsEntry
+                ? item.webkitGetAsEntry()
+                : null;
+
+        if (entry) {
+
+            await readEntryRecursive(
+                entry,
+                files
+            );
+
+        }
+        else {
+
+            const file =
+                item.getAsFile();
+
+            if (
+                file &&
+                file.type === "application/pdf"
+            ) {
+
+                files.push(file);
+
+            }
+
+        }
+
+    }
+
+    if (files.length) {
+
+        console.log(
+            `Tìm thấy ${files.length} file PDF`
+        );
+
+        processMultipleFiles(files);
+
+    }
 
 });
 
@@ -952,7 +996,114 @@ pdfContainer.addEventListener("drop", e => {
 
 });
 
+/* =========================================================
+   READ FOLDER RECURSIVELY
+   Đọc toàn bộ PDF trong thư mục + thư mục con
+========================================================= */
 
+async function readEntryRecursive(
+    entry,
+    result
+) {
+
+    /* =====================================================
+       FILE
+    ===================================================== */
+
+    if (entry.isFile) {
+
+        const file =
+            await new Promise(
+                (resolve, reject) => {
+
+                    entry.file(
+                        resolve,
+                        reject
+                    );
+
+                }
+            );
+
+        if (
+            file &&
+            file.name.toLowerCase().endsWith(".pdf")
+        ) {
+
+            result.push(file);
+
+        }
+
+        return;
+
+    }
+
+
+    /* =====================================================
+       DIRECTORY
+    ===================================================== */
+
+    if (entry.isDirectory) {
+
+        const reader =
+            entry.createReader();
+
+        const entries = [];
+
+        /*
+
+            readEntries() không đảm bảo trả
+            toàn bộ file trong một lần.
+
+            Phải gọi nhiều lần cho đến khi
+            trả về mảng rỗng.
+
+        */
+
+        while (true) {
+
+            const batch =
+                await new Promise(
+                    (resolve, reject) => {
+
+                        reader.readEntries(
+                            resolve,
+                            reject
+                        );
+
+                    }
+                );
+
+            if (!batch.length)
+                break;
+
+            entries.push(
+                ...batch
+            );
+
+        }
+
+
+        /*
+
+            Đọc đệ quy tất cả thư mục con.
+
+        */
+
+        for (
+            const child of entries
+        ) {
+
+            await readEntryRecursive(
+                child,
+                result
+            );
+
+        }
+
+    }
+
+}
+    
 /* =========================================================
    PROCESS FILES
 ========================================================= */
@@ -964,7 +1115,9 @@ async function processMultipleFiles(
 
     const validFiles =
         Array.from(files).filter(
-            f => f.type === "application/pdf"
+            f =>
+                f.type === "application/pdf" ||
+                f.name.toLowerCase().endsWith(".pdf")
         );
 
     if (!validFiles.length)

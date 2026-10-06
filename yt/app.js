@@ -1126,7 +1126,7 @@ setLayout(70);
 
 setTimeout(() => {
     if (youtubeSearch && !youtubeSearch.value) {
-        youtubeSearch.value = "nhạc remix";
+        youtubeSearch.value = "nhạc liên khúc 9x";
         searchYouTube();
     }
 }, 500);

@@ -1,0 +1,501 @@
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0b0d0f;color:#fff;font-family:Arial,Helvetica,sans-serif;touch-action:manipulation}
+.car-app{width:100vw;height:100vh;display:flex;flex-direction:column;background:#0b0d0f}
+.screen{width:100%;flex:1;min-height:0;display:flex;overflow:hidden;position:relative}
+.panel{height:100%;min-width:150px;display:flex;flex-direction:column;background:#111315;overflow:hidden}
+.youtube-panel {
+    position: relative !important;
+},.map-panel{width:calc(50% - 4px)}
+.toolbar{height:52px;min-height:52px;display:flex;align-items:center;gap:12px;padding:6px 12px;background:#191c1f;border-bottom:1px solid #292d31}
+.panel-title{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;white-space:nowrap}
+.youtube-icon{width:27px;height:20px;border-radius:5px;display:flex;align-items:center;justify-content:center;background:#f00;font-size:11px}
+.map-icon{width:25px;height:25px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#4285f4;font-size:17px}
+.youtube-search,.url-box{flex:1;min-width:0;display:flex;gap:6px}
+.youtube-search input,.url-box input{width:100%;min-width:0;height:46px;border:1px solid #34383c;border-radius:7px;outline:none;background:#0c0e10;color:#fff;padding:0 10px;font-size:13px}
+.youtube-search input:focus,.url-box input:focus{border-color:#5f6368}
+.youtube-search button,.url-box button{height:46px;padding:0 14px;border:0;border-radius:7px;background:#ff0000;color:#fff;font-weight:600;cursor:pointer}
+.url-box .map-button{background:#1a73e8}
+.content{flex:1;min-height:0;overflow:hidden;background:#000;position:relative}
+.content iframe{width:100%;height:100%;display:block;border:0}
+#youtubeFrame,#youtubeFrame iframe{width:100%;height:100%;border:0;display:block}
+.youtube-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0d0f;color:#aaa;text-align:center}
+.youtube-empty.hidden{display:none}
+.empty-icon{width:70px;height:50px;border-radius:14px;background:#f00;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:15px}
+.empty-title{font-size:22px;color:#fff;font-weight:600}
+.empty-text{margin-top:8px;font-size:13px}
+.youtube-results{display:none;position:absolute;top:52px;left:0;width:min(600px,48%);max-height:55%;overflow:auto;background:#171a1d;z-index:80;border:1px solid #34383c;border-top:0;box-shadow:0 10px 30px #0009}
+.youtube-results.show{display:block}
+.result-item{display:flex;gap:10px;padding:9px;border-bottom:1px solid #292d31;cursor:pointer}
+.result-item:hover{background:#272c31}
+.result-thumb{width:120px;height:68px;object-fit:cover;border-radius:5px;background:#222;flex:none}
+.result-title{font-size:13px;line-height:18px;color:#fff}
+.result-channel{font-size:11px;color:#999;margin-top:5px}
+.resize-bar{width:8px;height:100%;flex-shrink:0;z-index:20;background:#272b2f;cursor:col-resize;display:flex;align-items:center;justify-content:center}
+.resize-handle{width:4px;height:54px;border-radius:4px;background:#777}
+.bottom-bar{height:76px;min-height:76px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:7px 10px;background:linear-gradient(180deg,#191c1f,#101214);border-top:1px solid #303438;box-shadow:0 -5px 20px #00000059;z-index:100}
+.car-button{height:60px;min-width:74px;padding:4px 12px;border:0;border-radius:12px;background:#202428;color:#bfc4c8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;user-select:none;touch-action:manipulation}
+.car-button:hover{background:#292e33}.car-button:active{transform:scale(.94);background:#33383d}
+.car-button.active{background:#30363b;color:#fff;box-shadow:inset 0 0 0 1px #454b50}
+.button-icon{font-size:25px;line-height:25px}.button-text{font-size:10px;font-weight:500;white-space:nowrap}
+.youtube-color{color:#ff2020}.map-color{color:#4285f4}
+.media-main{background:#30363b;min-width:70px}.media-main .button-icon{font-size:27px}.media-control{min-width:58px}
+.volume-control{height:60px;min-width:105px;padding:4px 5px;border-radius:12px;background:#202428;display:flex;align-items:center;justify-content:center;gap:5px}
+.volume-button{width:30px;height:42px;border:0;border-radius:8px;background:#30353a;color:#fff;font-size:22px;cursor:pointer}
+.volume-value{min-width:34px;text-align:center;color:#fff;font-size:14px;font-weight:600}.volume-value small{font-size:9px;color:#999}
+.layout-control{position:relative}.layout-button{height:60px;min-width:82px;padding:5px 12px;border:0;border-radius:12px;background:#252a2f;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;cursor:pointer}
+.layout-icon{font-size:24px;line-height:25px}.layout-menu{position:absolute;bottom:70px;left:50%;transform:translateX(-50%) translateY(10px);width:150px;padding:7px;background:#202428;border:1px solid #3a3f43;border-radius:12px;box-shadow:0 8px 30px #0009;opacity:0;pointer-events:none;transition:.15s}
+.layout-menu.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}.layout-menu button{width:100%;height:42px;border:0;border-radius:8px;background:transparent;color:#fff;font-size:14px;cursor:pointer}
+.vehicle-info{height:60px;min-width:72px;padding:4px 10px;border-radius:12px;background:#171a1d;display:flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid #303438}
+.speed-value{font-size:22px;line-height:23px;font-weight:700}.speed-unit{font-size:9px;color:#888;text-transform:uppercase}
+#gpsBtn.gps-active{background:#173c28;color:#5ee58a}#gpsBtn.gps-error{background:#432323;color:#ff7777}
+#gpsStatus{color:#777}#gpsStatus.active{color:#42d66a}#gpsStatus.error{color:#f55}
+.car-status{height:60px;min-width:85px;display:flex;align-items:center;justify-content:center;gap:10px;color:#dce0e3;font-size:16px;font-weight:600}
+.connection{color:#42d66a;font-size:10px}
+body.light-mode{background:#e8eaed;color:#111}body.light-mode .car-app{background:#e8eaed}body.light-mode .panel{background:#f5f6f7}body.light-mode .toolbar{background:#fff;color:#111;border-color:#d4d7da}body.light-mode .bottom-bar{background:linear-gradient(180deg,#fff,#e9ebed);border-color:#d0d3d6;box-shadow:0 -5px 20px #0000001f}body.light-mode .car-button{background:#e1e4e7;color:#303438}body.light-mode .car-button.active{background:#cdd2d6;color:#111}body.light-mode .volume-control{background:#e1e4e7}body.light-mode .volume-button{background:#d0d4d8;color:#111}body.light-mode .volume-value{color:#111}body.light-mode .vehicle-info{background:#f1f3f4;border-color:#d2d5d8}body.light-mode .speed-value{color:#111}body.light-mode .layout-button{background:#e1e4e7;color:#111}body.light-mode .layout-menu{background:#fff;border-color:#d0d3d6}body.light-mode .layout-menu button{color:#111}body.light-mode .youtube-empty{background:#f5f6f7;color:#555}body.light-mode .empty-title{color:#111}
+@media(max-width:1100px){.button-text{display:none}.car-button{min-width:56px}.media-control{min-width:50px}.volume-control{min-width:90px}.vehicle-info{min-width:62px}}
+@media(max-width:800px){.media-control{display:none}.volume-control{min-width:75px}.vehicle-info{min-width:58px}.youtube-results{width:70%}}
+@media(max-width:600px){.bottom-bar{height:70px;min-height:70px;gap:3px;padding:4px}.car-button{height:58px;min-width:45px;padding:2px;border-radius:8px}.button-icon{font-size:21px}.volume-control{height:58px;min-width:65px;gap:2px}.volume-button{width:25px;height:38px}.vehicle-info{height:58px;min-width:52px}.speed-value{font-size:18px}.car-status{display:none}.youtube-toolbar .panel-title{display:none}.youtube-results{top:45px;width:100%}}
+
+.voice-button{
+    height:46px;
+    min-width:46px;
+    padding:0 9px;
+    border:0;
+    border-radius:7px;
+    background:#30353a;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+.voice-button:hover{background:#41474d}
+.voice-button:active{transform:scale(.94)}
+.voice-button.listening{
+    background:#d93025;
+    box-shadow:0 0 0 3px #d9302540,0 0 18px #d9302580;
+    animation:voicePulse 1s infinite;
+}
+.map-voice{background:#303b4c}
+.map-voice.listening{background:#d93025}
+@keyframes voicePulse{
+    0%,100%{transform:scale(1)}
+    50%{transform:scale(1.08)}
+}
+
+.directions-button{
+    height:36px;
+    padding:0 11px;
+    border:0;
+    border-radius:7px;
+    background:#188038;
+    color:#fff;
+    font-size:12px;
+    font-weight:600;
+    white-space:nowrap;
+    cursor:pointer;
+}
+.directions-button:hover{background:#1e8e3e}
+.directions-button:active{transform:scale(.96)}
+@media(max-width:900px){
+    .directions-button{font-size:11px;padding:0 8px}
+}
+@media(max-width:650px){
+}
+@media(max-width:650px){
+    .directions-button{font-size:0;min-width:38px;padding:0}
+    .directions-button:first-letter{font-size:18px}
+}
+
+/* Swapped layout for dashboard & media panel */
+.screen.swapped .dashboard-panel {
+    order: 1;
+}
+.screen.swapped .resize-bar {
+    order: 2;
+}
+.screen.swapped .youtube-panel,
+.screen.swapped .vtv-panel {
+    order: 3;
+}
+
+/* Dashboard styles */
+.dashboard-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #000;
+    padding: 8px;
+}
+
+.weather-widget {
+    flex: 1;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #5bb4ee, #2680c2);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 30px;
+}
+
+.weather-city { font-size: 16px; margin-bottom: 10px; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+.weather-main { display: flex; align-items: center; gap: 15px; }
+.weather-temp { font-size: 55px; font-weight: bold; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
+.weather-icon { font-size: 60px; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.3)); }
+.weather-desc { font-size: 16px; margin-top: 5px; margin-bottom: 20px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+.weather-top-btns {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 5px;
+    z-index: 2;
+}
+.weather-action-btn {
+    width: 50px;
+    height: 50px;
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s;
+}
+.weather-action-btn:hover { background: rgba(255,255,255,0.3); }
+.weather-action-btn:active { transform: scale(.92); }
+
+.weather-widget.has-bg {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.weather-widget.has-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.5) 100%);
+    z-index: 0;
+    border-radius: 12px;
+}
+.weather-widget.has-bg > * { 
+
+ z-index: 1; }
+
+.dashboard-panel.hidden { display: none !important; }
+
+.weather-forecast {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: auto;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 10px 5px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+.forecast-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+.fc-icon { font-size: 22px; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+.fc-date { font-size: 12px; font-weight: 600; }
+.fc-temp { font-size: 12px; color: #eee; }
+
+.speedometer-widget {
+    flex: 1;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #121929, #080d16);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #1f2c45;
+}
+
+.speedometer-circle {
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    border: 8px solid #233555;
+    background: radial-gradient(circle, #0e1726, #060a11);
+    box-shadow: 0 0 30px rgba(0, 150, 255, 0.2), inset 0 0 20px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.speedometer-circle::after {
+    content: '';
+    position: absolute;
+    inset: -8px;
+    border-radius: 50%;
+    border: 8px solid transparent;
+    border-top-color: #00d2ff;
+    border-right-color: #00d2ff;
+    animation: spin 3s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+.speed-number { font-size: 70px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 0 0 10px rgba(255,255,255,0.5); }
+.speed-unit-large { font-size: 14px; color: #00d2ff; text-transform: uppercase; font-weight: 600; letter-spacing: 1px; margin-top: 5px; }
+
+.vtv-panel.hidden,
+.youtube-panel.hidden { display: none !important; }
+.donate-floating-btn {
+position: absolute;
+bottom: 88px;
+right: 16px;
+z-index: 150;
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 10px 16px;
+border: 0;
+border-radius: 30px;
+background: linear-gradient(135deg, #ff2a5f, #ff758c);
+color: #fff;
+font-weight: bold;
+font-size: 13px;
+cursor: pointer;
+box-shadow: 0 6px 20px rgba(255, 42, 95, 0.4);
+transition: transform 0.2s, box-shadow 0.2s;
+}
+.donate-floating-btn:hover {
+transform: translateY(-2px) scale(1.05);
+box-shadow: 0 8px 25px rgba(255, 42, 95, 0.6);
+}
+.donate-floating-btn:active {
+transform: scale(0.95);
+}
+.donate-btn-icon { font-size: 16px; }
+
+/* Donate Modal Backdrop & Box */
+.donate-modal {
+position: fixed;
+inset: 0;
+z-index: 1000;
+background: rgba(0, 0, 0, 0.75);
+backdrop-filter: blur(6px);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 20px;
+opacity: 1;
+transition: opacity 0.25s ease;
+}
+.donate-modal.hidden {
+display: none;
+opacity: 0;
+pointer-events: none;
+}
+.donate-modal-content {
+position: relative;
+width: 100%;
+max-width: 360px;
+background: #181b20;
+border: 1px solid #34383e;
+border-radius: 20px;
+padding: 24px 20px;
+text-align: center;
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes modalPop {
+from { transform: scale(0.85); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+.donate-close-btn {
+position: absolute;
+top: 12px;
+right: 14px;
+background: transparent;
+border: 0;
+color: #888;
+font-size: 24px;
+cursor: pointer;
+}
+.donate-close-btn:hover { color: #fff; }
+.donate-modal-header {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+margin-bottom: 8px;
+}
+.donate-modal-header h3 {
+margin: 0;
+font-size: 18px;
+color: #fff;
+}
+.donate-heart { font-size: 22px; }
+.donate-desc {
+font-size: 12px;
+color: #aaa;
+margin-bottom: 16px;
+line-height: 1.4;
+}
+.qr-container {
+background: #fff;
+padding: 10px;
+border-radius: 12px;
+display: inline-block;
+margin-bottom: 16px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+.qr-container img {
+width: 220px;
+height: 220px;
+display: block;
+object-fit: contain;
+}
+.donate-bank-info {
+font-size: 12px;
+color: #ccc;
+background: #22262c;
+padding: 10px 14px;
+border-radius: 10px;
+text-align: left;
+line-height: 1.6;
+}
+
+/* Light Mode Overrides */
+body.light-mode{background:#e8eaed;color:#111}
+body.light-mode .car-app{background:#e8eaed}
+body.light-mode .panel{background:#f5f6f7}
+body.light-mode .toolbar{background:#fff;color:#111;border-color:#d4d7da}
+body.light-mode .bottom-bar{background:linear-gradient(180deg,#fff,#e9ebed);border-color:#d0d3d6}
+body.light-mode .car-button{background:#e1e4e7;color:#303438}
+body.light-mode .car-button.active{background:#cdd2d6;color:#111}
+body.light-mode .donate-modal-content { background: #ffffff; color: #111; border-color: #ddd; }
+body.light-mode .donate-modal-header h3 { color: #111; }
+body.light-mode .donate-bank-info { background: #f0f2f5; color: #333; }
+
+/* Responsive adjustments */
+@media(max-width:800px){
+.button-text{display:none}
+.car-button{min-width:52px}
+.donate-floating-btn .donate-btn-text { display: none; }
+.donate-floating-btn { padding: 10px; border-radius: 50%; }
+}
+
+/* Generic Modal Styles (Weather BG Modal & Donate Modal) /
+/ STREAMING_CHUNK:Styling Weather BG Popup Modal and Generic Modals... */
+.app-modal {
+position: fixed;
+inset: 0;
+z-index: 1000;
+background: rgba(0, 0, 0, 0.75);
+backdrop-filter: blur(6px);
+display: flex;
+align-items: center;
+justify-content: center;
+padding: 20px;
+opacity: 1;
+transition: opacity 0.25s ease;
+}
+.app-modal.hidden {
+display: none;
+opacity: 0;
+pointer-events: none;
+}
+.app-modal-content {
+position: relative;
+width: 100%;
+max-width: 400px;
+background: #181b20;
+border: 1px solid #34383e;
+border-radius: 20px;
+padding: 24px 20px;
+text-align: center;
+box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8);
+animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes modalPop {
+from { transform: scale(0.85); opacity: 0; }
+to { transform: scale(1); opacity: 1; }
+}
+.app-modal-close {
+position: absolute;
+top: 12px;
+right: 14px;
+background: transparent;
+border: 0;
+color: #888;
+font-size: 24px;
+cursor: pointer;
+}
+.app-modal-close:hover { color: #fff; }
+.app-modal-header {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+margin-bottom: 8px;
+}
+.app-modal-header h3 {
+margin: 0;
+font-size: 18px;
+color: #fff;
+}
+.modal-header-icon { font-size: 20px; }
+.app-modal-desc {
+font-size: 12px;
+color: #aaa;
+margin-bottom: 16px;
+line-height: 1.4;
+}
+.url-input-container {
+margin-bottom: 18px;
+}
+.url-input-container input {
+width: 100%;
+height: 40px;
+background: #0d0f11;
+border: 1px solid #3a3f46;
+border-radius: 10px;
+padding: 0 12px;
+color: #fff;
+font-size: 13px;
+outline: none;
+}
+.url-input-container input:focus {
+border-color: #00d2ff;
+}
+.modal-actions {
+display: flex;
+gap: 10px;
+justify-content: center;
+}
+.btn-primary {
+flex: 1;
+height: 40px;
+border: 0;
+border-radius: 10px;
+background: #1a73e8;
+color: #fff;
+font-weight: 600;
+font-size: 13px;
+cursor: pointer;
+}
+.btn-primary:hover { background: #1557b0; }
+.btn-secondary {
+flex: 1;
+height: 40px;
+border: 1px solid #4a4f56;
+border-radius: 10px;
+background: #272c32;
+color: #e0e0e0;
+font-weight: 500;
+font-size: 13px;
+cursor: pointer;
+}
+.btn-secondary:hover { background: #333840; color: #fff; }

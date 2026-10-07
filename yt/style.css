@@ -117,20 +117,147 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0b0d0f;col
 }
 
 .volume-value small { font-size: 10px; color: #999; }
-.layout-control{position:relative}.layout-button{height:60px;min-width:82px;padding:5px 12px;border:0;border-radius:12px;background:#252a2f;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;cursor:pointer}
-.layout-icon{font-size:24px;line-height:25px}.layout-menu{position:absolute;bottom:70px;left:50%;transform:translateX(-50%) translateY(10px);width:150px;padding:7px;background:#202428;border:1px solid #3a3f43;border-radius:12px;box-shadow:0 8px 30px #0009;opacity:0;pointer-events:none;transition:.15s}
-.layout-menu.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}.layout-menu button{width:100%;height:42px;border:0;border-radius:8px;background:transparent;color:#fff;font-size:14px;cursor:pointer}
-.vehicle-info{height:60px;min-width:72px;padding:4px 10px;border-radius:12px;background:#171a1d;display:flex;flex-direction:column;justify-content:center;align-items:center;border:1px solid #303438}
-.speed-value{font-size:22px;line-height:23px;font-weight:700}.speed-unit{font-size:9px;color:#888;text-transform:uppercase}
-#gpsBtn.gps-active{background:#173c28;color:#5ee58a}#gpsBtn.gps-error{background:#432323;color:#ff7777}
-#gpsStatus{color:#777}#gpsStatus.active{color:#42d66a}#gpsStatus.error{color:#f55}
-.car-status{height:60px;min-width:85px;display:flex;align-items:center;justify-content:center;gap:10px;color:#dce0e3;font-size:16px;font-weight:600}
-.connection{color:#42d66a;font-size:10px}
-body.light-mode{background:#e8eaed;color:#111}body.light-mode .car-app{background:#e8eaed}body.light-mode .panel{background:#f5f6f7}body.light-mode .toolbar{background:#fff;color:#111;border-color:#d4d7da}body.light-mode .bottom-bar{background:linear-gradient(180deg,#fff,#e9ebed);border-color:#d0d3d6;box-shadow:0 -5px 20px #0000001f}body.light-mode .car-button{background:#e1e4e7;color:#303438}body.light-mode .car-button.active{background:#cdd2d6;color:#111}body.light-mode .volume-control{background:#e1e4e7}body.light-mode .volume-button{background:#d0d4d8;color:#111}body.light-mode .volume-value{color:#111}body.light-mode .vehicle-info{background:#f1f3f4;border-color:#d2d5d8}body.light-mode .speed-value{color:#111}body.light-mode .layout-button{background:#e1e4e7;color:#111}body.light-mode .layout-menu{background:#fff;border-color:#d0d3d6}body.light-mode .layout-menu button{color:#111}body.light-mode .youtube-empty{background:#f5f6f7;color:#555}body.light-mode .empty-title{color:#111}
-@media(max-width:1100px){.button-text{display:none}.car-button{min-width:56px}.media-control{min-width:50px}.volume-control{min-width:90px}.vehicle-info{min-width:62px}}
-@media(max-width:800px){.media-control{display:none}.volume-control{min-width:75px}.vehicle-info{min-width:58px}.youtube-results{width:70%}}
-@media(max-width:600px){.bottom-bar{height:70px;min-height:70px;gap:3px;padding:4px}.car-button{height:58px;min-width:45px;padding:2px;border-radius:8px}.button-icon{font-size:21px}.volume-control{height:58px;min-width:65px;gap:2px}.volume-button{width:25px;height:38px}.vehicle-info{height:58px;min-width:52px}.speed-value{font-size:18px}.car-status{display:none}.youtube-toolbar .panel-title{display:none}.youtube-results{top:45px;width:100%}}
 
+/* 1. ĐỒNG BỘ NÚT CHỌN BỐ CỤC (LAYOUT) */
+.layout-control { position: relative; }
+.layout-button {
+  height: 80px;                /* Đồng bộ 80px */
+  min-width: 80px;             /* Tăng lên 80px */
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: #252a2f;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  font-size: 12px;             /* Tăng từ 11px lên 12px */
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.layout-icon { font-size: 28px; line-height: 28px; } /* Tăng từ 24px lên 28px */
+
+/* Menu Layout Popup - Đổi bottom: 95px để đẩy menu lên trên thanh 90px */
+.layout-menu {
+  position: absolute;
+  bottom: 95px;                /* Tăng từ 70px lên 95px để không đè lên thanh bottom-bar */
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 160px;                /* Mở rộng menu thêm một chút */
+  padding: 8px;
+  background: #202428;
+  border: 1px solid #3a3f43;
+  border-radius: 14px;
+  box-shadow: 0 8px 30px #0009;
+  opacity: 0;
+  pointer-events: none;
+  transition: .15s;
+  z-index: 101;
+}
+.layout-menu.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+.layout-menu button {
+  width: 100%;
+  height: 48px;                /* Tăng nút chọn trong menu từ 42px lên 48px dễ chạm hơn */
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 15px;             /* Tăng từ 14px lên 15px */
+  font-weight: 500;
+  cursor: pointer;
+}
+.layout-menu button:hover { background: #30353a; }
+
+/* 2. ĐỒNG BỘ WIDGET HIỂN THỊ TỐC ĐỘ (VEHICLE INFO) */
+.vehicle-info {
+  height: 80px;                /* Đồng bộ 80px */
+  min-width: 80px;             /* Tăng từ 72px lên 80px */
+  padding: 4px 10px;
+  border-radius: 14px;
+  background: #171a1d;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #303438;
+}
+.speed-value { font-size: 26px; line-height: 27px; font-weight: 700; } /* Tăng số tốc độ lên 26px */
+.speed-unit { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 2px; }
+
+/* GPS & STATUS */
+#gpsBtn.gps-active { background: #173c28; color: #5ee58a; }
+#gpsBtn.gps-error { background: #432323; color: #ff7777; }
+#gpsStatus { color: #777; }
+#gpsStatus.active { color: #42d66a; }
+#gpsStatus.error { color: #f55; }
+
+/* 3. ĐỒNG BỘ ĐỒNG HỒ CẠNH GPS (CAR STATUS) */
+.car-status {
+  height: 80px;                /* Đồng bộ 80px */
+  min-width: 90px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #dce0e3;
+  font-size: 18px;             /* Tăng từ 16px lên 18px */
+  font-weight: 600;
+}
+.connection { color: #42d66a; font-size: 12px; }
+
+/* LIGHT MODE SUPPORT */
+body.light-mode { background: #e8eaed; color: #111; }
+body.light-mode .car-app { background: #e8eaed; }
+body.light-mode .panel { background: #f5f6f7; }
+body.light-mode .toolbar { background: #fff; color: #111; border-color: #d4d7da; }
+body.light-mode .bottom-bar { background: linear-gradient(180deg,#fff,#e9ebed); border-color: #d0d3d6; box-shadow: 0 -5px 20px #0000001f; }
+body.light-mode .car-button { background: #e1e4e7; color: #303438; }
+body.light-mode .car-button.active { background: #cdd2d6; color: #111; }
+body.light-mode .volume-control { background: #e1e4e7; }
+body.light-mode .volume-button { background: #d0d4d8; color: #111; }
+body.light-mode .volume-value { color: #111; }
+body.light-mode .vehicle-info { background: #f1f3f4; border-color: #d2d5d8; }
+body.light-mode .speed-value { color: #111; }
+body.light-mode .layout-button { background: #e1e4e7; color: #111; }
+body.light-mode .layout-menu { background: #fff; border-color: #d0d3d6; }
+body.light-mode .layout-menu button { color: #111; }
+body.light-mode .layout-menu button:hover { background: #e8eaed; }
+body.light-mode .youtube-empty { background: #f5f6f7; color: #555; }
+body.light-mode .empty-title { color: #111; }
+
+/* 4. ĐỒNG BỘ MEDIA QUERIES (RESPONSIVE CHO MÀN HÌNH NHỎ) */
+@media(max-width:1100px) {
+  .button-text { display: none; }
+  .car-button { min-width: 64px; }
+  .layout-button { min-width: 64px; }
+  .media-control { min-width: 56px; }
+  .volume-control { min-width: 105px; }
+  .vehicle-info { min-width: 68px; }
+}
+
+@media(max-width:800px) {
+  .media-control { display: none; }
+  .volume-control { min-width: 85px; }
+  .vehicle-info { min-width: 62px; }
+  .youtube-results { width: 70%; }
+}
+
+@media(max-width:600px) {
+  .bottom-bar { height: 70px; min-height: 70px; gap: 4px; padding: 4px; }
+  .car-button { height: 58px; min-width: 46px; padding: 2px; border-radius: 10px; }
+  .layout-button { height: 58px; min-width: 46px; }
+  .layout-menu { bottom: 75px; }
+  .button-icon { font-size: 22px; }
+  .volume-control { height: 58px; min-width: 70px; gap: 3px; }
+  .volume-button { width: 28px; height: 42px; }
+  .vehicle-info { height: 58px; min-width: 56px; }
+  .speed-value { font-size: 20px; }
+  .car-status { display: none; }
+  .youtube-toolbar .panel-title { display: none; }
+  .youtube-results { top: 45px; width: 100%; }
+}
 .voice-button{
     height:46px;
     min-width:46px;

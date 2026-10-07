@@ -17,7 +17,7 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0b0d0f;col
 .url-box .map-button{background:#1a73e8}
 .content{flex:1;min-height:0;overflow:hidden;background:#000;position:relative}
 .content iframe{width:100%;height:100%;display:block;border:0}
-#youtubeFrame,#youtubeFrame iframe{width:100%;height:100%;border:0;display:block}
+#youtubeFrame,#youtubeFrame iframe{width:100%;:100%;border:0;display:block}
 .youtube-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#0b0d0f;color:#aaa;text-align:center}
 .youtube-empty.hidden{display:none}
 .empty-icon{width:70px;height:50px;border-radius:14px;background:#f00;color:#fff;display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:15px}
@@ -32,16 +32,91 @@ html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#0b0d0f;col
 .result-channel{font-size:11px;color:#999;margin-top:5px}
 .resize-bar{width:8px;height:100%;flex-shrink:0;z-index:20;background:#272b2f;cursor:col-resize;display:flex;align-items:center;justify-content:center}
 .resize-handle{width:4px;height:54px;border-radius:4px;background:#777}
-.bottom-bar{height:76px;min-height:76px;width:100%;display:flex;align-items:center;justify-content:center;gap:7px;padding:7px 10px;background:linear-gradient(180deg,#191c1f,#101214);border-top:1px solid #303438;box-shadow:0 -5px 20px #00000059;z-index:100}
-.car-button{height:60px;min-width:74px;padding:4px 12px;border:0;border-radius:12px;background:#202428;color:#bfc4c8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;user-select:none;touch-action:manipulation}
-.car-button:hover{background:#292e33}.car-button:active{transform:scale(.94);background:#33383d}
-.car-button.active{background:#30363b;color:#fff;box-shadow:inset 0 0 0 1px #454b50}
-.button-icon{font-size:25px;line-height:25px}.button-text{font-size:10px;font-weight:500;white-space:nowrap}
-.youtube-color{color:#ff2020}.map-color{color:#4285f4}
-.media-main{background:#30363b;min-width:70px}.media-main .button-icon{font-size:27px}.media-control{min-width:58px}
-.volume-control{height:60px;min-width:105px;padding:4px 5px;border-radius:12px;background:#202428;display:flex;align-items:center;justify-content:center;gap:5px}
-.volume-button{width:30px;height:42px;border:0;border-radius:8px;background:#30353a;color:#fff;font-size:22px;cursor:pointer}
-.volume-value{min-width:34px;text-align:center;color:#fff;font-size:14px;font-weight:600}.volume-value small{font-size:9px;color:#999}
+.bottom-bar {
+  height: 90px;
+  min-height: 90px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;                    /* Giảm nhẹ gap xuống 8px để tránh tràn thanh khi có nhiều nút */
+  padding: 5px 10px;
+  background: linear-gradient(180deg,#191c1f,#101214);
+  border-top: 1px solid #303438;
+  box-shadow: 0 -5px 20px #00000059;
+  z-index: 100;
+}
+
+/* Nút chuẩn */
+.car-button {
+  height: 80px;
+  min-width: 80px;             /* Chỉnh nhẹ min-width về 80px cho vuông vặn */
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 14px;
+  background: #202428;
+  color: #bfc4c8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.car-button:hover { background: #292e33; }
+.car-button:active { transform: scale(.94); background: #33383d; }
+.car-button.active { background: #30363b; color: #fff; box-shadow: inset 0 0 0 1px #454b50; }
+
+.button-icon { font-size: 30px; line-height: 30px; }
+.button-text { font-size: 12px; font-weight: 500; white-space: nowrap; }
+
+.youtube-color { color: #ff2020; }
+.map-color { color: #4285f4; }
+
+/* Tùy chỉnh nhóm Media: Nút Play/Pause nổi bật hơn các nút Prev/Next */
+.media-main { background: #30363b; min-width: 80px; }
+.media-main .button-icon { font-size: 32px; }
+.media-control { min-width: 68px; }    /* Nút Prev/Next gom gọn lại chút để tiết kiệm diện tích */
+
+/* Đồng bộ cụm Volume cao 80px bằng với các nút bấm */
+.volume-control {
+  height: 80px;                /* Tăng từ 60px lên 80px cho bằng với .car-button */
+  min-width: 120px;
+  padding: 4px 8px;
+  border-radius: 14px;
+  background: #202428;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.volume-button {
+  width: 38px;                 /* Tăng từ 30px lên 38px cho dễ bấm */
+  height: 54px;                /* Tăng từ 42px lên 54px */
+  border: 0;
+  border-radius: 10px;
+  background: #30353a;
+  color: #fff;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.volume-value {
+  min-width: 36px;
+  text-align: center;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.volume-value small { font-size: 10px; color: #999; }
 .layout-control{position:relative}.layout-button{height:60px;min-width:82px;padding:5px 12px;border:0;border-radius:12px;background:#252a2f;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:11px;cursor:pointer}
 .layout-icon{font-size:24px;line-height:25px}.layout-menu{position:absolute;bottom:70px;left:50%;transform:translateX(-50%) translateY(10px);width:150px;padding:7px;background:#202428;border:1px solid #3a3f43;border-radius:12px;box-shadow:0 8px 30px #0009;opacity:0;pointer-events:none;transition:.15s}
 .layout-menu.show{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}.layout-menu button{width:100%;height:42px;border:0;border-radius:8px;background:transparent;color:#fff;font-size:14px;cursor:pointer}

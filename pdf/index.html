@@ -499,6 +499,7 @@ body {
 
                 <button id="btn-export-selected" class="px-3 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 text-sm font-medium transition-colors">Xuất trang đã chọn</button>
                     <button id="btn-save-new" class="px-3 py-1.5 bg-green-600 text-white rounded hover:bg-green-700 text-sm font-medium font-bold transition-colors">Lưu file PDF mới</button>
+                    <button id="btn-scan-pdf" class="px-3 py-1.5 bg-purple-600 text-white rounded hover:bg-purple-700 text-sm font-bold transition-colors">📄 Làm giống bản scan</button>
 
             </div>
 
@@ -686,6 +687,87 @@ body {
 
 </div>
 
+
+
+<!-- =========================================================
+     PDF SCAN MODAL
+========================================================= -->
+<div id="scan-modal" class="fixed inset-0 z-[10000] hidden items-center justify-center bg-slate-950/70 p-3 md:p-6">
+  <section class="w-full max-w-5xl max-h-[95vh] overflow-y-auto rounded-2xl bg-white shadow-2xl">
+    <header class="sticky top-0 z-10 flex items-center justify-between gap-3 border-b bg-white px-5 py-4">
+      <div>
+        <h2 class="text-xl font-bold text-slate-800">📄 Làm cho PDF trông giống tài liệu đã quét</h2>
+        <p class="mt-1 text-sm text-slate-500">Xử lý trực tiếp trên trình duyệt; file không được tải lên máy chủ.</p>
+      </div>
+      <button id="scan-close" class="rounded-lg px-3 py-2 text-xl text-slate-500 hover:bg-slate-100" title="Đóng">✕</button>
+    </header>
+    <div class="grid gap-5 p-5 md:grid-cols-[minmax(0,1fr)_300px]">
+      <div class="min-w-0">
+        <div class="mb-2 flex items-center justify-between gap-2">
+          <label class="text-sm font-semibold text-slate-700">Xem trước hiệu ứng</label>
+          <span id="scan-preview-label" class="text-xs text-slate-500">Trang đầu tiên trong phạm vi xuất</span>
+        </div>
+        <div class="flex min-h-[320px] items-center justify-center overflow-hidden rounded-xl border bg-slate-200 p-3">
+          <canvas id="scan-preview-canvas" class="max-h-[62vh] max-w-full bg-white shadow-lg"></canvas>
+          <p id="scan-preview-empty" class="py-16 text-center text-sm text-slate-500">Tải PDF lên và mở tính năng này để xem trước.</p>
+        </div>
+        <p class="mt-3 text-xs leading-5 text-slate-500">
+          Lưu ý: PDF đầu ra sẽ gồm ảnh của từng trang nên văn bản thường không còn chọn/tìm kiếm được. Hãy giữ bản gốc để đối chiếu.
+        </p>
+        <div id="scan-progress-wrap" class="mt-4 hidden">
+          <div class="mb-1 flex justify-between text-sm"><span id="scan-progress-text">Đang xử lý...</span><span id="scan-progress-percent">0%</span></div>
+          <div class="h-2 overflow-hidden rounded-full bg-slate-200"><div id="scan-progress-bar" class="h-full w-0 bg-purple-600 transition-all"></div></div>
+        </div>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <label for="scan-mode" class="mb-1 block text-sm font-semibold text-slate-700">Kiểu scan</label>
+          <select id="scan-mode" class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm">
+            <option value="color">Màu tự nhiên</option>
+            <option value="gray" selected>Thang xám / photocopy</option>
+            <option value="bw">Đen trắng rõ nét</option>
+            <option value="old">Giấy cũ hơi ngả vàng</option>
+          </select>
+        </div>
+        <div>
+          <label for="scan-skew" class="mb-1 flex justify-between text-sm"><span class="font-semibold text-slate-700">Độ nghiêng</span><span id="scan-skew-value">0.4°</span></label>
+          <input id="scan-skew" type="range" min="0" max="2" step="0.1" value="0.4" class="w-full accent-purple-600">
+          <div class="flex justify-between text-xs text-slate-400"><span>Thẳng</span><span>Nghiêng nhẹ</span></div>
+        </div>
+        <div>
+          <label for="scan-noise" class="mb-1 flex justify-between text-sm"><span class="font-semibold text-slate-700">Hạt / nhiễu giấy</span><span id="scan-noise-value">8%</span></label>
+          <input id="scan-noise" type="range" min="0" max="30" step="1" value="8" class="w-full accent-purple-600">
+        </div>
+        <div>
+          <label for="scan-contrast" class="mb-1 flex justify-between text-sm"><span class="font-semibold text-slate-700">Tương phản</span><span id="scan-contrast-value">110%</span></label>
+          <input id="scan-contrast" type="range" min="70" max="150" step="5" value="110" class="w-full accent-purple-600">
+        </div>
+        <div>
+          <label for="scan-quality" class="mb-1 block text-sm font-semibold text-slate-700">Chất lượng</label>
+          <select id="scan-quality" class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm">
+            <option value="1.4">Dung lượng nhỏ</option>
+            <option value="1.8" selected>Cân bằng</option>
+            <option value="2.4">Chất lượng cao</option>
+          </select>
+        </div>
+        <div>
+          <label for="scan-scope" class="mb-1 block text-sm font-semibold text-slate-700">Phạm vi áp dụng</label>
+          <select id="scan-scope" class="w-full rounded-lg border border-slate-300 bg-white p-2.5 text-sm">
+            <option value="all">Tất cả trang đang có trong lưới</option>
+            <option value="selected">Chỉ các trang đã chọn</option>
+          </select>
+        </div>
+        <div class="rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-900">
+          <b>Mẹo:</b> Hồ sơ hành chính nên dùng “Thang xám”, nhiễu 3–8% và độ nghiêng dưới 0,5° để chữ vẫn dễ đọc.
+        </div>
+        <div class="flex gap-2">
+          <button id="scan-preview-refresh" class="flex-1 rounded-lg border border-slate-300 px-3 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50">Cập nhật xem trước</button>
+          <button id="scan-export" class="flex-1 rounded-lg bg-purple-600 px-3 py-2.5 text-sm font-bold text-white hover:bg-purple-700">Xuất PDF scan</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
 
 <script>
 
@@ -3297,20 +3379,274 @@ document.getElementById("viewer-download").onclick = () => {
     }, "image/png");
 };
 
+
+/* =========================================================
+   PDF SCAN EFFECT
+   Render từng trang thành ảnh, áp dụng hiệu ứng scan và đóng gói PDF.
+========================================================= */
+const scanModal = document.getElementById("scan-modal");
+const scanPreviewCanvas = document.getElementById("scan-preview-canvas");
+const scanPreviewEmpty = document.getElementById("scan-preview-empty");
+const scanMode = document.getElementById("scan-mode");
+const scanSkew = document.getElementById("scan-skew");
+const scanNoise = document.getElementById("scan-noise");
+const scanContrast = document.getElementById("scan-contrast");
+const scanQuality = document.getElementById("scan-quality");
+const scanScope = document.getElementById("scan-scope");
+const scanExportButton = document.getElementById("scan-export");
+let scanPreviewRequest = 0;
+
+function getScanPages() {
+    const pages = getPageWrappers();
+    if (scanScope.value === "selected") {
+        return pages.filter(p => p.classList.contains("page-selected"));
+    }
+    return pages;
+}
+
+function openScanModal() {
+    if (!getPageWrappers().length) {
+        alert("Vui lòng tải PDF lên trước.");
+        return;
+    }
+    scanModal.classList.remove("hidden");
+    scanModal.classList.add("flex");
+    updateScanLabels();
+    refreshScanPreview();
+}
+
+function closeScanModal() {
+    if (scanExportButton.disabled) return;
+    scanModal.classList.add("hidden");
+    scanModal.classList.remove("flex");
+}
+
+document.getElementById("btn-scan-pdf").addEventListener("click", openScanModal);
+document.getElementById("scan-close").addEventListener("click", closeScanModal);
+scanModal.addEventListener("click", e => {
+    if (e.target === scanModal) closeScanModal();
+});
+
+function updateScanLabels() {
+    document.getElementById("scan-skew-value").textContent = `${Number(scanSkew.value).toFixed(1)}°`;
+    document.getElementById("scan-noise-value").textContent = `${scanNoise.value}%`;
+    document.getElementById("scan-contrast-value").textContent = `${scanContrast.value}%`;
+}
+
+[scanMode, scanSkew, scanNoise, scanContrast, scanQuality, scanScope].forEach(el => {
+    el.addEventListener("input", () => {
+        updateScanLabels();
+        if (el === scanScope) refreshScanPreview();
+        else refreshScanPreview();
+    });
+});
+
+document.getElementById("scan-preview-refresh").addEventListener("click", refreshScanPreview);
+
+function applyScanEffect(sourceCanvas, options = {}) {
+    const out = document.createElement("canvas");
+    out.width = sourceCanvas.width;
+    out.height = sourceCanvas.height;
+    const ctx = out.getContext("2d", { willReadFrequently: true });
+    ctx.fillStyle = options.mode === "old" ? "#f5efdE" : "#f7f7f5";
+    ctx.fillRect(0, 0, out.width, out.height);
+
+    const work = document.createElement("canvas");
+    work.width = sourceCanvas.width;
+    work.height = sourceCanvas.height;
+    const wctx = work.getContext("2d", { willReadFrequently: true });
+    wctx.drawImage(sourceCanvas, 0, 0);
+
+    const image = wctx.getImageData(0, 0, work.width, work.height);
+    const data = image.data;
+    const contrast = Number(options.contrast ?? scanContrast.value) / 100;
+    const noiseAmount = Number(options.noise ?? scanNoise.value) * 0.55;
+    const mode = options.mode ?? scanMode.value;
+
+    for (let i = 0; i < data.length; i += 4) {
+        let r = data[i], g = data[i + 1], b = data[i + 2];
+
+        if (mode === "gray" || mode === "bw") {
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            r = g = b = gray;
+        } else if (mode === "old") {
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            r = Math.min(255, gray * 1.04 + 10);
+            g = Math.min(255, gray * 1.00 + 6);
+            b = Math.min(255, gray * 0.91);
+        }
+
+        r = (r - 128) * contrast + 128;
+        g = (g - 128) * contrast + 128;
+        b = (b - 128) * contrast + 128;
+
+        if (mode === "bw") {
+            const gray = (r + g + b) / 3;
+            const threshold = 183;
+            r = g = b = gray > threshold ? 255 : 0;
+        } else if (noiseAmount > 0) {
+            const n = (Math.random() - 0.5) * noiseAmount * 2;
+            r += n; g += n; b += n;
+        }
+
+        data[i] = Math.max(0, Math.min(255, r));
+        data[i + 1] = Math.max(0, Math.min(255, g));
+        data[i + 2] = Math.max(0, Math.min(255, b));
+    }
+    wctx.putImageData(image, 0, 0);
+
+    const angle = (Number(options.skew ?? scanSkew.value) * (Math.random() < 0.5 ? -1 : 1)) * Math.PI / 180;
+    ctx.save();
+    ctx.translate(out.width / 2, out.height / 2);
+    ctx.rotate(angle);
+    ctx.drawImage(work, -work.width / 2, -work.height / 2);
+    ctx.restore();
+
+    // Viền giấy cực nhẹ, không che nội dung.
+    ctx.strokeStyle = mode === "old" ? "rgba(130,110,75,0.14)" : "rgba(70,70,70,0.08)";
+    ctx.lineWidth = Math.max(1, out.width / 1200);
+    ctx.strokeRect(ctx.lineWidth / 2, ctx.lineWidth / 2, out.width - ctx.lineWidth, out.height - ctx.lineWidth);
+    return out;
+}
+
+async function renderScanPage(pageEl, scale) {
+    const fileId = parseInt(pageEl.dataset.fileId, 10);
+    const pageNumber = parseInt(pageEl.dataset.originalPage, 10);
+    const pageRotation = parseInt(pageEl.dataset.rotation || "0", 10);
+    const pdf = await getPdfJsDocument(fileId);
+    const page = await pdf.getPage(pageNumber);
+    const rotation = ((page.rotate || 0) + pageRotation + 360) % 360;
+    const viewport = page.getViewport({ scale, rotation });
+    const source = document.createElement("canvas");
+    source.width = Math.ceil(viewport.width);
+    source.height = Math.ceil(viewport.height);
+    const context = source.getContext("2d", { willReadFrequently: true });
+    await page.render({ canvasContext: context, viewport }).promise;
+    return { canvas: applyScanEffect(source), width: viewport.width / scale, height: viewport.height / scale };
+}
+
+async function refreshScanPreview() {
+    const requestId = ++scanPreviewRequest;
+    updateScanLabels();
+    const pages = getScanPages();
+    if (!pages.length) {
+        scanPreviewCanvas.classList.add("hidden");
+        scanPreviewEmpty.classList.remove("hidden");
+        scanPreviewEmpty.textContent = scanScope.value === "selected"
+            ? "Chưa chọn trang nào. Hãy chọn trang trong lưới hoặc đổi phạm vi."
+            : "Không có trang PDF để xem trước.";
+        return;
+    }
+
+    scanPreviewEmpty.classList.add("hidden");
+    scanPreviewCanvas.classList.remove("hidden");
+    scanPreviewCanvas.style.opacity = "0.5";
+    document.getElementById("scan-preview-label").textContent = `Xem trước trang ${pages[0].dataset.originalPage}`;
+    try {
+        const result = await renderScanPage(pages[0], 1.1);
+        if (requestId !== scanPreviewRequest) return;
+        scanPreviewCanvas.width = result.canvas.width;
+        scanPreviewCanvas.height = result.canvas.height;
+        const ctx = scanPreviewCanvas.getContext("2d");
+        ctx.clearRect(0, 0, scanPreviewCanvas.width, scanPreviewCanvas.height);
+        ctx.drawImage(result.canvas, 0, 0);
+        scanPreviewCanvas.style.opacity = "1";
+    } catch (error) {
+        console.error("Scan preview error:", error);
+        scanPreviewEmpty.classList.remove("hidden");
+        scanPreviewEmpty.textContent = "Không tạo được xem trước: " + (error.message || error);
+    }
+}
+
+document.getElementById("scan-export").addEventListener("click", async () => {
+    const pages = getScanPages();
+    if (!pages.length) {
+        alert(scanScope.value === "selected" ? "Bạn chưa chọn trang nào." : "Không có trang để xuất.");
+        return;
+    }
+
+    const confirmed = confirm(
+        `Sẽ tạo PDF dạng ảnh cho ${pages.length} trang. Văn bản có thể không còn tìm kiếm/chọn được.\n\nTiếp tục?`
+    );
+    if (!confirmed) return;
+
+    const progressWrap = document.getElementById("scan-progress-wrap");
+    const progressText = document.getElementById("scan-progress-text");
+    const progressPercent = document.getElementById("scan-progress-percent");
+    const progressBar = document.getElementById("scan-progress-bar");
+    const oldText = scanExportButton.textContent;
+    scanExportButton.disabled = true;
+    scanExportButton.textContent = "Đang xử lý...";
+    progressWrap.classList.remove("hidden");
+
+    try {
+        const outputPdf = await PDFLib.PDFDocument.create();
+        const scale = Number(scanQuality.value);
+        const options = {
+            mode: scanMode.value,
+            skew: Number(scanSkew.value),
+            noise: Number(scanNoise.value),
+            contrast: Number(scanContrast.value)
+        };
+
+        for (let i = 0; i < pages.length; i++) {
+            progressText.textContent = `Đang xử lý trang ${i + 1}/${pages.length}...`;
+            progressPercent.textContent = `${Math.round(i / pages.length * 100)}%`;
+            progressBar.style.width = `${i / pages.length * 100}%`;
+
+            const result = await renderScanPage(pages[i], scale);
+            const mime = options.mode === "bw" ? "image/png" : "image/jpeg";
+            const blob = await canvasToBlob(result.canvas, mime, options.mode === "bw" ? undefined : 0.88);
+            if (!blob) throw new Error(`Không tạo được ảnh trang ${i + 1}.`);
+            const bytes = new Uint8Array(await blob.arrayBuffer());
+            const embedded = mime === "image/png"
+                ? await outputPdf.embedPng(bytes)
+                : await outputPdf.embedJpg(bytes);
+
+            const outPage = outputPdf.addPage([result.width, result.height]);
+            outPage.drawImage(embedded, {
+                x: 0, y: 0, width: result.width, height: result.height
+            });
+
+            // Nhường thời gian cho trình duyệt cập nhật giao diện khi xử lý nhiều trang.
+            await new Promise(resolve => setTimeout(resolve, 0));
+        }
+
+        progressText.textContent = "Đang đóng gói PDF...";
+        progressBar.style.width = "100%";
+        progressPercent.textContent = "100%";
+        const bytes = await outputPdf.save();
+        const blob = new Blob([bytes], { type: "application/pdf" });
+        downloadBlob(blob, `TaiLieu_Scan_${new Date().toISOString().slice(0, 10)}.pdf`);
+        progressText.textContent = `Hoàn tất: ${pages.length} trang.`;
+        alert("Đã tạo xong PDF scan. Hãy kiểm tra file tải xuống trước khi sử dụng.");
+    } catch (error) {
+        console.error("PDF scan export error:", error);
+        alert("Không thể tạo PDF scan:\n\n" + (error.message || error));
+    } finally {
+        scanExportButton.disabled = false;
+        scanExportButton.textContent = oldText;
+        setTimeout(() => progressWrap.classList.add("hidden"), 1800);
+    }
+});
+
+
 /* =========================================================
    HELPERS
 ========================================================= */
 
 function canvasToBlob(
     canvas,
-    type
+    type,
+    quality
 ) {
 
     return new Promise(
         resolve =>
             canvas.toBlob(
                 resolve,
-                type
+                type,
+                quality
             )
     );
 

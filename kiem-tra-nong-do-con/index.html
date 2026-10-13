@@ -87,6 +87,7 @@
         .quick-item i { font-size: 1.2rem; color: var(--accent-color); display: block; margin-bottom: 5px; }
         .quick-item span { font-size: 0.7rem; color: var(--text-main); font-weight: 600; }
 
+        
         .btn-calc {
             width: 100%;
             padding: 16px;
@@ -94,12 +95,14 @@
             border: none;
             border-radius: 14px;
             color: #0f172a;
+            font-family: 'Inter', sans-serif;
             font-weight: 800;
             font-size: 1rem;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
         }
+
         .btn-calc:hover { opacity: 0.9; transform: scale(1.01); }
 
         /* Result Area */
@@ -225,16 +228,46 @@
             </select>
         </div>
 
+<div class="input-group">
+    <label>
+        <i class="fas fa-clock"></i>
+        Thời điểm kết thúc uống rượu/bia
+    </label>
+    <input type="datetime-local" id="endDrinkTime">
+    <small style="display:block; margin-top:6px; color:var(--text-muted);">
+        Mặc định là thời điểm hiện tại. Hãy chọn thời điểm bạn uống xong.
+    </small>
+</div>
+
         <button class="btn-calc" onclick="calculateAlcohol()">TÍNH KẾT QUẢ</button>
 
-        <div id="result" class="result-box">
-            <p style="font-size: 0.9rem; color: var(--text-muted);">Cơ thể cần khoảng:</p>
-            <div class="time-val" id="timeResult">0 Giờ</div>
-            <div id="safety-badge" class="safety-badge" style="background: rgba(239, 68, 68, 0.2); color: var(--danger-color);">
-                <i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE
-            </div>
-            <p id="finishTime" style="margin-top: 15px; font-size: 0.85rem; color: var(--accent-color); font-weight: 600;"></p>
-        </div>
+        
+            <div id="result" class="result-box">
+                <p style="font-size:0.9rem;color:var(--text-muted)">
+                    Tổng thời gian đào thải ước tính:
+                </p>
+            
+                <div class="time-val" id="timeResult">0 giờ</div>
+            
+                <p style="font-size:0.9rem;color:var(--text-muted);margin-top:15px">
+                    Thời gian còn lại đến mốc dự kiến:
+                </p>
+            
+                <div id="remainingTime"
+                     style="font-size:1.5rem;font-weight:700;color:var(--warning-color);margin:5px 0">
+                    --
+                </div>
+            
+                <div id="safety-badge" class="safety-badge"
+                     style="background:rgba(239,68,68,0.2);color:var(--danger-color)">
+                    <i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE
+                </div>
+            
+                <p id="finishTime"
+                   style="margin-top:15px;font-size:0.85rem;color:var(--accent-color);font-weight:600">
+                </p>
+</div>
+
     </div>
 
     <div class="disclaimer">
@@ -260,6 +293,22 @@
 </div>
 
 <script>
+    
+function setDefaultDrinkTime() {
+    const input = document.getElementById('endDrinkTime');
+    const now = new Date();
+
+    // Định dạng YYYY-MM-DDTHH:mm theo giờ địa phương
+    const localTime = new Date(
+        now.getTime() - now.getTimezoneOffset() * 60000
+    ).toISOString().slice(0, 16);
+
+    input.value = localTime;
+}
+
+// Khởi tạo khi trang tải xong
+document.addEventListener('DOMContentLoaded', setDefaultDrinkTime);
+
 function quickSet(alcohol, volume) {
     document.getElementById('drinkType').value = alcohol;
     document.getElementById('amount').value = 1;
@@ -271,6 +320,7 @@ function quickSet(alcohol, volume) {
     setTimeout(() => card.style.borderColor = 'var(--glass-border)', 400);
 }
 
+
 function calculateAlcohol() {
     const weight = parseFloat(document.getElementById('weight').value);
     const genderR = parseFloat(document.getElementById('gender').value);
@@ -278,77 +328,119 @@ function calculateAlcohol() {
     const alcoholPercent = parseFloat(document.getElementById('drinkType').value);
     const amount = parseFloat(document.getElementById('amount').value);
     const mlPerUnit = parseFloat(document.getElementById('unit').value);
+    const endDrinkValue = document.getElementById('endDrinkTime').value;
 
-    if (!amount || amount <= 0 || !weight) {
-        alert("Vui lòng nhập đầy đủ thông số!");
+    // 1. Kiểm tra dữ liệu đầu vào
+    if (
+        !Number.isFinite(weight) || weight <= 0 ||
+        !Number.isFinite(amount) || amount <= 0 ||
+        !Number.isFinite(alcoholPercent) ||
+        alcoholPercent <= 0 || alcoholPercent > 100 ||
+        !Number.isFinite(mlPerUnit) || mlPerUnit <= 0 ||
+        !endDrinkValue
+    ) {
+        alert("Vui lòng kiểm tra và nhập đầy đủ thông số hợp lệ!");
         return;
     }
 
-    // 1. Tổng lượng cồn nguyên chất (gam) = ml * % * 0.79
-    const totalMl = amount * mlPerUnit;
-    const A = totalMl * (alcoholPercent / 100) * 0.79;
+    const endDrinkDate = new Date(endDrinkValue);
+    const now = new Date();
 
-    // 2. Nồng độ cồn trong máu (BAC) = A / (W * r)
-    // Điều chỉnh thêm hệ số hấp thụ do ăn uống (stomachK)
-    let bac = (A / (weight * genderR)) * stomachK;
-
-    // 3. Thời gian đào thải (T) = BAC / 0.015 (tốc độ trung bình 0.15mg/ml mỗi giờ)
-    const eliminationRate = 0.15;
-    const hoursNeeded = bac / eliminationRate;
-
-    // Hiển thị kết quả
-    document.getElementById('result').style.display = 'block';
-    
-    if (hoursNeeded <= 0.1) {
-        document.getElementById('timeResult').innerText = "0 Giờ";
-        document.getElementById('safety-badge').innerHTML = '<i class="fas fa-check-circle"></i> CƠ THỂ ĐÃ SẠCH CỒN';
-        document.getElementById('safety-badge').style.color = '#22c55e';
-        document.getElementById('safety-badge').style.background = 'rgba(34, 197, 94, 0.1)';
-        document.getElementById('finishTime').innerText = "";
-    } else {
-        const h = Math.floor(hoursNeeded);
-        const m = Math.round((hoursNeeded - h) * 60);
-        document.getElementById('timeResult').innerText = `${h}h ${m}p`;
-        
-        // Tính thời điểm hết cồn
-                // Tính thời điểm hết cồn
-        const now = new Date();
-        const finishDate = new Date(now.getTime() + hoursNeeded * 3600000);
-        
-        // Định dạng giờ:phút (ví dụ: 01:30)
-        const timeStr = finishDate.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        
-        // Tính khoảng cách ngày giữa thời điểm hết cồn và hiện tại
-        // Đặt cả hai về mốc 0h để so sánh số ngày chính xác
-        const nowDateOnly = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const finishDateOnly = new Date(finishDate.getFullYear(), finishDate.getMonth(), finishDate.getDate());
-        const diffTime = finishDateOnly - nowDateOnly;
-        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-        let dateLabel = "";
-        if (diffDays === 0) {
-            dateLabel = "hôm nay";
-        } else if (diffDays === 1) {
-            dateLabel = "ngày mai";
-        } else if (diffDays === 2) {
-            dateLabel = "ngày kia";
-        } else {
-            // Nếu trên 2 ngày thì hiện ngày cụ thể (ví dụ: ngày 20/02)
-            dateLabel = `ngày ${finishDate.getDate()}/${finishDate.getMonth() + 1}`;
-        }
-
-        document.getElementById('finishTime').innerText = `Dự kiến hết nồng độ cồn vào lúc: ${timeStr} ${dateLabel}`;
-
-        
-        // Reset badge cảnh báo
-        document.getElementById('safety-badge').innerHTML = '<i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE';
-        document.getElementById('safety-badge').style.color = 'var(--danger-color)';
-        document.getElementById('safety-badge').style.background = 'rgba(239, 68, 68, 0.2)';
+    if (isNaN(endDrinkDate.getTime())) {
+        alert("Thời điểm kết thúc uống không hợp lệ!");
+        return;
     }
 
-    // Cuộn xuống kết quả
-    window.scrollTo({ top: document.getElementById('result').offsetTop + 200, behavior: 'smooth' });
+    if (endDrinkDate > now) {
+        alert("Thời điểm kết thúc uống không được ở tương lai!");
+        return;
+    }
+
+    // 2. Tính lượng cồn nguyên chất (gam)
+    const totalMl = amount * mlPerUnit;
+    const alcoholGrams = totalMl *
+        (alcoholPercent / 100) * 0.789;
+
+    // 3. Ước tính thời gian đào thải theo mô hình hiện tại
+    // Lưu ý: đây chỉ là phép ước tính tham khảo,
+    // không phải phép đo nồng độ cồn thực tế.
+    const bacEstimate =
+        (alcoholGrams / (weight * genderR)) * stomachK;
+
+    const eliminationRate = 0.15;
+    const totalHours = bacEstimate / eliminationRate;
+
+    // 4. Mốc hết thời gian đào thải dự kiến
+    const finishDate = new Date(
+        endDrinkDate.getTime() + totalHours * 3600000
+    );
+
+    // 5. So sánh mốc dự kiến với thời điểm hiện tại
+    const remainingMs = finishDate.getTime() - now.getTime();
+    const remainingHours = Math.max(0, remainingMs / 3600000);
+
+    // 6. Hàm định dạng thời lượng
+    function formatDuration(hours) {
+        const totalMinutes = Math.round(hours * 60);
+        const h = Math.floor(totalMinutes / 60);
+        const m = totalMinutes % 60;
+
+        if (h === 0) return `${m} phút`;
+        if (m === 0) return `${h} giờ`;
+        return `${h} giờ ${m} phút`;
+    }
+
+    // 7. Hiển thị tổng thời gian và thời gian còn lại
+    document.getElementById('result').style.display = 'block';
+
+    document.getElementById('timeResult').innerText =
+        formatDuration(totalHours);
+
+    const remainingElement = document.getElementById('remainingTime');
+    const badge = document.getElementById('safety-badge');
+
+    if (remainingMs > 0) {
+        remainingElement.innerText =
+            formatDuration(remainingHours);
+
+        remainingElement.style.color = 'var(--warning-color)';
+
+        badge.innerHTML =
+            '<i class="fas fa-ban"></i> TUYỆT ĐỐI KHÔNG LÁI XE';
+
+        badge.style.color = 'var(--danger-color)';
+        badge.style.background = 'rgba(239, 68, 68, 0.2)';
+    } else {
+        remainingElement.innerText =
+            'Đã qua mốc dự kiến';
+
+        remainingElement.style.color = 'var(--text-muted)';
+
+        badge.innerHTML =
+            '<i class="fas fa-exclamation-triangle"></i> KHÔNG THỂ XÁC NHẬN AN TOÀN';
+
+        badge.style.color = 'var(--warning-color)';
+        badge.style.background = 'rgba(251, 191, 36, 0.15)';
+    }
+
+    // 8. Hiển thị thời điểm dự kiến
+    const timeStr = finishDate.toLocaleTimeString('vi-VN', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+    const dateStr = finishDate.toLocaleDateString('vi-VN');
+
+    document.getElementById('finishTime').innerText =
+        `Thời điểm dự kiến hết nồng độ cồn: ${timeStr} ngày ${dateStr}`;
+
+    // 9. Cuộn đến kết quả
+    document.getElementById('result').scrollIntoView({
+        behavior: 'smooth',
+        block: 'center'
+    });
 }
+
 </script>
 
 </body>

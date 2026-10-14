@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Toán Độ Dốc Lên Xuống Ô Tô | hoangtuan.net</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --accent-color: #38bdf8;
+            --accent-gradient: linear-gradient(90deg, #38bdf8, #818cf8);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --warning-color: #fbbf24;
+            --danger-color: #ef4444;
+            --success-color: #22c55e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 650px; width: 100%; }
+        header { text-align: center; margin-bottom: 30px; }
+        header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: -1px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            transition: border-color 0.3s ease;
+        }
+
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 600; }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: white;
+            outline: none;
+            font-size: 1rem;
+        }
+        input:focus, select:focus { border-color: var(--accent-color); }
+        select option { background: #1e293b; color: white; }
+        select option.group-title { font-weight: bold; color: var(--accent-color); }
+
+        /* Search Custom Car Group */
+        .custom-car-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .custom-car-box input {
+            flex: 1;
+        }
+        .btn-search-spec {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 0 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: 0.3s;
+        }
+        .btn-search-spec:hover { background: var(--accent-color); color: #0f172a; }
+
+        .image-banner {
+            margin: 20px 0;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+        .image-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .btn-calc {
+            width: 100%;
+            padding: 16px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 14px;
+            color: #0f172a;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        .btn-calc:hover { opacity: 0.9; transform: scale(1.01); }
+
+        /* Result Area */
+        .result-box {
+            display: none;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px dashed var(--glass-border);
+            animation: fadeIn 0.5s ease;
+        }
+        .result-item {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .result-val { font-size: 2rem; font-weight: 800; color: var(--accent-color); margin: 5px 0; letter-spacing: -1px; }
+        .safety-badge { display: inline-block; padding: 6px 15px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+
+        .disclaimer {
+            margin-top: 25px;
+            background: rgba(56, 189, 248, 0.1);
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            color: #bae6fd;
+        }
+
+        /* Footer */
+        .footer-nav {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            width: 100%;
+        }
+        .nav-links { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin: 20px 0; }
+        .nav-item {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+        .nav-item:hover { color: var(--accent-color); border-color: var(--accent-color); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 500px) { .input-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Tính Dốc Lên Nhà</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Tránh cạ gầm ô tô khi lên xuống ram dốc nhà bạn</p>
+    </header>
+
+    <div class="card" id="mainCard">
+        
+        <!-- Hình ảnh minh họa -->
+        <div class="image-banner">
+            <img src="/hinhminhhoa.jpg" alt="Minh hoạ làm dốc xe ô tô vào nhà">
+        </div>
+
+        <!-- Danh sách chọn xe theo phân khúc -->
+        <div class="input-group">
+            <label><i class="fas fa-car"></i> CHỌN XE TỪ DANH SÁCH PHÂN KHÚC (2026)</label>
+            <select id="carSelect" onchange="selectCar(this)">
+                <option value="">-- Chọn mẫu xe của bạn --</option>
+                
+                <optgroup label="1. Phân khúc Sedan">
+                    <option value="2550,133">Sedan B: Toyota Vios (L: 2550mm, H: 133mm)</option>
+                    <option value="2600,134">Sedan B: Honda City (L: 2600mm, H: 134mm)</option>
+                    <option value="2570,140">Sedan B: Mazda2 (L: 2570mm, H: 140mm)</option>
+                    <option value="2700,145">Sedan C: Mazda3 (L: 2700mm, H: 145mm)</option>
+                    <option value="2825,160">Sedan D: Toyota Camry (L: 2825mm, H: 160mm)</option>
+                </optgroup>
+
+                <optgroup label="2. Phân khúc CUV / SUV Đô Thị">
+                    <option value="2640,180">CUV B: Toyota Yaris Cross (L: 2640mm, H: 180mm)</option>
+                    <option value="2650,175">CUV B: Mitsubishi Xforce (L: 2650mm, H: 175mm)</option>
+                    <option value="2610,175">CUV B: VinFast VF 6 (L: 2610mm, H: 175mm)</option>
+                    <option value="2700,195">CUV C: Mazda CX-5 (L: 2700mm, H: 195mm)</option>
+                    <option value="2710,181">CUV C: Ford Territory (L: 2710mm, H: 181mm)</option>
+                    <option value="2680,170">CUV C: Hyundai Tucson (L: 2680mm, H: 170mm)</option>
+                </optgroup>
+
+                <optgroup label="3. Phân khúc MPV (Đa dụng 7 chỗ)">
+                    <option value="2775,225">MPV xăng: Mitsubishi Xpander (L: 2775mm, H: 225mm)</option>
+                    <option value="2850,205">MPV xăng: Toyota Innova Cross (L: 2850mm, H: 205mm)</option>
+                    <option value="2625,195">MPV xăng: Toyota Veloz Cross (L: 2625mm, H: 195mm)</option>
+                    <option value="2840,180">MPV điện: VinFast Limo Green (L: 2840mm, H: 180mm)</option>
+                </optgroup>
+
+                <optgroup label="4. Phân khúc SUV Khung Gầm Rời / Cỡ Lớn">
+                    <option value="2750,226">SUV D: Ford Everest (L: 2750mm, H: 226mm)</option>
+                    <option value="2745,279">SUV D: Toyota Fortuner (L: 2745mm, H: 279mm)</option>
+                    <option value="2765,185">SUV D: Hyundai Santa Fe (L: 2765mm, H: 185mm)</option>
+                    <option value="2800,210">SUV D: Mitsubishi Destinator (L: 2800mm, H: 210mm)</option>
+                </optgroup>
+            </select>
+        </div>
+
+        <!-- Ô nhập xe thủ công & tra cứu nhanh Google -->
+        <div class="input-group">
+            <label><i class="fas fa-search"></i> Hoặc nhập tên xe không có trong danh sách:</label>
+            <div class="custom-car-box">
+                <input type="text" id="customCarName" placeholder="Ví dụ: VF3, Kia Sonet...">
+                <button class="btn-search-spec" onclick="searchCarSpec()">Tìm Google</button>
+            </div>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label><span title="Khoảng cách giữa 2 trục bánh xe">📏 Chiều dài cơ sở L (mm)</span></label>
+                <input type="number" id="wheelbase" value="2550" placeholder="Nhập L (mm)">
+            </div>
+            <div class="input-group">
+                <label><span title="Khoảng cách nhỏ nhất từ gầm xe đến mặt đường">🛡️ Khoảng sáng gầm H (mm)</span></label>
+                <input type="number" id="clearance" value="133" placeholder="Nhập H (mm)">
+            </div>
+        </div>
+
+        <div class="input-grid">
+            <div class="input-group">
+                <label><i class="fas fa-arrows-alt-v"></i> Chiều cao nền nhà h (cm)</label>
+                <input type="number" id="heightH" value="30" step="0.5" placeholder="Nhập chiều cao nền so với đường">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-arrows-alt-h"></i> Chiều dài dốc dự kiến l (mét)</label>
+                <input type="number" id="lengthL" value="1.5" step="0.1" placeholder="Nhập chiều dài dốc">
+            </div>
+        </div>
+
+        <button class="btn-calc" onclick="calculateSlope()">TÍNH TOÁN NGAY</button>
+
+        <div id="result" class="result-box">
+            <div class="result-item">
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Góc dốc tối đa an toàn :</p>
+                <div class="result-val" id="alphaResult">0°</div>
+                <div id="alphaBadge" class="safety-badge">Khuyên dùng thực tế: thấp hơn mức này</div>
+            </div>
+
+            <div class="input-grid" style="margin-bottom: 0;">
+                <div class="result-item" style="margin-bottom: 0;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Chiều dài dốc tối thiểu:</p>
+                    <div class="result-val" style="font-size: 1.5rem;" id="minLenResult">0 m</div>
+                    <p id="compareLen" style="font-size: 0.75rem; margin-top: 5px;"></p>
+                </div>
+                <div class="result-item" style="margin-bottom: 0;">
+                    <p style="font-size: 0.8rem; color: var(--text-muted);">Chiều cao nền tối đa:</p>
+                    <div class="result-val" style="font-size: 1.5rem;" id="maxHeightResult">0 cm</div>
+                    <p id="compareHeight" style="font-size: 0.75rem; margin-top: 5px;"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <i class="fas fa-lightbulb" style="font-size: 1.1rem; margin-bottom: 8px; display: block;"></i>
+        <strong>MẸO THỰC TẾ:</strong> 
+        Công thức hình học trên giúp xác định ngưỡng giới hạn tuyệt đối để xe không bị cạ phần bụng giữa (chỗ giao giữa 2 bánh). Khi thi công thực tế, bạn nên làm dốc dài hơn hoặc thiết kế phần lượn cong (vuốt dốc) ở chân cầu để bánh xe lên từ từ, tránh hiện tượng cạ cản trước hoặc cạ gầm khi đầu xe vừa chớm lên dốc.
+    </div>
+
+    <footer class="footer-nav">
+        <a href="https://hoangtuan.net" style="color: var(--accent-color); text-decoration: none; font-weight: 700; border: 1px solid; padding: 10px 25px; border-radius: 12px; display: inline-block;">
+            <i class="fas fa-home"></i> QUAY VỀ TRANG CHỦ
+        </a>
+        <div class="nav-links">
+            <a href="https://hoangtuan.net/egfr" class="nav-item">Chức năng thận</a>
+            <a href="https://hoangtuan.net/he_so_amv" class="nav-item">Hệ số Am/V</a>
+            <a href="https://hoangtuan.net/phi-nuoi-xe" class="nav-item">Chi phí nuôi xe</a>
+            <a href="https://hoangtuan.net/coffee-donate" class="nav-item">Ủng hộ</a>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.75rem;">© 2026 hoangtuan.net · Phát triển bởi BuilderTV</p>
+    </footer>
+</div>
+
+<script>
+function selectCar(selectElem) {
+    const val = selectElem.value;
+    if (!val) return;
+    const parts = val.split(',');
+    document.getElementById('wheelbase').value = parts[0];
+    document.getElementById('clearance').value = parts[1];
+    
+    // Hiệu ứng đổi màu viền card khi thay đổi lựa chọn
+    const card = document.getElementById('mainCard');
+    card.style.borderColor = 'var(--accent-color)';
+    setTimeout(() => card.style.borderColor = 'var(--glass-border)', 400);
+}
+
+function searchCarSpec() {
+    const carName = document.getElementById('customCarName').value.trim();
+    if (!carName) {
+        alert("Vui lòng nhập tên xe cần tìm!");
+        return;
+    }
+    const query = `chiều dài cơ sở và khoảng sáng gầm xe ${carName}`;
+    const url = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    window.open(url, '_blank');
+}
+
+function calculateSlope() {
+    const L = parseFloat(document.getElementById('wheelbase').value); // mm
+    const H = parseFloat(document.getElementById('clearance').value); // mm
+    const h_input_cm = parseFloat(document.getElementById('heightH').value); // cm
+    const l_input_m = parseFloat(document.getElementById('lengthL').value); // m
+
+    if (!L || !H || L <= 0 || H <= 0) {
+        alert("Vui lòng nhập đúng thông số kích thước xe!");
+        return;
+    }
+
+    // Bước 1: Tính góc dốc tối đa alpha_max theo Radian
+    const alphaMaxRad = 2 * Math.atan((2 * H) / L);
+    const alphaMaxDeg = alphaMaxRad * (180 / Math.PI);
+
+    // Bước 2: Tính toán dựa theo chiều cao h thực tế (đổi h từ cm sang mm để đồng bộ)
+    const h_mm = h_input_cm * 10; 
+    const l_min_m = (h_mm / Math.tan(alphaMaxRad)) / 1000;
+
+    // Bước 3: Tính chiều cao nền nhà tối đa h_max dựa trên chiều dài dốc l đang nhập
+    const h_max_cm = (l_input_m * 1000 * Math.tan(alphaMaxRad)) / 10;
+
+    // Hiển thị kết quả ra giao diện
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('alphaResult').innerText = `${alphaMaxDeg.toFixed(2)}°`;
+
+    document.getElementById('minLenResult').innerText = `${l_min_m.toFixed(2)} m`;
+    document.getElementById('maxHeightResult').innerText = `${h_max_cm.toFixed(1)} cm`;
+
+    // Đánh giá trực quan cho chiều dài dốc
+    const compareLenElem = document.getElementById('compareLen');
+    if (l_input_m >= l_min_m) {
+        compareLenElem.innerHTML = `<span style="color: var(--success-color);"><i class="fas fa-check-circle"></i> Dốc dài ${l_input_m}m đạt yêu cầu (tối thiểu ${l_min_m.toFixed(2)}m)</span>`;
+    } else {
+        compareLenElem.innerHTML = `<span style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Nguy cơ cạ gầm! Cần kéo dài ít nhất ${l_min_m.toFixed(2)}m</span>`;
+    }
+
+    // Đánh giá trực quan cho chiều cao nền
+    const compareHeightElem = document.getElementById('compareHeight');
+    if (h_input_cm <= h_max_cm) {
+        compareHeightElem.innerHTML = `<span style="color: var(--success-color);"><i class="fas fa-check-circle"></i> Chiều cao ${h_input_cm}cm nằm trong mức an toàn (tối đa ${h_max_cm.toFixed(1)}cm)</span>`;
+    } else {
+        compareHeightElem.innerHTML = `<span style="color: var(--danger-color);"><i class="fas fa-exclamation-triangle"></i> Nền quá cao so với chiều dài dốc hiện tại!</span>`;
+    }
+
+    // Cuộn mượt xuống khu vực kết quả
+    window.scrollTo({ top: document.getElementById('result').offsetTop + 100, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
